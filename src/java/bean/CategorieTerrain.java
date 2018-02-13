@@ -28,14 +28,12 @@ public class CategorieTerrain implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nom;
-
     @OneToOne
-    private Utilisateur utilisateur;
+    private TauxTaxeItem tauxTaxeItem;
     @OneToMany(mappedBy = "categorieTerrain")
     private List<Terrain> terrains;
-
     @OneToOne
-    private TauxTaxe tauxTaxe;
+    private Utilisateur utilisateur;
 
     public CategorieTerrain() {
     }
@@ -64,15 +62,15 @@ public class CategorieTerrain implements Serializable {
         this.id = id;
     }
 
-    public TauxTaxe getTauxTaxe() {
-        if (tauxTaxe == null) {
-            tauxTaxe = new TauxTaxe();
+    public TauxTaxeItem getTauxTaxeItem() {
+        if (tauxTaxeItem == null) {
+            tauxTaxeItem = new TauxTaxeItem();
         }
-        return tauxTaxe;
+        return tauxTaxeItem;
     }
 
-    public void setTauxTaxe(TauxTaxe tauxTaxe) {
-        this.tauxTaxe = tauxTaxe;
+    public void setTauxTaxeItem(TauxTaxeItem tauxTaxeItem) {
+        this.tauxTaxeItem = tauxTaxeItem;
     }
 
     public List<Terrain> getTerrains() {

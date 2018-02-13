@@ -6,8 +6,8 @@
 package bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,15 +29,15 @@ public class Notification implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int type;
-    private float montantEstime;
+    private BigDecimal montantEstime;
     private int nombreMoisRetard;
     private int annee;
-    @ManyToOne
-    private Terrain terrain;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateEnvoi;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateReception;
+    @ManyToOne
+    private Terrain terrain;
     @OneToOne
     private Utilisateur utilisateur;
 
@@ -48,7 +48,7 @@ public class Notification implements Serializable {
         this.id = id;
     }
 
-    public Notification(Long id, float montantEstimé, int année) {
+    public Notification(Long id, BigDecimal montantEstimé, int année) {
         this.id = id;
         this.montantEstime = montantEstimé;
         this.annee = année;
@@ -62,14 +62,15 @@ public class Notification implements Serializable {
         this.id = id;
     }
 
-    public float getMontantEstime() {
+    public BigDecimal getMontantEstime() {
+        if(montantEstime==null){
+            montantEstime=new BigDecimal("0.00");
+        }
         return montantEstime;
     }
 
-    public void setMontantEstime(float montantEstime) {
-        if (montantEstime > 0) {
-            this.montantEstime = montantEstime;
-        }
+    public void setMontantEstime(BigDecimal montantEstime) {
+        this.montantEstime = montantEstime;
     }
 
     public int getAnnee() {
@@ -77,9 +78,7 @@ public class Notification implements Serializable {
     }
 
     public void setAnnee(int annee) {
-        if (annee > 0) {
-            this.annee = annee;
-        }
+        this.annee = annee;
     }
 
     public int getType() {
@@ -134,6 +133,15 @@ public class Notification implements Serializable {
         this.utilisateur = utilisateur;
     }
 
+    public int getNombreMoisRetard() {
+        return nombreMoisRetard;
+    }
+
+    public void setNombreMoisRetard(int nombreMoisRetard) {
+        this.nombreMoisRetard = nombreMoisRetard;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 7;

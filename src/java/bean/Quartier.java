@@ -7,36 +7,39 @@ package bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
 
 /**
  *
  * @author simob
  */
 @Entity
-public class TauxTaxe implements Serializable {
+public class Quartier implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateApplication;
-    @OneToMany(mappedBy = "tauxTaxe")
-    private List<TauxTaxeItem> tauxTaxeItems;
+    private String nom;
+    @OneToMany(mappedBy = "quartier")
+    private List<Rue> rues;
+    @ManyToOne
+    private Secteur secteur;
     @OneToOne
     private Utilisateur utilisateur;
 
-    public TauxTaxe() {
+    public Quartier() {
+    }
+
+    public Quartier(String nom) {
+        this.nom = nom;
     }
 
     public Long getId() {
@@ -47,23 +50,34 @@ public class TauxTaxe implements Serializable {
         this.id = id;
     }
 
-    public Date getDateApplication() {
-        return dateApplication;
+    public String getNom() {
+        return nom;
     }
 
-    public void setDateApplication(Date dateApplication) {
-        this.dateApplication = dateApplication;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public List<TauxTaxeItem> getTauxTaxeItems() {
-        if (tauxTaxeItems == null) {
-            tauxTaxeItems = new ArrayList();
+    public List<Rue> getRues() {
+        if (rues == null) {
+            rues = new ArrayList();
         }
-        return tauxTaxeItems;
+        return rues;
     }
 
-    public void setTauxTaxeItems(List<TauxTaxeItem> tauxTaxeItems) {
-        this.tauxTaxeItems = tauxTaxeItems;
+    public void setRues(List<Rue> rues) {
+        this.rues = rues;
+    }
+
+    public Secteur getSecteur() {
+        if (secteur == null) {
+            secteur = new Secteur();
+        }
+        return secteur;
+    }
+
+    public void setSecteur(Secteur secteur) {
+        this.secteur = secteur;
     }
 
     public Utilisateur getUtilisateur() {
@@ -79,24 +93,19 @@ public class TauxTaxe implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.id);
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Quartier)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TauxTaxe other = (TauxTaxe) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        Quartier other = (Quartier) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -104,6 +113,7 @@ public class TauxTaxe implements Serializable {
 
     @Override
     public String toString() {
-        return "TauxTaxe{" + "id=" + id + ", dateApplication=" + dateApplication + '}';
+        return "Quartier{" + "nom=" + nom + '}';
     }
+
 }

@@ -29,12 +29,12 @@ public class Redevable implements Serializable {
     private String sexe;
     private String adresse;
     private String numTel;
-    private String codePost;
     @OneToOne
-    private Utilisateur utilisateur;
+    private Secteur secteur;  
     @OneToMany(mappedBy = "redevable")
     private List<Terrain> terrains;
-
+    @OneToOne
+    private Utilisateur utilisateur;
     public Redevable() {
     }
 
@@ -47,22 +47,20 @@ public class Redevable implements Serializable {
         this.prenom = prenom;
     }
 
-    public Redevable(String cin, String nom, String prenom, String sexe, String adresse, String numTel, String codePost) {
+    public Redevable(String cin, String nom, String prenom, String sexe, String adresse, String numTel) {
         this.cin = cin;
         this.nom = nom;
         this.prenom = prenom;
         this.sexe = sexe;
         this.adresse = adresse;
         this.numTel = numTel;
-        this.codePost = codePost;
     }
 
-    public Redevable(String cin, String nom, String prenom, String adresse, String codePost) {
+    public Redevable(String cin, String nom, String prenom, String adresse) {
         this.cin = cin;
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
-        this.codePost = codePost;
     }
 
     public String getCin() {
@@ -111,24 +109,29 @@ public class Redevable implements Serializable {
     }
 
     public void setNumTel(String numTel) {
-
         this.numTel = numTel;
     }
 
-    public String getCodePost() {
-        return codePost;
+    public Secteur getSecteur() {
+        if (secteur == null) {
+            secteur = new Secteur();
+        }
+        return secteur;
     }
 
-    public void setCodePost(String codePost) {
-
-        this.codePost = codePost;
+    public void setSecteur(Secteur secteur) {
+        this.secteur = secteur;
     }
 
     public List<Terrain> getTerrains() {
         if (terrains == null) {
-            List<Terrain> terrains = new ArrayList<>();
+            terrains = new ArrayList<>();
         }
         return terrains;
+    }
+
+    public void setTerrains(List<Terrain> terrains) {
+        this.terrains = terrains;
     }
 
     public Utilisateur getUtilisateur() {
@@ -140,10 +143,6 @@ public class Redevable implements Serializable {
 
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
-    }
-
-    public void setTerrains(List<Terrain> terrains) {
-        this.terrains = terrains;
     }
 
     @Override
@@ -173,7 +172,7 @@ public class Redevable implements Serializable {
 
     @Override
     public String toString() {
-        return "Redevable{" + "cin=" + cin + ", nom=" + nom + ", prenom=" + prenom + ", sexe=" + sexe + ", adresse=" + adresse + ", numTel=" + numTel + ", codePost=" + codePost + '}';
+        return "Redevable{" + "cin=" + cin + ", nom=" + nom + ", prenom=" + prenom + ", sexe=" + sexe + ", adresse=" + adresse + ", numTel=" + numTel + '}';
     }
 
 }

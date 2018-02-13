@@ -28,49 +28,34 @@ public class Terrain implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     private Long numeroLot;
-    private String ville;
-    private String zoneGeo;
     private BigDecimal surface;
-    private int lastYPaid;
-    @OneToOne
-    private Utilisateur utilisateur;
+    private int anneeDernierPaiement;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateAchat;
     @ManyToOne
-    private CategorieTerrain categorieTerrain;
-    @ManyToOne
     private Redevable redevable;
+    @ManyToOne
+    private Rue rue;
+    @ManyToOne
+    private CategorieTerrain categorieTerrain;
     @OneToMany(mappedBy = "terrain")
     private List<TaxeAnnuelle> taxeAnnuelles;
     @OneToMany(mappedBy = "terrain")
     private List<Notification> notifications;
-    
-    public Terrain() {
-    }
+    @OneToOne
+    private Utilisateur utilisateur;
 
-    public Terrain(Long numeroLot, String ville, String zoneGeo, BigDecimal surface, int lastYPaid) {
-        this.numeroLot = numeroLot;
-        this.ville = ville;
-        this.zoneGeo = zoneGeo;
-        this.surface = surface;
-        this.lastYPaid = lastYPaid;
+    public Terrain() {
     }
 
     public Terrain(Long numeroLot) {
         this.numeroLot = numeroLot;
     }
 
-    public Terrain(String ville, String ZoneGeo, BigDecimal surface) {
-        this.ville = ville;
-        this.zoneGeo = ZoneGeo;
-        this.surface = surface;
-    }
-
-    public Terrain(Long numeroLot, String ville, String ZoneGeo, BigDecimal surface) {
+    public Terrain(Long numeroLot, BigDecimal surface, int lastYPaid) {
         this.numeroLot = numeroLot;
-        this.ville = ville;
-        this.zoneGeo = ZoneGeo;
         this.surface = surface;
+        this.anneeDernierPaiement = lastYPaid;
     }
 
     public Long getNumeroLot() {
@@ -79,22 +64,6 @@ public class Terrain implements Serializable {
 
     public void setNumeroLot(Long numeroLot) {
         this.numeroLot = numeroLot;
-    }
-
-    public String getVille() {
-        return ville;
-    }
-
-    public void setVille(String ville) {
-        this.ville = ville;
-    }
-
-    public String getZoneGeo() {
-        return zoneGeo;
-    }
-
-    public void setZoneGeo(String ZoneGeo) {
-        this.zoneGeo = ZoneGeo;
     }
 
     public BigDecimal getSurface() {
@@ -106,6 +75,9 @@ public class Terrain implements Serializable {
     }
 
     public Date getDateAchat() {
+        if (dateAchat == null) {
+            dateAchat = new Date();
+        }
         return dateAchat;
     }
 
@@ -114,8 +86,9 @@ public class Terrain implements Serializable {
     }
 
     public CategorieTerrain getCategorieTerrain() {
-        if(categorieTerrain==null)
-            categorieTerrain=new CategorieTerrain();
+        if (categorieTerrain == null) {
+            categorieTerrain = new CategorieTerrain();
+        }
         return categorieTerrain;
     }
 
@@ -124,8 +97,9 @@ public class Terrain implements Serializable {
     }
 
     public Redevable getRedevable() {
-       if(redevable==null)
-           redevable= new Redevable();
+        if (redevable == null) {
+            redevable = new Redevable();
+        }
         return redevable;
     }
 
@@ -134,26 +108,28 @@ public class Terrain implements Serializable {
     }
 
     public List<TaxeAnnuelle> getTaxeAnnuelles() {
-        if(taxeAnnuelles==null)
-            taxeAnnuelles=new ArrayList<>();
+        if (taxeAnnuelles == null) {
+            taxeAnnuelles = new ArrayList<>();
+        }
         return taxeAnnuelles;
-    }
-
-    public int getLastYPaid() {
-        return lastYPaid;
-    }
-
-    public void setLastYPaid(int lastYPaid) {
-        this.lastYPaid = lastYPaid;
     }
 
     public void setTaxeAnnuelles(List<TaxeAnnuelle> taxeAnnuelles) {
         this.taxeAnnuelles = taxeAnnuelles;
     }
 
+    public int getAnneeDernierPaiement() {
+        return anneeDernierPaiement;
+    }
+
+    public void setAnneeDernierPaiement(int anneeDernierPaiement) {
+        this.anneeDernierPaiement = anneeDernierPaiement;
+    }
+
     public List<Notification> getNotifications() {
-       if(notifications==null)
-           notifications=new ArrayList<>();
+        if (notifications == null) {
+            notifications = new ArrayList();
+        }
         return notifications;
     }
 
@@ -162,14 +138,25 @@ public class Terrain implements Serializable {
     }
 
     public Utilisateur getUtilisateur() {
-         if(utilisateur==null){
-             utilisateur=new Utilisateur();
+        if (utilisateur == null) {
+            utilisateur = new Utilisateur();
         }
         return utilisateur;
     }
 
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
+    }
+
+    public Rue getRue() {
+        if (rue == null) {
+            rue = new Rue();
+        }
+        return rue;
+    }
+
+    public void setRue(Rue rue) {
+        this.rue = rue;
     }
 
     @Override
@@ -199,9 +186,7 @@ public class Terrain implements Serializable {
 
     @Override
     public String toString() {
-        return "Terrain{" + "numeroLot=" + numeroLot + ", ville=" + ville + ", zoneGeo=" + zoneGeo + ", surface=" + surface + ", lastYPaid=" + lastYPaid + '}';
+        return "Terrain{" + "numeroLot=" + numeroLot + ", surface=" + surface + ", lastYPaid=" + anneeDernierPaiement + '}';
     }
 
-    
-    
 }

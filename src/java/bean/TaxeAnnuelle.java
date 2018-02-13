@@ -30,8 +30,6 @@ public class TaxeAnnuelle implements Serializable {
     private Long id;
     private int annee;
     private BigDecimal montant;
-    @OneToOne
-    private Utilisateur utilisateur;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateTaxe;
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -39,9 +37,11 @@ public class TaxeAnnuelle implements Serializable {
     @ManyToOne
     private Terrain terrain;
     @ManyToOne
-    private TauxTaxe tauxTaxe;
+    private TauxTaxeItem tauxTaxeItem;
+    @ManyToOne
+    private TauxRetardItem tauxRetardItem;
     @OneToOne
-    private TauxRetard tauxRetard;
+    private Utilisateur utilisateur;
 
     public TaxeAnnuelle() {
     }
@@ -100,27 +100,29 @@ public class TaxeAnnuelle implements Serializable {
         this.dateTaxe = dateTaxe;
     }
 
-    public TauxTaxe getTauxTaxe() {
-        if (tauxTaxe == null) {
-            tauxTaxe = new TauxTaxe();
+    public TauxTaxeItem getTauxTaxeItem() {
+        if(tauxTaxeItem==null){
+            tauxTaxeItem=new TauxTaxeItem();
         }
-        return tauxTaxe;
+        return tauxTaxeItem;
     }
 
-    public void setTauxTaxe(TauxTaxe tauxTaxe) {
-        this.tauxTaxe = tauxTaxe;
+    public void setTauxTaxeItem(TauxTaxeItem tauxTaxeItem) {
+        this.tauxTaxeItem = tauxTaxeItem;
     }
 
-    public TauxRetard getTauxRetard() {
-        if (tauxRetard == null) {
-            tauxRetard = new TauxRetard();
-        }
-        return tauxRetard;
+    public TauxRetardItem getTauxRetardItem() {
+       if(tauxRetardItem==null){
+           tauxRetardItem=new TauxRetardItem();
+       }
+        return tauxRetardItem;
     }
 
-    public void setTauxRetard(TauxRetard tauxRetard) {
-        this.tauxRetard = tauxRetard;
+    public void setTauxRetardItem(TauxRetardItem tauxRetardItem) {
+        this.tauxRetardItem = tauxRetardItem;
     }
+
+    
 
     public BigDecimal getMontant() {
         return montant;

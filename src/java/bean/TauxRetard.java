@@ -6,13 +6,15 @@
 package bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
@@ -27,25 +29,20 @@ public class TauxRetard implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private BigDecimal penalite;
-    private BigDecimal premierMois;
-    private BigDecimal autreMois;
-    @OneToOne
-    private Utilisateur utilisateur;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateApplication;
+    @OneToMany(mappedBy = "tauxRetard")
+    private List<TauxRetardItem> tauxRetardItems;
+    @OneToOne
+    private Utilisateur utilisateur;
+    @OneToMany(mappedBy = "tauxRetard")
+    private List<TauxTaxe> tauxTaxes;
 
     public TauxRetard() {
     }
 
-    public TauxRetard(Long id) {
-        this.id = id;
-    }
-
-    public TauxRetard(BigDecimal penalite, BigDecimal pourcentagePremierMois, BigDecimal pourcentageAutreMois) {
-        this.penalite = penalite;
-        this.premierMois = pourcentagePremierMois;
-        this.autreMois = pourcentageAutreMois;
+    public TauxRetard(Date dateApplication) {
+        this.dateApplication = dateApplication;
     }
 
     public Long getId() {
@@ -56,36 +53,26 @@ public class TauxRetard implements Serializable {
         this.id = id;
     }
 
-    public BigDecimal getPenalite() {
-        return penalite;
-    }
-
-    public void setPenalite(BigDecimal penalite) {
-        this.penalite = penalite;
-    }
-
-    public BigDecimal getPremierMois() {
-        return premierMois;
-    }
-
-    public void setPremierMois(BigDecimal PremierMois) {
-        this.premierMois = PremierMois;
-    }
-
-    public BigDecimal getAutreMois() {
-        return autreMois;
-    }
-
-    public void setAutreMois(BigDecimal AutreMois) {
-        this.autreMois = AutreMois;
-    }
-
     public Date getDateApplication() {
+        if (dateApplication == null) {
+            dateApplication = new Date();
+        }
         return dateApplication;
     }
 
     public void setDateApplication(Date dateApplication) {
         this.dateApplication = dateApplication;
+    }
+
+    public List<TauxRetardItem> getTauxRetardItems() {
+        if (tauxRetardItems == null) {
+            tauxRetardItems = new ArrayList();
+        }
+        return tauxRetardItems;
+    }
+
+    public void setTauxRetardItems(List<TauxRetardItem> tauxRetardItems) {
+        this.tauxRetardItems = tauxRetardItems;
     }
 
     public Utilisateur getUtilisateur() {
@@ -126,8 +113,7 @@ public class TauxRetard implements Serializable {
 
     @Override
     public String toString() {
-        return "TauxRetard{" + "id=" + id + ", penalite=" + penalite + ", premierMois=" + premierMois + ", autreMois=" + autreMois + '}';
+        return "TauxRetard{" + "id=" + id + ", dateApplication=" + dateApplication + '}';
     }
 
-    
 }
