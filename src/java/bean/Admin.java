@@ -11,14 +11,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 /**
  *
  * @author simob
  */
 @Entity
-public class Utilisateur implements Serializable {
+public class Admin implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -26,24 +26,25 @@ public class Utilisateur implements Serializable {
     private String motDepasse;
     private String nom;
     private String prenom;
-    @ManyToOne
-    private Secteur secteur;
+    @OneToOne
+    private Ville ville;
     
-    public Utilisateur() {
+    
+    public Admin() {
     }
 
-    public Utilisateur(String matricule) {
+    public Admin(String matricule) {
         this.matricule = matricule;
     }
 
-    public Utilisateur(String matricule, String motDepasse, String nom, String prenom) {
+    public Admin(String matricule, String motDepasse, String nom, String prenom) {
         this.matricule = matricule;
         this.motDepasse = motDepasse;
         this.nom = nom;
         this.prenom = prenom;
     }
 
-    public Utilisateur(String matricule, String motDepasse) {
+    public Admin(String matricule, String motDepasse) {
         this.matricule = matricule;
         this.motDepasse = motDepasse;
     }
@@ -80,13 +81,15 @@ public class Utilisateur implements Serializable {
         this.prenom = prenom;
     }
 
-    public Secteur getSecteur() {
-        return secteur;
+    public Ville getVille() {
+        return ville;
     }
 
-    public void setSecteur(Secteur secteur) {
-        this.secteur = secteur;
+    public void setVille(Ville ville) {
+        this.ville = ville;
     }
+
+    
 
     
 
@@ -108,7 +111,7 @@ public class Utilisateur implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Utilisateur other = (Utilisateur) obj;
+        final Admin other = (Admin) obj;
         if (!Objects.equals(this.matricule, other.matricule)) {
             return false;
         }
@@ -117,8 +120,7 @@ public class Utilisateur implements Serializable {
 
     @Override
     public String toString() {
-        return "Utilisateur{" + "matricule=" + matricule + ", motDepasse=" + motDepasse + ", nom=" + nom + ", prenom=" + prenom + '}';
+        return "Admin{" + "matricule=" + matricule + ", motDepasse=" + motDepasse + ", nom=" + nom + ", prenom=" + prenom + '}';
     }
 
- 
 }
