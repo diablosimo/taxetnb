@@ -29,12 +29,9 @@ public class Redevable implements Serializable {
     private String sexe;
     private String adresse;
     private String numTel;
-//    @OneToOne
-//    private Secteur secteur;  
     @OneToMany(mappedBy = "redevable")
     private List<Terrain> terrains;
-    @OneToOne
-    private Utilisateur utilisateur;
+
     public Redevable() {
     }
 
@@ -122,7 +119,6 @@ public class Redevable implements Serializable {
 //    public void setSecteur(Secteur secteur) {
 //        this.secteur = secteur;
 //    }
-
     public List<Terrain> getTerrains() {
         if (terrains == null) {
             terrains = new ArrayList<>();
@@ -132,17 +128,6 @@ public class Redevable implements Serializable {
 
     public void setTerrains(List<Terrain> terrains) {
         this.terrains = terrains;
-    }
-
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
     }
 
     @Override

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TauxRetardItemCreateDlg" widgetVar="TauxRetardItemCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateTauxRetardItemTitle}">
+            <h:form id="TauxRetardItemCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tauxRetardItemController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateTauxRetardItemLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{tauxRetardItemController.selected.id}" title="#{bundle.CreateTauxRetardItemTitle_id}" />
+                        <p:outputLabel value="#{bundle.CreateTauxRetardItemLabel_tauxPremierMois}" for="tauxPremierMois" />
+                        <p:inputText id="tauxPremierMois" value="#{tauxRetardItemController.selected.tauxPremierMois}" title="#{bundle.CreateTauxRetardItemTitle_tauxPremierMois}" />
+                        <p:outputLabel value="#{bundle.CreateTauxRetardItemLabel_tauxAutreMois}" for="tauxAutreMois" />
+                        <p:inputText id="tauxAutreMois" value="#{tauxRetardItemController.selected.tauxAutreMois}" title="#{bundle.CreateTauxRetardItemTitle_tauxAutreMois}" />
+                        <p:outputLabel value="#{bundle.CreateTauxRetardItemLabel_tauxRetard}" for="tauxRetard" />
+                        <p:selectOneMenu id="tauxRetard" value="#{tauxRetardItemController.selected.tauxRetard}" >
+                            <f:selectItems value="#{tauxRetardController.itemsAvailableSelectOne}"
+                                           var="tauxRetardItem"
+                                           itemValue="#{tauxRetardItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTauxRetardItemLabel_categorieTerrain}" for="categorieTerrain" />
+                        <p:selectOneMenu id="categorieTerrain" value="#{tauxRetardItemController.selected.categorieTerrain}" >
+                            <f:selectItems value="#{categorieTerrainController.itemsAvailableSelectOne}"
+                                           var="categorieTerrainItem"
+                                           itemValue="#{categorieTerrainItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tauxRetardItemController.create}" value="#{bundle.Save}" update="display,:TauxRetardItemListForm:datalist,:growl" oncomplete="handleSubmit(args,'TauxRetardItemCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="TauxRetardItemCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

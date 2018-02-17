@@ -6,15 +6,11 @@
 package bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -28,12 +24,6 @@ public class CategorieTerrain implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nom;
-    @OneToOne
-    private TauxTaxeItem tauxTaxeItem;
-    @OneToMany(mappedBy = "categorieTerrain")
-    private List<Terrain> terrains;
-    @OneToOne
-    private Utilisateur utilisateur;
 
     public CategorieTerrain() {
     }
@@ -60,39 +50,6 @@ public class CategorieTerrain implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public TauxTaxeItem getTauxTaxeItem() {
-        if (tauxTaxeItem == null) {
-            tauxTaxeItem = new TauxTaxeItem();
-        }
-        return tauxTaxeItem;
-    }
-
-    public void setTauxTaxeItem(TauxTaxeItem tauxTaxeItem) {
-        this.tauxTaxeItem = tauxTaxeItem;
-    }
-
-    public List<Terrain> getTerrains() {
-        if (terrains == null) {
-            terrains = new ArrayList();
-        }
-        return terrains;
-    }
-
-    public void setTerrains(List<Terrain> terrains) {
-        this.terrains = terrains;
-    }
-
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
     }
 
     @Override

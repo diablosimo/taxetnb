@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TauxRetardItemViewDlg" widgetVar="TauxRetardItemViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTauxRetardItemTitle}">
+            <h:form id="TauxRetardItemViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tauxRetardItemController.selected != null}">
+                        <h:outputText value="#{bundle.ViewTauxRetardItemLabel_id}"/>
+                        <h:outputText value="#{tauxRetardItemController.selected.id}" title="#{bundle.ViewTauxRetardItemTitle_id}"/>
+                        <h:outputText value="#{bundle.ViewTauxRetardItemLabel_tauxPremierMois}"/>
+                        <h:outputText value="#{tauxRetardItemController.selected.tauxPremierMois}" title="#{bundle.ViewTauxRetardItemTitle_tauxPremierMois}"/>
+                        <h:outputText value="#{bundle.ViewTauxRetardItemLabel_tauxAutreMois}"/>
+                        <h:outputText value="#{tauxRetardItemController.selected.tauxAutreMois}" title="#{bundle.ViewTauxRetardItemTitle_tauxAutreMois}"/>
+                        <h:outputText value="#{bundle.ViewTauxRetardItemLabel_tauxRetard}"/>
+                        <h:outputText value="#{tauxRetardItemController.selected.tauxRetard}" title="#{bundle.ViewTauxRetardItemTitle_tauxRetard}"/>
+                        <h:outputText value="#{bundle.ViewTauxRetardItemLabel_categorieTerrain}"/>
+                        <h:outputText value="#{tauxRetardItemController.selected.categorieTerrain}" title="#{bundle.ViewTauxRetardItemTitle_categorieTerrain}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="TauxRetardItemViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

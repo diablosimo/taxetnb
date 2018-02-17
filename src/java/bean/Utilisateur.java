@@ -8,8 +8,6 @@ package bean;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -26,9 +24,10 @@ public class Utilisateur implements Serializable {
     private String motDepasse;
     private String nom;
     private String prenom;
+    private Boolean isAdmin;
     @ManyToOne
     private Secteur secteur;
-    
+
     public Utilisateur() {
     }
 
@@ -88,7 +87,13 @@ public class Utilisateur implements Serializable {
         this.secteur = secteur;
     }
 
-    
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
 
     @Override
     public int hashCode() {
@@ -120,5 +125,4 @@ public class Utilisateur implements Serializable {
         return "Utilisateur{" + "matricule=" + matricule + ", motDepasse=" + motDepasse + ", nom=" + nom + ", prenom=" + prenom + '}';
     }
 
- 
 }

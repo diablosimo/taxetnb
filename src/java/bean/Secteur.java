@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -27,10 +25,8 @@ public class Secteur implements Serializable {
     private String nom;
     @OneToMany(mappedBy = "secteur")
     private List<Quartier> quartiers;
-    @ManyToOne
-    private Ville ville;
-    @OneToOne
-    private Utilisateur utilisateur;
+    @OneToMany(mappedBy = "secteur")
+    private List<Utilisateur> utilisateurs;
 
     public Long getCodePostal() {
         return codePostal;
@@ -59,26 +55,15 @@ public class Secteur implements Serializable {
         this.quartiers = quartiers;
     }
 
-    public Ville getVille() {
-        if (ville == null) {
-            ville = new Ville();
+    public List<Utilisateur> getUtilisateurs() {
+        if (utilisateurs == null) {
+            utilisateurs = new ArrayList();
         }
-        return ville;
+        return utilisateurs;
     }
 
-    public void setVille(Ville ville) {
-        this.ville = ville;
-    }
-
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setUtilisateurs(List<Utilisateur> utilisateurs) {
+        this.utilisateurs = utilisateurs;
     }
 
     @Override

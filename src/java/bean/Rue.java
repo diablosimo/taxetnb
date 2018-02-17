@@ -14,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -32,8 +31,6 @@ public class Rue implements Serializable {
     private Quartier quartier;
     @OneToMany(mappedBy = "rue")
     private List<Terrain> terrains;
-    @OneToOne
-    private Utilisateur utilisateur;
 
     public Rue() {
     }
@@ -78,17 +75,6 @@ public class Rue implements Serializable {
 
     public void setTerrains(List<Terrain> terrains) {
         this.terrains = terrains;
-    }
-
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
     }
 
     @Override

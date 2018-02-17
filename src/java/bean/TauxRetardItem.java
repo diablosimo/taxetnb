@@ -7,14 +7,11 @@ package bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -28,28 +25,19 @@ public class TauxRetardItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private BigDecimal penalite;
-    private BigDecimal premierMois;
-    private BigDecimal autreMois;
+    private BigDecimal tauxPremierMois;
+    private BigDecimal tauxAutreMois;
     @ManyToOne
     private TauxRetard tauxRetard;
-    @OneToMany(mappedBy = "tauxRetardItem")
-    private List<TaxeAnnuelle> taxeAnnuelles;
     @OneToOne
-    private Utilisateur utilisateur;
+    private CategorieTerrain categorieTerrain;
 
     public TauxRetardItem() {
     }
 
     public TauxRetardItem(BigDecimal premierMois, BigDecimal autreMois) {
-        this.premierMois = premierMois;
-        this.autreMois = autreMois;
-    }
-
-    public TauxRetardItem(BigDecimal penalite, BigDecimal premierMois, BigDecimal autreMois) {
-        this.penalite = penalite;
-        this.premierMois = premierMois;
-        this.autreMois = autreMois;
+        this.tauxPremierMois = premierMois;
+        this.tauxAutreMois = autreMois;
     }
 
     public Long getId() {
@@ -60,48 +48,26 @@ public class TauxRetardItem implements Serializable {
         this.id = id;
     }
 
-    public List<TaxeAnnuelle> getTaxeAnnuelles() {
-        if (taxeAnnuelles == null) {
-            taxeAnnuelles = new ArrayList();
+    public BigDecimal getTauxPremierMois() {
+        if (tauxPremierMois == null) {
+            tauxPremierMois = new BigDecimal("0.00");
         }
-        return taxeAnnuelles;
+        return tauxPremierMois;
     }
 
-    public void setTaxeAnnuelles(List<TaxeAnnuelle> taxeAnnuelles) {
-        this.taxeAnnuelles = taxeAnnuelles;
+    public void setTauxPremierMois(BigDecimal tauxPremierMois) {
+        this.tauxPremierMois = tauxPremierMois;
     }
 
-    public BigDecimal getPenalite() {
-        if (penalite == null) {
-            penalite = new BigDecimal("0.00");
+    public BigDecimal getTauxAutreMois() {
+        if (tauxAutreMois == null) {
+            tauxAutreMois = new BigDecimal("0.00");
         }
-        return penalite;
+        return tauxAutreMois;
     }
 
-    public void setPenalite(BigDecimal penalite) {
-        this.penalite = penalite;
-    }
-
-    public BigDecimal getPremierMois() {
-        if (premierMois == null) {
-            premierMois = new BigDecimal("0.00");
-        }
-        return premierMois;
-    }
-
-    public void setPremierMois(BigDecimal premierMois) {
-        this.premierMois = premierMois;
-    }
-
-    public BigDecimal getAutreMois() {
-        if (autreMois == null) {
-            autreMois = new BigDecimal("0.00");
-        }
-        return autreMois;
-    }
-
-    public void setAutreMois(BigDecimal autreMois) {
-        this.autreMois = autreMois;
+    public void setTauxAutreMois(BigDecimal tauxAutreMois) {
+        this.tauxAutreMois = tauxAutreMois;
     }
 
     public TauxRetard getTauxRetard() {
@@ -115,15 +81,12 @@ public class TauxRetardItem implements Serializable {
         this.tauxRetard = tauxRetard;
     }
 
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
+    public CategorieTerrain getCategorieTerrain() {
+        return categorieTerrain;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setCategorieTerrain(CategorieTerrain categorieTerrain) {
+        this.categorieTerrain = categorieTerrain;
     }
 
     @Override
@@ -148,7 +111,7 @@ public class TauxRetardItem implements Serializable {
 
     @Override
     public String toString() {
-        return "TauxRetardItem{" + "id=" + id + ", penalite=" + penalite + ", premierMois=" + premierMois + ", autreMois=" + autreMois + '}';
+        return "TauxRetardItem{" + "id=" + id + ", premierMois=" + tauxPremierMois + ", autreMois=" + tauxAutreMois + '}';
     }
 
 }

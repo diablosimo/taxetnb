@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTaxeAnnuelleTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="TaxeAnnuelleListForm">
+                <p:panel header="#{bundle.ListTaxeAnnuelleTitle}">
+                    <p:dataTable id="datalist" value="#{taxeAnnuelleController.items}" var="item"
+                                 selectionMode="single" selection="#{taxeAnnuelleController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_annee}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.annee}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_datePresentaion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.datePresentaion}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_terrain}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.terrain}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_nbrMoisRetard}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.nbrMoisRetard}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_premierMoisRetard}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.premierMoisRetard}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_autreMoisRetard}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.autreMoisRetard}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_montantRetard}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.montantRetard}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_montantTotal}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.montantTotal}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_dateTaxe}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dateTaxe}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_tauxTaxeItem}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxTaxeItem}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_tauxRetardItem}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxRetardItem}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_montant}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.montant}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTaxeAnnuelleTitle_utilisateur}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.utilisateur}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{taxeAnnuelleController.prepareCreate}" update=":TaxeAnnuelleCreateForm" oncomplete="PF('TaxeAnnuelleCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":TaxeAnnuelleViewForm" oncomplete="PF('TaxeAnnuelleViewDialog').show()" disabled="#{empty taxeAnnuelleController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundle.Edit}" update=":TaxeAnnuelleEditForm" oncomplete="PF('TaxeAnnuelleEditDialog').show()" disabled="#{empty taxeAnnuelleController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{taxeAnnuelleController.destroy}" update=":growl,datalist" disabled="#{empty taxeAnnuelleController.selected}"/>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

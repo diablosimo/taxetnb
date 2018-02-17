@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -39,11 +38,11 @@ public class Terrain implements Serializable {
     @ManyToOne
     private CategorieTerrain categorieTerrain;
     @OneToMany(mappedBy = "terrain")
+
+    //fchekk
     private List<TaxeAnnuelle> taxeAnnuelles;
     @OneToMany(mappedBy = "terrain")
     private List<Notification> notifications;
-    @OneToOne
-    private Utilisateur utilisateur;
 
     public Terrain() {
     }
@@ -135,17 +134,6 @@ public class Terrain implements Serializable {
 
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
-    }
-
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
     }
 
     public Rue getRue() {

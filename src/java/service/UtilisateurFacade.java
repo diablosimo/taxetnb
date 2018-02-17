@@ -29,8 +29,4 @@ public class UtilisateurFacade extends AbstractFacade<Utilisateur> {
         super(Utilisateur.class);
     }
     
-    public int creerUtilisateur(Utilisateur utilisateur){
-        create(utilisateur);
-        return 1;
-    }
 }

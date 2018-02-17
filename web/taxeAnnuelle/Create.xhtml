@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TaxeAnnuelleCreateDlg" widgetVar="TaxeAnnuelleCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateTaxeAnnuelleTitle}">
+            <h:form id="TaxeAnnuelleCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{taxeAnnuelleController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{taxeAnnuelleController.selected.id}" title="#{bundle.CreateTaxeAnnuelleTitle_id}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_annee}" for="annee" />
+                        <p:inputText id="annee" value="#{taxeAnnuelleController.selected.annee}" title="#{bundle.CreateTaxeAnnuelleTitle_annee}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_datePresentaion}" for="datePresentaion" />
+                        <p:calendar id="datePresentaion" pattern="MM/dd/yyyy" value="#{taxeAnnuelleController.selected.datePresentaion}" title="#{bundle.EditTaxeAnnuelleTitle_datePresentaion}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_terrain}" for="terrain" />
+                        <p:selectOneMenu id="terrain" value="#{taxeAnnuelleController.selected.terrain}" >
+                            <f:selectItems value="#{terrainController.itemsAvailableSelectOne}"
+                                           var="terrainItem"
+                                           itemValue="#{terrainItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_nbrMoisRetard}" for="nbrMoisRetard" />
+                        <p:inputText id="nbrMoisRetard" value="#{taxeAnnuelleController.selected.nbrMoisRetard}" title="#{bundle.CreateTaxeAnnuelleTitle_nbrMoisRetard}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_premierMoisRetard}" for="premierMoisRetard" />
+                        <p:inputText id="premierMoisRetard" value="#{taxeAnnuelleController.selected.premierMoisRetard}" title="#{bundle.CreateTaxeAnnuelleTitle_premierMoisRetard}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_autreMoisRetard}" for="autreMoisRetard" />
+                        <p:inputText id="autreMoisRetard" value="#{taxeAnnuelleController.selected.autreMoisRetard}" title="#{bundle.CreateTaxeAnnuelleTitle_autreMoisRetard}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_montantRetard}" for="montantRetard" />
+                        <p:inputText id="montantRetard" value="#{taxeAnnuelleController.selected.montantRetard}" title="#{bundle.CreateTaxeAnnuelleTitle_montantRetard}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_montantTotal}" for="montantTotal" />
+                        <p:inputText id="montantTotal" value="#{taxeAnnuelleController.selected.montantTotal}" title="#{bundle.CreateTaxeAnnuelleTitle_montantTotal}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_dateTaxe}" for="dateTaxe" />
+                        <p:calendar id="dateTaxe" pattern="MM/dd/yyyy" value="#{taxeAnnuelleController.selected.dateTaxe}" title="#{bundle.EditTaxeAnnuelleTitle_dateTaxe}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_tauxTaxeItem}" for="tauxTaxeItem" />
+                        <p:selectOneMenu id="tauxTaxeItem" value="#{taxeAnnuelleController.selected.tauxTaxeItem}" >
+                            <f:selectItems value="#{tauxTaxeItemController.itemsAvailableSelectOne}"
+                                           var="tauxTaxeItemItem"
+                                           itemValue="#{tauxTaxeItemItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_tauxRetardItem}" for="tauxRetardItem" />
+                        <p:selectOneMenu id="tauxRetardItem" value="#{taxeAnnuelleController.selected.tauxRetardItem}" >
+                            <f:selectItems value="#{tauxRetardItemController.itemsAvailableSelectOne}"
+                                           var="tauxRetardItemItem"
+                                           itemValue="#{tauxRetardItemItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_montant}" for="montant" />
+                        <p:inputText id="montant" value="#{taxeAnnuelleController.selected.montant}" title="#{bundle.CreateTaxeAnnuelleTitle_montant}" />
+                        <p:outputLabel value="#{bundle.CreateTaxeAnnuelleLabel_utilisateur}" for="utilisateur" />
+                        <p:selectOneMenu id="utilisateur" value="#{taxeAnnuelleController.selected.utilisateur}" >
+                            <f:selectItems value="#{utilisateurController.itemsAvailableSelectOne}"
+                                           var="utilisateurItem"
+                                           itemValue="#{utilisateurItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{taxeAnnuelleController.create}" value="#{bundle.Save}" update="display,:TaxeAnnuelleListForm:datalist,:growl" oncomplete="handleSubmit(args,'TaxeAnnuelleCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="TaxeAnnuelleCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

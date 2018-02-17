@@ -15,7 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -33,10 +32,6 @@ public class TauxRetard implements Serializable {
     private Date dateApplication;
     @OneToMany(mappedBy = "tauxRetard")
     private List<TauxRetardItem> tauxRetardItems;
-    @OneToOne
-    private Utilisateur utilisateur;
-    @OneToMany(mappedBy = "tauxRetard")
-    private List<TauxTaxe> tauxTaxes;
 
     public TauxRetard() {
     }
@@ -73,17 +68,6 @@ public class TauxRetard implements Serializable {
 
     public void setTauxRetardItems(List<TauxRetardItem> tauxRetardItems) {
         this.tauxRetardItems = tauxRetardItems;
-    }
-
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
     }
 
     @Override

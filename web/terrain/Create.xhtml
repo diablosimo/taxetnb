@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TerrainCreateDlg" widgetVar="TerrainCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateTerrainTitle}">
+            <h:form id="TerrainCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{terrainController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateTerrainLabel_numeroLot}" for="numeroLot" />
+                        <p:inputText id="numeroLot" value="#{terrainController.selected.numeroLot}" title="#{bundle.CreateTerrainTitle_numeroLot}" />
+                        <p:outputLabel value="#{bundle.CreateTerrainLabel_surface}" for="surface" />
+                        <p:inputText id="surface" value="#{terrainController.selected.surface}" title="#{bundle.CreateTerrainTitle_surface}" />
+                        <p:outputLabel value="#{bundle.CreateTerrainLabel_dateAchat}" for="dateAchat" />
+                        <p:calendar id="dateAchat" pattern="MM/dd/yyyy" value="#{terrainController.selected.dateAchat}" title="#{bundle.EditTerrainTitle_dateAchat}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateTerrainLabel_categorieTerrain}" for="categorieTerrain" />
+                        <p:selectOneMenu id="categorieTerrain" value="#{terrainController.selected.categorieTerrain}" >
+                            <f:selectItems value="#{categorieTerrainController.itemsAvailableSelectOne}"
+                                           var="categorieTerrainItem"
+                                           itemValue="#{categorieTerrainItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTerrainLabel_redevable}" for="redevable" />
+                        <p:selectOneMenu id="redevable" value="#{terrainController.selected.redevable}" >
+                            <f:selectItems value="#{redevableController.itemsAvailableSelectOne}"
+                                           var="redevableItem"
+                                           itemValue="#{redevableItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTerrainLabel_anneeDernierPaiement}" for="anneeDernierPaiement" />
+                        <p:inputText id="anneeDernierPaiement" value="#{terrainController.selected.anneeDernierPaiement}" title="#{bundle.CreateTerrainTitle_anneeDernierPaiement}" />
+                        <p:outputLabel value="#{bundle.CreateTerrainLabel_rue}" for="rue" />
+                        <p:selectOneMenu id="rue" value="#{terrainController.selected.rue}" >
+                            <f:selectItems value="#{rueController.itemsAvailableSelectOne}"
+                                           var="rueItem"
+                                           itemValue="#{rueItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{terrainController.create}" value="#{bundle.Save}" update="display,:TerrainListForm:datalist,:growl" oncomplete="handleSubmit(args,'TerrainCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="TerrainCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

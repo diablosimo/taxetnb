@@ -38,8 +38,7 @@ public class Notification implements Serializable {
     private Date dateReception;
     @ManyToOne
     private Terrain terrain;
-    @OneToOne
-    private Utilisateur utilisateur;
+
 
     public Notification() {
     }
@@ -122,16 +121,7 @@ public class Notification implements Serializable {
         this.terrain = terrain;
     }
 
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
-        }
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
-    }
+    
 
     public int getNombreMoisRetard() {
         return nombreMoisRetard;

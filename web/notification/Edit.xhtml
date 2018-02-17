@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="NotificationEditDlg" widgetVar="NotificationEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditNotificationTitle}">
+            <h:form id="NotificationEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{notificationController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{notificationController.selected.id}" title="#{bundle.EditNotificationTitle_id}" />
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_montantEstime}" for="montantEstime" />
+                        <p:inputText id="montantEstime" value="#{notificationController.selected.montantEstime}" title="#{bundle.EditNotificationTitle_montantEstime}" />
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_annee}" for="annee" />
+                        <p:inputText id="annee" value="#{notificationController.selected.annee}" title="#{bundle.EditNotificationTitle_annee}" />
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_type}" for="type" />
+                        <p:inputText id="type" value="#{notificationController.selected.type}" title="#{bundle.EditNotificationTitle_type}" />
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_dateEnvoi}" for="dateEnvoi" />
+                        <p:calendar id="dateEnvoi" pattern="MM/dd/yyyy" value="#{notificationController.selected.dateEnvoi}" title="#{bundle.EditNotificationTitle_dateEnvoi}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_dateReception}" for="dateReception" />
+                        <p:calendar id="dateReception" pattern="MM/dd/yyyy" value="#{notificationController.selected.dateReception}" title="#{bundle.EditNotificationTitle_dateReception}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_terrain}" for="terrain" />
+                        <p:selectOneMenu id="terrain" value="#{notificationController.selected.terrain}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{terrainController.itemsAvailableSelectOne}"
+                                           var="terrainItem"
+                                           itemValue="#{terrainItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditNotificationLabel_nombreMoisRetard}" for="nombreMoisRetard" />
+                        <p:inputText id="nombreMoisRetard" value="#{notificationController.selected.nombreMoisRetard}" title="#{bundle.EditNotificationTitle_nombreMoisRetard}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{notificationController.update}" value="#{bundle.Save}" update="display,:NotificationListForm:datalist,:growl" oncomplete="handleSubmit(args, 'NotificationEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="NotificationEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

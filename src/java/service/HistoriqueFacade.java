@@ -5,7 +5,7 @@
  */
 package service;
 
-import bean.Ville;
+import bean.Historique;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author simob
  */
 @Stateless
-public class VilleFacade extends AbstractFacade<Ville> {
+public class HistoriqueFacade extends AbstractFacade<Historique> {
 
     @PersistenceContext(unitName = "taxeTNBPU")
     private EntityManager em;
@@ -25,8 +25,8 @@ public class VilleFacade extends AbstractFacade<Ville> {
         return em;
     }
 
-    public VilleFacade() {
-        super(Ville.class);
+    public HistoriqueFacade() {
+        super(Historique.class);
     }
     
 }

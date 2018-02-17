@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TaxeAnnuelleViewDlg" widgetVar="TaxeAnnuelleViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTaxeAnnuelleTitle}">
+            <h:form id="TaxeAnnuelleViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{taxeAnnuelleController.selected != null}">
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_id}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.id}" title="#{bundle.ViewTaxeAnnuelleTitle_id}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_annee}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.annee}" title="#{bundle.ViewTaxeAnnuelleTitle_annee}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_datePresentaion}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.datePresentaion}" title="#{bundle.ViewTaxeAnnuelleTitle_datePresentaion}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_terrain}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.terrain}" title="#{bundle.ViewTaxeAnnuelleTitle_terrain}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_nbrMoisRetard}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.nbrMoisRetard}" title="#{bundle.ViewTaxeAnnuelleTitle_nbrMoisRetard}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_premierMoisRetard}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.premierMoisRetard}" title="#{bundle.ViewTaxeAnnuelleTitle_premierMoisRetard}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_autreMoisRetard}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.autreMoisRetard}" title="#{bundle.ViewTaxeAnnuelleTitle_autreMoisRetard}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_montantRetard}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.montantRetard}" title="#{bundle.ViewTaxeAnnuelleTitle_montantRetard}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_montantTotal}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.montantTotal}" title="#{bundle.ViewTaxeAnnuelleTitle_montantTotal}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_dateTaxe}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.dateTaxe}" title="#{bundle.ViewTaxeAnnuelleTitle_dateTaxe}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_tauxTaxeItem}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.tauxTaxeItem}" title="#{bundle.ViewTaxeAnnuelleTitle_tauxTaxeItem}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_tauxRetardItem}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.tauxRetardItem}" title="#{bundle.ViewTaxeAnnuelleTitle_tauxRetardItem}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_montant}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.montant}" title="#{bundle.ViewTaxeAnnuelleTitle_montant}"/>
+                        <h:outputText value="#{bundle.ViewTaxeAnnuelleLabel_utilisateur}"/>
+                        <h:outputText value="#{taxeAnnuelleController.selected.utilisateur}" title="#{bundle.ViewTaxeAnnuelleTitle_utilisateur}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="TaxeAnnuelleViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

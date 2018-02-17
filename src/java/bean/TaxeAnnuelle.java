@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -29,19 +28,26 @@ public class TaxeAnnuelle implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int annee;
-    private BigDecimal montant;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateTaxe;
+    private BigDecimal montant;//taux*surface
+    private int nbrMoisRetard;
+    private BigDecimal premierMoisRetard;   //tauxPremierMois*montant
+    private BigDecimal autreMoisRetard;     //tauxAutreMois*nbrMoisRetard
+    private BigDecimal montantRetard;       //premierMoisRetard+autreMoisRetard
+    private BigDecimal montantTotal;        //montant+premierMoisRetard+autreMoisRetard
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date datePresentaion;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateTaxe;
     @ManyToOne
     private Terrain terrain;
+    @ManyToOne
+    private Utilisateur utilisateur;
+
+    // fchekk
     @ManyToOne
     private TauxTaxeItem tauxTaxeItem;
     @ManyToOne
     private TauxRetardItem tauxRetardItem;
-    @OneToOne
-    private Utilisateur utilisateur;
 
     public TaxeAnnuelle() {
     }
@@ -85,6 +91,46 @@ public class TaxeAnnuelle implements Serializable {
         return terrain;
     }
 
+    public int getNbrMoisRetard() {
+        return nbrMoisRetard;
+    }
+
+    public void setNbrMoisRetard(int nbrMoisRetard) {
+        this.nbrMoisRetard = nbrMoisRetard;
+    }
+
+    public BigDecimal getPremierMoisRetard() {
+        return premierMoisRetard;
+    }
+
+    public void setPremierMoisRetard(BigDecimal premierMoisRetard) {
+        this.premierMoisRetard = premierMoisRetard;
+    }
+
+    public BigDecimal getAutreMoisRetard() {
+        return autreMoisRetard;
+    }
+
+    public void setAutreMoisRetard(BigDecimal autreMoisRetard) {
+        this.autreMoisRetard = autreMoisRetard;
+    }
+
+    public BigDecimal getMontantRetard() {
+        return montantRetard;
+    }
+
+    public void setMontantRetard(BigDecimal montantRetard) {
+        this.montantRetard = montantRetard;
+    }
+
+    public BigDecimal getMontantTotal() {
+        return montantTotal;
+    }
+
+    public void setMontantTotal(BigDecimal montantTotal) {
+        this.montantTotal = montantTotal;
+    }
+
     public void setTerrain(Terrain terrain) {
         this.terrain = terrain;
     }
@@ -101,8 +147,8 @@ public class TaxeAnnuelle implements Serializable {
     }
 
     public TauxTaxeItem getTauxTaxeItem() {
-        if(tauxTaxeItem==null){
-            tauxTaxeItem=new TauxTaxeItem();
+        if (tauxTaxeItem == null) {
+            tauxTaxeItem = new TauxTaxeItem();
         }
         return tauxTaxeItem;
     }
@@ -112,17 +158,15 @@ public class TaxeAnnuelle implements Serializable {
     }
 
     public TauxRetardItem getTauxRetardItem() {
-       if(tauxRetardItem==null){
-           tauxRetardItem=new TauxRetardItem();
-       }
+        if (tauxRetardItem == null) {
+            tauxRetardItem = new TauxRetardItem();
+        }
         return tauxRetardItem;
     }
 
     public void setTauxRetardItem(TauxRetardItem tauxRetardItem) {
         this.tauxRetardItem = tauxRetardItem;
     }
-
-    
 
     public BigDecimal getMontant() {
         return montant;

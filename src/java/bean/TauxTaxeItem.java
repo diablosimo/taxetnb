@@ -7,14 +7,11 @@ package bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -29,12 +26,10 @@ public class TauxTaxeItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private BigDecimal taux;
-    @OneToMany(mappedBy = "tauxTaxeItem")
-    private List<TaxeAnnuelle> taxeAnnuelles;
     @ManyToOne
     private TauxTaxe tauxTaxe;
     @OneToOne
-    private Utilisateur utilisateur;
+    private CategorieTerrain categorieTerrain;
 
     public TauxTaxeItem() {
     }
@@ -62,17 +57,6 @@ public class TauxTaxeItem implements Serializable {
         this.taux = taux;
     }
 
-    public List<TaxeAnnuelle> getTaxeAnnuelles() {
-        if (taxeAnnuelles == null) {
-            taxeAnnuelles = new ArrayList();
-        }
-        return taxeAnnuelles;
-    }
-
-    public void setTaxeAnnuelles(List<TaxeAnnuelle> taxeAnnuelles) {
-        this.taxeAnnuelles = taxeAnnuelles;
-    }
-
     public TauxTaxe getTauxTaxe() {
         if (tauxTaxe == null) {
             tauxTaxe = new TauxTaxe();
@@ -84,15 +68,15 @@ public class TauxTaxeItem implements Serializable {
         this.tauxTaxe = tauxTaxe;
     }
 
-    public Utilisateur getUtilisateur() {
-        if (utilisateur == null) {
-            utilisateur = new Utilisateur();
+    public CategorieTerrain getCategorieTerrain() {
+        if (categorieTerrain == null) {
+            categorieTerrain = new CategorieTerrain();
         }
-        return utilisateur;
+        return categorieTerrain;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setCategorieTerrain(CategorieTerrain categorieTerrain) {
+        this.categorieTerrain = categorieTerrain;
     }
 
     @Override

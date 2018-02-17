@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTerrainTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="TerrainListForm">
+                <p:panel header="#{bundle.ListTerrainTitle}">
+                    <p:dataTable id="datalist" value="#{terrainController.items}" var="item"
+                                 selectionMode="single" selection="#{terrainController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.numeroLot}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_numeroLot}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.numeroLot}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_surface}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.surface}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_dateAchat}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dateAchat}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_categorieTerrain}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.categorieTerrain}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_redevable}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.redevable}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_anneeDernierPaiement}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.anneeDernierPaiement}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_rue}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.rue}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{terrainController.prepareCreate}" update=":TerrainCreateForm" oncomplete="PF('TerrainCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":TerrainViewForm" oncomplete="PF('TerrainViewDialog').show()" disabled="#{empty terrainController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundle.Edit}" update=":TerrainEditForm" oncomplete="PF('TerrainEditDialog').show()" disabled="#{empty terrainController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{terrainController.destroy}" update=":growl,datalist" disabled="#{empty terrainController.selected}"/>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

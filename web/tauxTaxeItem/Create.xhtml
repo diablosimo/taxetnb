@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TauxTaxeItemCreateDlg" widgetVar="TauxTaxeItemCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateTauxTaxeItemTitle}">
+            <h:form id="TauxTaxeItemCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tauxTaxeItemController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateTauxTaxeItemLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{tauxTaxeItemController.selected.id}" title="#{bundle.CreateTauxTaxeItemTitle_id}" />
+                        <p:outputLabel value="#{bundle.CreateTauxTaxeItemLabel_taux}" for="taux" />
+                        <p:inputText id="taux" value="#{tauxTaxeItemController.selected.taux}" title="#{bundle.CreateTauxTaxeItemTitle_taux}" />
+                        <p:outputLabel value="#{bundle.CreateTauxTaxeItemLabel_tauxTaxe}" for="tauxTaxe" />
+                        <p:selectOneMenu id="tauxTaxe" value="#{tauxTaxeItemController.selected.tauxTaxe}" >
+                            <f:selectItems value="#{tauxTaxeController.itemsAvailableSelectOne}"
+                                           var="tauxTaxeItem"
+                                           itemValue="#{tauxTaxeItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateTauxTaxeItemLabel_categorieTerrain}" for="categorieTerrain" />
+                        <p:selectOneMenu id="categorieTerrain" value="#{tauxTaxeItemController.selected.categorieTerrain}" >
+                            <f:selectItems value="#{categorieTerrainController.itemsAvailableSelectOne}"
+                                           var="categorieTerrainItem"
+                                           itemValue="#{categorieTerrainItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tauxTaxeItemController.create}" value="#{bundle.Save}" update="display,:TauxTaxeItemListForm:datalist,:growl" oncomplete="handleSubmit(args,'TauxTaxeItemCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="TauxTaxeItemCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

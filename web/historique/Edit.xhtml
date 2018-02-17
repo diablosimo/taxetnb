@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="HistoriqueEditDlg" widgetVar="HistoriqueEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditHistoriqueTitle}">
+            <h:form id="HistoriqueEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{historiqueController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditHistoriqueLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{historiqueController.selected.id}" title="#{bundle.EditHistoriqueTitle_id}" />
+                        <p:outputLabel value="#{bundle.EditHistoriqueLabel_type}" for="type" />
+                        <p:inputText id="type" value="#{historiqueController.selected.type}" title="#{bundle.EditHistoriqueTitle_type}" />
+                        <p:outputLabel value="#{bundle.EditHistoriqueLabel_ancienValeur}" for="ancienValeur" />
+                        <p:inputText id="ancienValeur" value="#{historiqueController.selected.ancienValeur}" title="#{bundle.EditHistoriqueTitle_ancienValeur}" />
+                        <p:outputLabel value="#{bundle.EditHistoriqueLabel_nouvelleValeur}" for="nouvelleValeur" />
+                        <p:inputText id="nouvelleValeur" value="#{historiqueController.selected.nouvelleValeur}" title="#{bundle.EditHistoriqueTitle_nouvelleValeur}" />
+                        <p:outputLabel value="#{bundle.EditHistoriqueLabel_nomBean}" for="nomBean" />
+                        <p:inputText id="nomBean" value="#{historiqueController.selected.nomBean}" title="#{bundle.EditHistoriqueTitle_nomBean}" />
+                        <p:outputLabel value="#{bundle.EditHistoriqueLabel_actionDate}" for="actionDate" />
+                        <p:calendar id="actionDate" pattern="MM/dd/yyyy" value="#{historiqueController.selected.actionDate}" title="#{bundle.EditHistoriqueTitle_actionDate}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditHistoriqueLabel_utilisateur}" for="utilisateur" />
+                        <p:selectOneMenu id="utilisateur" value="#{historiqueController.selected.utilisateur}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{utilisateurController.itemsAvailableSelectOne}"
+                                           var="utilisateurItem"
+                                           itemValue="#{utilisateurItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{historiqueController.update}" value="#{bundle.Save}" update="display,:HistoriqueListForm:datalist,:growl" oncomplete="handleSubmit(args, 'HistoriqueEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="HistoriqueEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
