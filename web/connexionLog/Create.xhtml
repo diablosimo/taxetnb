@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConnexionLogCreateDlg" widgetVar="ConnexionLogCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateConnexionLogTitle}">
+            <h:form id="ConnexionLogCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{connexionLogController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateConnexionLogLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{connexionLogController.selected.id}" title="#{bundle.CreateConnexionLogTitle_id}" />
+                        <p:outputLabel value="#{bundle.CreateConnexionLogLabel_actionDate}" for="actionDate" />
+                        <p:calendar id="actionDate" pattern="MM/dd/yyyy" value="#{connexionLogController.selected.actionDate}" title="#{bundle.EditConnexionLogTitle_actionDate}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateConnexionLogLabel_type}" for="type" />
+                        <p:inputText id="type" value="#{connexionLogController.selected.type}" title="#{bundle.CreateConnexionLogTitle_type}" />
+                        <p:outputLabel value="#{bundle.CreateConnexionLogLabel_utilisateur}" for="utilisateur" />
+                        <p:selectOneMenu id="utilisateur" value="#{connexionLogController.selected.utilisateur}" >
+                            <f:selectItems value="#{utilisateurController.itemsAvailableSelectOne}"
+                                           var="utilisateurItem"
+                                           itemValue="#{utilisateurItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{connexionLogController.create}" value="#{bundle.Save}" update="display,:ConnexionLogListForm:datalist,:growl" oncomplete="handleSubmit(args,'ConnexionLogCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="ConnexionLogCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

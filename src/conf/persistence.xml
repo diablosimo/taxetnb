@@ -3,6 +3,7 @@
   <persistence-unit name="taxeTNBPU" transaction-type="JTA">
     <jta-data-source>java:app/tnbjndi</jta-data-source>
     <class>bean.CategorieTerrain</class>
+    <class>bean.ConnexionLog</class>
     <class>bean.Historique</class>
     <class>bean.Notification</class>
     <class>bean.Quartier</class>
