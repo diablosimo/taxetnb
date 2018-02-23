@@ -19,7 +19,7 @@
                     <p:dataTable id="datalist" value="#{redevableController.items}" var="item"
                                  selectionMode="single" selection="#{redevableController.selected}"
                                  paginator="true"
-                                 rowKey="#{item.cin}"
+                                 rowKey="#{item.id}"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  >
@@ -29,9 +29,21 @@
 
                         <p:column>
                             <f:facet name="header">
+                                <h:outputText value="#{bundle.ListRedevableTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
                                 <h:outputText value="#{bundle.ListRedevableTitle_cin}"/>
                             </f:facet>
                             <h:outputText value="#{item.cin}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListRedevableTitle_nif}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.nif}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">

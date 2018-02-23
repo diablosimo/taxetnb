@@ -12,8 +12,12 @@
             <h:form id="RedevableCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{redevableController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateRedevableLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{redevableController.selected.id}" title="#{bundle.CreateRedevableTitle_id}" />
                         <p:outputLabel value="#{bundle.CreateRedevableLabel_cin}" for="cin" />
                         <p:inputText id="cin" value="#{redevableController.selected.cin}" title="#{bundle.CreateRedevableTitle_cin}" />
+                        <p:outputLabel value="#{bundle.CreateRedevableLabel_nif}" for="nif" />
+                        <p:inputText id="nif" value="#{redevableController.selected.nif}" title="#{bundle.CreateRedevableTitle_nif}" />
                         <p:outputLabel value="#{bundle.CreateRedevableLabel_nom}" for="nom" />
                         <p:inputText id="nom" value="#{redevableController.selected.nom}" title="#{bundle.CreateRedevableTitle_nom}" />
                         <p:outputLabel value="#{bundle.CreateRedevableLabel_prenom}" for="prenom" />

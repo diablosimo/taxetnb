@@ -59,9 +59,9 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListUtilisateurTitle_isAdmin}"/>
+                                <h:outputText value="#{bundle.ListUtilisateurTitle_type}"/>
                             </f:facet>
-                            <p:selectBooleanCheckbox value="#{item.isAdmin}" disabled="true"/>
+                            <h:outputText value="#{item.type}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{utilisateurController.prepareCreate}" update=":UtilisateurCreateForm" oncomplete="PF('UtilisateurCreateDialog').show()"/>

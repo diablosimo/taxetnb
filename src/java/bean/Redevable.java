@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -23,10 +24,13 @@ public class Redevable implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    private String cin;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String cin;//code d'identité nationale
     private String nom;
     private String prenom;
     private String sexe;
+    private String nif;//numero d'identité fiscale
     private String adresse;
     private String numTel;
     @OneToMany(mappedBy = "redevable")
@@ -35,8 +39,8 @@ public class Redevable implements Serializable {
     public Redevable() {
     }
 
-    public Redevable(String cin) {
-        this.cin = cin;
+    public Redevable(Long id) {
+        this.id = id;
     }
 
     public Redevable(String nom, String prenom) {
@@ -53,11 +57,19 @@ public class Redevable implements Serializable {
         this.numTel = numTel;
     }
 
-    public Redevable(String cin, String nom, String prenom, String adresse) {
-        this.cin = cin;
+    public Redevable(String nom, String nif, String adresse, String numTel) {
         this.nom = nom;
-        this.prenom = prenom;
+        this.nif = nif;
         this.adresse = adresse;
+        this.numTel = numTel;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCin() {
@@ -66,6 +78,14 @@ public class Redevable implements Serializable {
 
     public void setCin(String cin) {
         this.cin = cin;
+    }
+
+    public String getNif() {
+        return nif;
+    }
+
+    public void setNif(String nif) {
+        this.nif = nif;
     }
 
     public String getNom() {
@@ -132,8 +152,8 @@ public class Redevable implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.cin);
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -149,7 +169,7 @@ public class Redevable implements Serializable {
             return false;
         }
         final Redevable other = (Redevable) obj;
-        if (!Objects.equals(this.cin, other.cin)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
@@ -157,7 +177,6 @@ public class Redevable implements Serializable {
 
     @Override
     public String toString() {
-        return "Redevable{" + "cin=" + cin + ", nom=" + nom + ", prenom=" + prenom + ", sexe=" + sexe + ", adresse=" + adresse + ", numTel=" + numTel + '}';
+        return "Redevable{" + "id=" + id + ", cin=" + cin + ", nom=" + nom + ", prenom=" + prenom + ", sexe=" + sexe + ", nif=" + nif + ", adresse=" + adresse + ", numTel=" + numTel + '}';
     }
-
 }

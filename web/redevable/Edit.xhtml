@@ -12,8 +12,12 @@
             <h:form id="RedevableEditForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{redevableController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditRedevableLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{redevableController.selected.id}" title="#{bundle.EditRedevableTitle_id}" />
                         <p:outputLabel value="#{bundle.EditRedevableLabel_cin}" for="cin" />
                         <p:inputText id="cin" value="#{redevableController.selected.cin}" title="#{bundle.EditRedevableTitle_cin}" />
+                        <p:outputLabel value="#{bundle.EditRedevableLabel_nif}" for="nif" />
+                        <p:inputText id="nif" value="#{redevableController.selected.nif}" title="#{bundle.EditRedevableTitle_nif}" />
                         <p:outputLabel value="#{bundle.EditRedevableLabel_nom}" for="nom" />
                         <p:inputText id="nom" value="#{redevableController.selected.nom}" title="#{bundle.EditRedevableTitle_nom}" />
                         <p:outputLabel value="#{bundle.EditRedevableLabel_prenom}" for="prenom" />

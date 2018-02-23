@@ -27,8 +27,8 @@
                                            var="secteurItem"
                                            itemValue="#{secteurItem}"/>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundle.EditUtilisateurLabel_isAdmin}" for="isAdmin" />
-                        <p:selectBooleanCheckbox id="isAdmin" value="#{utilisateurController.selected.isAdmin}" />
+                        <p:outputLabel value="#{bundle.EditUtilisateurLabel_type}" for="type" />
+                        <p:inputText id="type" value="#{utilisateurController.selected.type}" title="#{bundle.EditUtilisateurTitle_type}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{utilisateurController.update}" value="#{bundle.Save}" update="display,:UtilisateurListForm:datalist,:growl" oncomplete="handleSubmit(args, 'UtilisateurEditDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="UtilisateurEditDialog.hide()"/>

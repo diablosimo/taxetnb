@@ -26,8 +26,8 @@
                                            var="secteurItem"
                                            itemValue="#{secteurItem}"/>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_isAdmin}" for="isAdmin" />
-                        <p:selectBooleanCheckbox id="isAdmin" value="#{utilisateurController.selected.isAdmin}" />
+                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_type}" for="type" />
+                        <p:inputText id="type" value="#{utilisateurController.selected.type}" title="#{bundle.CreateUtilisateurTitle_type}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{utilisateurController.create}" value="#{bundle.Save}" update="display,:UtilisateurListForm:datalist,:growl" oncomplete="handleSubmit(args,'UtilisateurCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="UtilisateurCreateDialog.hide()"/>

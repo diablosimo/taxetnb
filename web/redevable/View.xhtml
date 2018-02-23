@@ -12,8 +12,12 @@
             <h:form id="RedevableViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{redevableController.selected != null}">
+                        <h:outputText value="#{bundle.ViewRedevableLabel_id}"/>
+                        <h:outputText value="#{redevableController.selected.id}" title="#{bundle.ViewRedevableTitle_id}"/>
                         <h:outputText value="#{bundle.ViewRedevableLabel_cin}"/>
                         <h:outputText value="#{redevableController.selected.cin}" title="#{bundle.ViewRedevableTitle_cin}"/>
+                        <h:outputText value="#{bundle.ViewRedevableLabel_nif}"/>
+                        <h:outputText value="#{redevableController.selected.nif}" title="#{bundle.ViewRedevableTitle_nif}"/>
                         <h:outputText value="#{bundle.ViewRedevableLabel_nom}"/>
                         <h:outputText value="#{redevableController.selected.nom}" title="#{bundle.ViewRedevableTitle_nom}"/>
                         <h:outputText value="#{bundle.ViewRedevableLabel_prenom}"/>

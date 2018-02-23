@@ -7,14 +7,11 @@ package bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 
 /**
@@ -37,12 +34,6 @@ public class Terrain implements Serializable {
     private Rue rue;
     @ManyToOne
     private CategorieTerrain categorieTerrain;
-    @OneToMany(mappedBy = "terrain")
-
-    //fchekk
-    private List<TaxeAnnuelle> taxeAnnuelles;
-    @OneToMany(mappedBy = "terrain")
-    private List<Notification> notifications;
 
     public Terrain() {
     }
@@ -106,34 +97,12 @@ public class Terrain implements Serializable {
         this.redevable = redevable;
     }
 
-    public List<TaxeAnnuelle> getTaxeAnnuelles() {
-        if (taxeAnnuelles == null) {
-            taxeAnnuelles = new ArrayList<>();
-        }
-        return taxeAnnuelles;
-    }
-
-    public void setTaxeAnnuelles(List<TaxeAnnuelle> taxeAnnuelles) {
-        this.taxeAnnuelles = taxeAnnuelles;
-    }
-
     public int getAnneeDernierPaiement() {
         return anneeDernierPaiement;
     }
 
     public void setAnneeDernierPaiement(int anneeDernierPaiement) {
         this.anneeDernierPaiement = anneeDernierPaiement;
-    }
-
-    public List<Notification> getNotifications() {
-        if (notifications == null) {
-            notifications = new ArrayList();
-        }
-        return notifications;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
     }
 
     public Rue getRue() {

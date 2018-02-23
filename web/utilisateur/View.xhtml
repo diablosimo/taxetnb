@@ -22,8 +22,8 @@
                         <h:outputText value="#{utilisateurController.selected.prenom}" title="#{bundle.ViewUtilisateurTitle_prenom}"/>
                         <h:outputText value="#{bundle.ViewUtilisateurLabel_secteur}"/>
                         <h:outputText value="#{utilisateurController.selected.secteur}" title="#{bundle.ViewUtilisateurTitle_secteur}"/>
-                        <h:outputText value="#{bundle.ViewUtilisateurLabel_isAdmin}"/>
-                        <p:selectBooleanCheckbox value="#{utilisateurController.selected.isAdmin}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewUtilisateurLabel_type}"/>
+                        <h:outputText value="#{utilisateurController.selected.type}" title="#{bundle.ViewUtilisateurTitle_type}"/>
                     </p:panelGrid>
                     <p:commandButton value="#{bundle.Close}" onclick="UtilisateurViewDialog.hide()"/>
                 </h:panelGroup>

@@ -24,7 +24,7 @@ public class Utilisateur implements Serializable {
     private String motDepasse;
     private String nom;
     private String prenom;
-    private Boolean isAdmin;
+    private int type; //1:admin//2:superAdmin//3:utilisateur
     @ManyToOne
     private Secteur secteur;
 
@@ -87,12 +87,12 @@ public class Utilisateur implements Serializable {
         this.secteur = secteur;
     }
 
-    public Boolean getIsAdmin() {
-        return isAdmin;
+    public int getType() {
+        return type;
     }
 
-    public void setIsAdmin(Boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setType(int type) {
+        this.type = type;
     }
 
     @Override
@@ -122,7 +122,6 @@ public class Utilisateur implements Serializable {
 
     @Override
     public String toString() {
-        return "Utilisateur{" + "matricule=" + matricule + ", motDepasse=" + motDepasse + ", nom=" + nom + ", prenom=" + prenom + '}';
+        return "Utilisateur{" + "matricule=" + matricule + ", motDepasse=" + motDepasse + ", nom=" + nom + ", prenom=" + prenom + ", type=" + type + '}';
     }
-
 }

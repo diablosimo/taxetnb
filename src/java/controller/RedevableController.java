@@ -109,7 +109,7 @@ public class RedevableController implements Serializable {
         }
     }
 
-    public Redevable getRedevable(java.lang.String id) {
+    public Redevable getRedevable(java.lang.Long id) {
         return getFacade().find(id);
     }
 
@@ -134,13 +134,13 @@ public class RedevableController implements Serializable {
             return controller.getRedevable(getKey(value));
         }
 
-        java.lang.String getKey(String value) {
-            java.lang.String key;
-            key = value;
+        java.lang.Long getKey(String value) {
+            java.lang.Long key;
+            key = Long.valueOf(value);
             return key;
         }
 
-        String getStringKey(java.lang.String value) {
+        String getStringKey(java.lang.Long value) {
             StringBuilder sb = new StringBuilder();
             sb.append(value);
             return sb.toString();
@@ -153,7 +153,7 @@ public class RedevableController implements Serializable {
             }
             if (object instanceof Redevable) {
                 Redevable o = (Redevable) object;
-                return getStringKey(o.getCin());
+                return getStringKey(o.getId());
             } else {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Redevable.class.getName()});
                 return null;
