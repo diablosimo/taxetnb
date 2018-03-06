@@ -5,6 +5,7 @@
  */
 package service;
 
+import bean.CategorieTerrain;
 import bean.TauxRetardItem;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,6 +28,10 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
 
     public TauxRetardItemFacade() {
         super(TauxRetardItem.class);
+    }
+
+    TauxRetardItem findByCategorie(CategorieTerrain categorieTerrain) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

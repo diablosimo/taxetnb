@@ -24,6 +24,7 @@ public class Utilisateur implements Serializable {
     private String motDepasse;
     private String nom;
     private String prenom;
+    private String email;
     private int type; //1:admin//2:superAdmin//3:utilisateur
     @ManyToOne
     private Secteur secteur;
@@ -95,6 +96,15 @@ public class Utilisateur implements Serializable {
         this.type = type;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 7;
@@ -122,6 +132,7 @@ public class Utilisateur implements Serializable {
 
     @Override
     public String toString() {
-        return "Utilisateur{" + "matricule=" + matricule + ", motDepasse=" + motDepasse + ", nom=" + nom + ", prenom=" + prenom + ", type=" + type + '}';
+        return "Utilisateur{" + "matricule=" + matricule + ", nom=" + nom + ", prenom=" + prenom + ", email=" + email + ", type=" + type + '}';
     }
+
 }

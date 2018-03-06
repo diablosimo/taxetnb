@@ -11,6 +11,7 @@ import bean.Rue;
 import bean.Secteur;
 import bean.TaxeAnnuelle;
 import bean.Terrain;
+import controller.util.DateUtil;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -18,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import controller.util.SearchUtil;
 import java.util.Date;
+import javax.ejb.EJB;
 
 /**
  *
@@ -38,6 +40,11 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         super(TaxeAnnuelle.class);
     }
 
+    @EJB
+    private TauxTaxeItemFacade tauxTaxeItemFacade;
+    @EJB
+    private TauxRetardItemFacade tauxRetardItemFacade;
+
     public List<TaxeAnnuelle> findByCriteria(int annee, BigDecimal montantMin, BigDecimal montantMax, Long numLot, Date datePresentation) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
         if (annee > 0) {
@@ -55,48 +62,122 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
     }
 
     public List<TaxeAnnuelle> findByAllCriteria(Date datePresentationMin, Date datePresentationMax,
-                                                BigDecimal montantMin, BigDecimal montantMax,
-                                                Long numLot, String cin, String nif, CategorieTerrain categorieTerrain,
-                                                Rue rue, Quartier quartier, Secteur secteur) {
+            BigDecimal montantMin, BigDecimal montantMax,
+            Long numLot, String cin, String nif, CategorieTerrain categorieTerrain,
+            Rue rue, Quartier quartier, Secteur secteur) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
-        req+=SearchUtil.addConstraintMinMaxDate("ta", "datePresentaion", datePresentationMin, datePresentationMax);
-        req+=SearchUtil.addConstraintMinMax("ta", "montantTotal", montantMin, montantMax);
-        req+=SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numLot);
-        if(!cin.equals("")){
-            req+=SearchUtil.addConstraint("ta", "terrain.redevable.cin", "=", cin);
+        req += SearchUtil.addConstraintMinMaxDate("ta", "datePresentaion", datePresentationMin, datePresentationMax);
+        req += SearchUtil.addConstraintMinMax("ta", "montantTotal", montantMin, montantMax);
+        req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numLot);
+        if (!cin.equals("")) {
+            req += SearchUtil.addConstraint("ta", "terrain.redevable.cin", "=", cin);
         }
-        if(!nif.equals("")){
-            req+=SearchUtil.addConstraint("ta", "terrain.redevable.nif", "=", nif);
+        if (!nif.equals("")) {
+            req += SearchUtil.addConstraint("ta", "terrain.redevable.nif", "=", nif);
         }
-        req+=SearchUtil.addConstraint("ta", "terrain.categorieTerrain.id", "=", categorieTerrain.getId());
-        if(rue==null){
-            if(quartier==null){
-                if(secteur!=null){
-                    req+=SearchUtil.addConstraint("ta", "terrain.rue.quartier.secteur.codePostal", "=", secteur.getCodePostal());
+        req += SearchUtil.addConstraint("ta", "terrain.categorieTerrain.id", "=", categorieTerrain.getId());
+        if (rue == null) {
+            if (quartier == null) {
+                if (secteur != null) {
+                    req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.secteur.codePostal", "=", secteur.getCodePostal());
                 }
-            }else{
-                req+=SearchUtil.addConstraint("ta", "terrain.rue.quartier.id", "=", quartier.getId());
+            } else {
+                req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.id", "=", quartier.getId());
             }
-        }else{
-            req+=SearchUtil.addConstraint("ta", "terrain.rue.id", "=", rue.getId());
+        } else {
+            req += SearchUtil.addConstraint("ta", "terrain.rue.id", "=", rue.getId());
         }
         return em.createQuery(req).getResultList();
     }
-    
-    public List<TaxeAnnuelle> findByTerrain(Terrain terrain){
-        return em.createQuery("SELECT ta FROM TaxeAnnuelle ta WHERE ta.terrain.numeroLot='"+terrain.getNumeroLot()).getResultList();
+
+    public List<TaxeAnnuelle> findByTerrain(Terrain terrain) {
+        return em.createQuery("SELECT ta FROM TaxeAnnuelle ta  WHERE ta.terrain.numeroLot='" + terrain.getNumeroLot() + "' ORDER BY ta.annee DESC").getResultList();
     }
-    public TaxeAnnuelle findByTerrainAndAnnee(Terrain terrain,int annee){
+
+    public TaxeAnnuelle findByTerrainAndAnnee(Terrain terrain, int annee) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
-        req+=SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", terrain.getNumeroLot());
-        req+=SearchUtil.addConstraint("ta", "annee", "=", annee);
-        List<TaxeAnnuelle> res=em.createQuery(req).getResultList();
-        if(res!=null && !res.isEmpty()){
+        req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", terrain.getNumeroLot());
+        req += SearchUtil.addConstraint("ta", "annee", "=", annee);
+        List<TaxeAnnuelle> res = em.createQuery(req).getResultList();
+        if (res != null && !res.isEmpty()) {
             return res.get(0);
-        }else{
+        } else {
             return null;
         }
     }
+
+    /**
+     *
+     * @param terrain
+     * @param annee
+     * @return
+     */
+    public int create(Terrain terrain, int annee) {
+        TaxeAnnuelle taxeAnnuelle = findByTerrainAndAnnee(terrain, annee);
+        if (taxeAnnuelle != null) {//taxe DEJA PAYEE
+            return -1;
+        } else {
+            List<TaxeAnnuelle> taxes = findByTerrain(terrain);
+            if (taxes.get(0) != null) {
+                if (taxes.get(0).getAnnee() != annee - 1) {
+                    return -2;
+                }
+            }
+            if (DateUtil.getDebutAnnee(annee).getTime() > new Date().getTime()) {//l'annee n'a pas encore commencée
+                return -3;
+            }
+            int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
+            if (nbMoisRetard > 6) {// le redevable doit regler le probleme avec la DIRECTION REGIONALE DES IMPOTS et non avec la commune
+                return -4;
+            } else {
+                taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
+                taxeAnnuelle.setTerrain(terrain);
+                taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorie(terrain.getCategorieTerrain()));
+                taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findByCategorie(terrain.getCategorieTerrain()));
+                taxeAnnuelle = calcul(taxeAnnuelle, nbMoisRetard);
+                create(taxeAnnuelle);
+                return 1;
+            }
+
+        }
+    }
+
+    public TaxeAnnuelle calcul(TaxeAnnuelle taxeAnnuelle, int mois) {
+        taxeAnnuelle.setMontant(taxeAnnuelle.getTauxTaxeItem().getTaux().multiply(taxeAnnuelle.getTerrain().getSurface()));
+        if (mois >= 1) {
+            taxeAnnuelle.setPremierMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxPremierMois().multiply(taxeAnnuelle.getMontant()));
+            if (mois > 1) {
+                taxeAnnuelle.setAutreMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxAutreMois().multiply(taxeAnnuelle.getMontant()).multiply(new BigDecimal(mois - 1)));
+            } else {
+                taxeAnnuelle.setAutreMoisRetard(new BigDecimal("0.00"));
+            }
+        } else {
+            taxeAnnuelle.setPremierMoisRetard(new BigDecimal("0.00"));
+            taxeAnnuelle.setAutreMoisRetard(new BigDecimal("0.00"));
+        }
+        taxeAnnuelle.setMontantRetard(taxeAnnuelle.getPremierMoisRetard().add(taxeAnnuelle.getAutreMoisRetard()));
+        taxeAnnuelle.setMontantTotal(taxeAnnuelle.getMontant().add(taxeAnnuelle.getMontantRetard()));
+        return taxeAnnuelle;
+    }
+
+    public void clone(TaxeAnnuelle taxeAnnuelleSource, TaxeAnnuelle taxeAnnuelleDestination) {
+        taxeAnnuelleDestination.setAnnee(taxeAnnuelleSource.getAnnee());
+        taxeAnnuelleDestination.setMontant(taxeAnnuelleSource.getMontant());
+        taxeAnnuelleDestination.setNbrMoisRetard(taxeAnnuelleSource.getNbrMoisRetard());
+        taxeAnnuelleDestination.setPremierMoisRetard(taxeAnnuelleSource.getPremierMoisRetard());
+        taxeAnnuelleDestination.setAutreMoisRetard(taxeAnnuelleSource.getAutreMoisRetard());
+        taxeAnnuelleDestination.setMontantRetard(taxeAnnuelleSource.getMontantRetard());
+        taxeAnnuelleDestination.setMontantTotal(taxeAnnuelleSource.getMontantTotal());
+        taxeAnnuelleDestination.setDatePresentaion(taxeAnnuelleSource.getDatePresentaion());
+        taxeAnnuelleDestination.setDateTaxe(taxeAnnuelleSource.getDateTaxe());
+        taxeAnnuelleDestination.setTerrain(taxeAnnuelleSource.getTerrain());
+        taxeAnnuelleDestination.setTauxTaxeItem(taxeAnnuelleSource.getTauxTaxeItem());
+        taxeAnnuelleDestination.setTauxRetardItem(taxeAnnuelleSource.getTauxRetardItem());
+    }
     
-    
+    public TaxeAnnuelle clone(TaxeAnnuelle taxeAnnuelle){
+        TaxeAnnuelle cloned=new TaxeAnnuelle();
+        clone(taxeAnnuelle, cloned);
+        return cloned;
+    }
 }

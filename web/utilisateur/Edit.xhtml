@@ -29,6 +29,8 @@
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundle.EditUtilisateurLabel_type}" for="type" />
                         <p:inputText id="type" value="#{utilisateurController.selected.type}" title="#{bundle.EditUtilisateurTitle_type}" />
+                        <p:outputLabel value="#{bundle.EditUtilisateurLabel_email}" for="email" />
+                        <p:inputText id="email" value="#{utilisateurController.selected.email}" title="#{bundle.EditUtilisateurTitle_email}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{utilisateurController.update}" value="#{bundle.Save}" update="display,:UtilisateurListForm:datalist,:growl" oncomplete="handleSubmit(args, 'UtilisateurEditDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="UtilisateurEditDialog.hide()"/>

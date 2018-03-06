@@ -28,6 +28,8 @@
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundle.CreateUtilisateurLabel_type}" for="type" />
                         <p:inputText id="type" value="#{utilisateurController.selected.type}" title="#{bundle.CreateUtilisateurTitle_type}" />
+                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_email}" for="email" />
+                        <p:inputText id="email" value="#{utilisateurController.selected.email}" title="#{bundle.CreateUtilisateurTitle_email}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{utilisateurController.create}" value="#{bundle.Save}" update="display,:UtilisateurListForm:datalist,:growl" oncomplete="handleSubmit(args,'UtilisateurCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="UtilisateurCreateDialog.hide()"/>

@@ -5,6 +5,7 @@
  */
 package service;
 
+import bean.CategorieTerrain;
 import bean.TauxTaxeItem;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,6 +28,10 @@ public class TauxTaxeItemFacade extends AbstractFacade<TauxTaxeItem> {
 
     public TauxTaxeItemFacade() {
         super(TauxTaxeItem.class);
+    }
+
+    TauxTaxeItem findByCategorie(CategorieTerrain categorieTerrain) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

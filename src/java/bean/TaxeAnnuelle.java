@@ -60,6 +60,13 @@ public class TaxeAnnuelle implements Serializable {
         this.annee = annee;
     }
 
+    public TaxeAnnuelle(int annee, int nbrMoisRetard, Date datePresentaion, Date dateTaxe) {
+        this.annee = annee;
+        this.nbrMoisRetard = nbrMoisRetard;
+        this.datePresentaion = datePresentaion;
+        this.dateTaxe = dateTaxe;
+    }
+
     public Long getId() {
         return id;
     }

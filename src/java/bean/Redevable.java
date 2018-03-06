@@ -32,6 +32,7 @@ public class Redevable implements Serializable {
     private String sexe;
     private String nif;//numero d'identité fiscale
     private String adresse;
+    private String email;
     private String numTel;
     @OneToMany(mappedBy = "redevable")
     private List<Terrain> terrains;
@@ -129,16 +130,15 @@ public class Redevable implements Serializable {
         this.numTel = numTel;
     }
 
-//    public Secteur getSecteur() {
-//        if (secteur == null) {
-//            secteur = new Secteur();
-//        }
-//        return secteur;
-//    }
-//
-//    public void setSecteur(Secteur secteur) {
-//        this.secteur = secteur;
-//    }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    
     public List<Terrain> getTerrains() {
         if (terrains == null) {
             terrains = new ArrayList<>();
@@ -177,6 +177,8 @@ public class Redevable implements Serializable {
 
     @Override
     public String toString() {
-        return "Redevable{" + "id=" + id + ", cin=" + cin + ", nom=" + nom + ", prenom=" + prenom + ", sexe=" + sexe + ", nif=" + nif + ", adresse=" + adresse + ", numTel=" + numTel + '}';
+        return "Redevable{" + "cin=" + cin + ", nom=" + nom + ", prenom=" + prenom + ", sexe=" + sexe + ", nif=" + nif + ", adresse=" + adresse + ", email=" + email + ", numTel=" + numTel + '}';
     }
+
+    
 }

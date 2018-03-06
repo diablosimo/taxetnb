@@ -28,6 +28,8 @@
                         <p:inputText id="adresse" value="#{redevableController.selected.adresse}" title="#{bundle.CreateRedevableTitle_adresse}" />
                         <p:outputLabel value="#{bundle.CreateRedevableLabel_numTel}" for="numTel" />
                         <p:inputText id="numTel" value="#{redevableController.selected.numTel}" title="#{bundle.CreateRedevableTitle_numTel}" />
+                        <p:outputLabel value="#{bundle.CreateRedevableLabel_email}" for="email" />
+                        <p:inputText id="email" value="#{redevableController.selected.email}" title="#{bundle.CreateRedevableTitle_email}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{redevableController.create}" value="#{bundle.Save}" update="display,:RedevableListForm:datalist,:growl" oncomplete="handleSubmit(args,'RedevableCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="RedevableCreateDialog.hide()"/>
