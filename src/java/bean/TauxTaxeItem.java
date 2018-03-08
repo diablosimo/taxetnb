@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 
 /**
  *
- * @author simob
+ * @author Aniela
  */
 @Entity
 public class TauxTaxeItem implements Serializable {

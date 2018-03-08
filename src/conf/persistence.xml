@@ -2,21 +2,6 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="taxeTNBPU" transaction-type="JTA">
     <jta-data-source>java:app/tnbjndi</jta-data-source>
-    <class>bean.CategorieTerrain</class>
-    <class>bean.ConnexionLog</class>
-    <class>bean.Historique</class>
-    <class>bean.Notification</class>
-    <class>bean.Quartier</class>
-    <class>bean.Redevable</class>
-    <class>bean.Rue</class>
-    <class>bean.Secteur</class>
-    <class>bean.TauxRetard</class>
-    <class>bean.TauxRetardItem</class>
-    <class>bean.TauxTaxe</class>
-    <class>bean.TauxTaxeItem</class>
-    <class>bean.TaxeAnnuelle</class>
-    <class>bean.Terrain</class>
-    <class>bean.Utilisateur</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

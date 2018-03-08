@@ -3,7 +3,7 @@ package controller;
 import bean.TaxeAnnuelle;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
-import service.TaxeAnnuelleFacade;
+import service.TaxeAnnuelFacade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ import javax.faces.convert.FacesConverter;
 public class TaxeAnnuelleController implements Serializable {
 
     @EJB
-    private service.TaxeAnnuelleFacade ejbFacade;
+    private service.TaxeAnnuelFacade ejbFacade;
     private List<TaxeAnnuelle> items = null;
     private TaxeAnnuelle selected;
 
@@ -45,7 +45,7 @@ public class TaxeAnnuelleController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private TaxeAnnuelleFacade getFacade() {
+    private TaxeAnnuelFacade getFacade() {
         return ejbFacade;
     }
 
