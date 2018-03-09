@@ -32,15 +32,9 @@ public class ConnexionLog implements Serializable {
     private Utilisateur utilisateur;
 
     public ConnexionLog() {
-    }
-
-    public ConnexionLog(Date actionDate, int type) {
-        this.actionDate = actionDate;
-        this.type = type;
+        this.actionDate = new Date();
     }
     
-    
-
     public Long getId() {
         return id;
     }

@@ -35,9 +35,11 @@ public class Historique implements Serializable {
     private Utilisateur utilisateur;
 
     public Historique() {
+        this.actionDate = new Date();
     }
 
     public Historique(int type, String ancienValeur, String nouvelleValeur, String nomBean) {
+        this.actionDate = new Date();
         this.type = type;
         this.ancienValeur = ancienValeur;
         this.nouvelleValeur = nouvelleValeur;

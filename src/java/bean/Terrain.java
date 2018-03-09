@@ -12,6 +12,7 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -25,27 +26,28 @@ public class Terrain implements Serializable {
     @Id
     private Long numeroLot;
     private BigDecimal surface;
-    private int anneeDernierPaiement;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date dateAchat;
-    @ManyToOne
-    private Redevable redevable;
+    private String cpAdresse;
     @ManyToOne
     private Rue rue;
     @ManyToOne
     private CategorieTerrain categorieTerrain;
-
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateDeclaration=new Date();
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateAchat;
+    @ManyToOne
+    private Redevable redevable;
+    @OneToOne
+    private TaxeAnnuelle dernierPaiement=null;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date DatedernierNotification=null;
+    private int typeDernierNotification=0;
+    
     public Terrain() {
     }
 
     public Terrain(Long numeroLot) {
         this.numeroLot = numeroLot;
-    }
-
-    public Terrain(Long numeroLot, BigDecimal surface, int lastYPaid) {
-        this.numeroLot = numeroLot;
-        this.surface = surface;
-        this.anneeDernierPaiement = lastYPaid;
     }
 
     public Long getNumeroLot() {
@@ -97,12 +99,44 @@ public class Terrain implements Serializable {
         this.redevable = redevable;
     }
 
-    public int getAnneeDernierPaiement() {
-        return anneeDernierPaiement;
+    public TaxeAnnuelle getDernierPaiement() {
+        return dernierPaiement;
     }
 
-    public void setAnneeDernierPaiement(int anneeDernierPaiement) {
-        this.anneeDernierPaiement = anneeDernierPaiement;
+    public void setDernierPaiement(TaxeAnnuelle dernierPaiement) {
+        this.dernierPaiement = dernierPaiement;
+    }
+
+    public Date getDateDeclaration() {
+        return dateDeclaration;
+    }
+
+    public void setDateDeclaration(Date dateDeclaration) {
+        this.dateDeclaration = dateDeclaration;
+    }
+
+    public Date getDatedernierNotification() {
+        return DatedernierNotification;
+    }
+
+    public void setDatedernierNotification(Date DatedernierNotification) {
+        this.DatedernierNotification = DatedernierNotification;
+    }
+
+    public int getTypeDernierNotification() {
+        return typeDernierNotification;
+    }
+
+    public void setTypeDernierNotification(int typeDernierNotification) {
+        this.typeDernierNotification = typeDernierNotification;
+    }
+
+    public String getCpAdresse() {
+        return cpAdresse;
+    }
+
+    public void setCpAdresse(String cpAdresse) {
+        this.cpAdresse = cpAdresse;
     }
 
     public Rue getRue() {
@@ -141,9 +175,5 @@ public class Terrain implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Terrain{" + "numeroLot=" + numeroLot + ", surface=" + surface + ", lastYPaid=" + anneeDernierPaiement + '}';
-    }
-
+    
 }

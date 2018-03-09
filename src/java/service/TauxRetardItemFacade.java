@@ -6,7 +6,12 @@
 package service;
 
 import bean.CategorieTerrain;
+import bean.TauxRetard;
 import bean.TauxRetardItem;
+import controller.util.SearchUtil;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,8 +35,32 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
         super(TauxRetardItem.class);
     }
 
-    TauxRetardItem findByCategorie(CategorieTerrain categorieTerrain) {
+    //false
+    public TauxRetardItem findByCategorie(CategorieTerrain categorieTerrain) {
+        List<TauxRetardItem> items = new ArrayList();
+        String req = "SELECT tri FROM TauxRetard tr JOIN tr.tauxRetardItems tri WHERE 1=1";
+        req += " AND tr.tauxRetardItems.id=tri.id";
+        req += SearchUtil.addConstraint("tri", "categorieTerrain.id", "=", categorieTerrain.getId());
+        req += "ORDER BY tr.dateApplication DESC";
+        items = em.createQuery(req).getResultList();
+        if (items.isEmpty() == true || items == null) {
+            return null;
+        } else {
+            return items.get(0);
+        }
+
+        
+    }
+
+    TauxRetardItem findByCategorieAndDate(CategorieTerrain categorieTerrain) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    TauxRetardItem findByCategorieAndDate(CategorieTerrain categorieTerrain, Date datePresentaion) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    List<TauxRetard> findByMinDate(Date dateLimite, CategorieTerrain categorieTerrain) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

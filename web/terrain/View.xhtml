@@ -24,8 +24,18 @@
                         <h:outputText value="#{terrainController.selected.categorieTerrain}" title="#{bundle.ViewTerrainTitle_categorieTerrain}"/>
                         <h:outputText value="#{bundle.ViewTerrainLabel_redevable}"/>
                         <h:outputText value="#{terrainController.selected.redevable}" title="#{bundle.ViewTerrainTitle_redevable}"/>
-                        <h:outputText value="#{bundle.ViewTerrainLabel_anneeDernierPaiement}"/>
-                        <h:outputText value="#{terrainController.selected.anneeDernierPaiement}" title="#{bundle.ViewTerrainTitle_anneeDernierPaiement}"/>
+                        <h:outputText value="#{bundle.ViewTerrainLabel_dernierPaiement}"/>
+                        <h:outputText value="#{terrainController.selected.dernierPaiement}" title="#{bundle.ViewTerrainTitle_dernierPaiement}"/>
+                        <h:outputText value="#{bundle.ViewTerrainLabel_dateDeclaration}"/>
+                        <h:outputText value="#{terrainController.selected.dateDeclaration}" title="#{bundle.ViewTerrainTitle_dateDeclaration}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewTerrainLabel_datedernierNotification}"/>
+                        <h:outputText value="#{terrainController.selected.datedernierNotification}" title="#{bundle.ViewTerrainTitle_datedernierNotification}"/>
+                        <h:outputText value="#{bundle.ViewTerrainLabel_typeDernierNotification}"/>
+                        <h:outputText value="#{terrainController.selected.typeDernierNotification}" title="#{bundle.ViewTerrainTitle_typeDernierNotification}"/>
+                        <h:outputText value="#{bundle.ViewTerrainLabel_cpAdresse}"/>
+                        <h:outputText value="#{terrainController.selected.cpAdresse}" title="#{bundle.ViewTerrainTitle_cpAdresse}"/>
                         <h:outputText value="#{bundle.ViewTerrainLabel_rue}"/>
                         <h:outputText value="#{terrainController.selected.rue}" title="#{bundle.ViewTerrainTitle_rue}"/>
                     </p:panelGrid>

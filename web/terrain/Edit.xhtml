@@ -32,8 +32,21 @@
                                            var="redevableItem"
                                            itemValue="#{redevableItem}"/>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundle.EditTerrainLabel_anneeDernierPaiement}" for="anneeDernierPaiement" />
-                        <p:inputText id="anneeDernierPaiement" value="#{terrainController.selected.anneeDernierPaiement}" title="#{bundle.EditTerrainTitle_anneeDernierPaiement}" />
+                        <p:outputLabel value="#{bundle.EditTerrainLabel_dernierPaiement}" for="dernierPaiement" />
+                        <p:selectOneMenu id="dernierPaiement" value="#{terrainController.selected.dernierPaiement}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{taxeAnnuelleController.itemsAvailableSelectOne}"
+                                           var="dernierPaiementItem"
+                                           itemValue="#{dernierPaiementItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTerrainLabel_dateDeclaration}" for="dateDeclaration" />
+                        <p:calendar id="dateDeclaration" pattern="MM/dd/yyyy" value="#{terrainController.selected.dateDeclaration}" title="#{bundle.EditTerrainTitle_dateDeclaration}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditTerrainLabel_datedernierNotification}" for="datedernierNotification" />
+                        <p:inputText id="datedernierNotification" value="#{terrainController.selected.datedernierNotification}" title="#{bundle.EditTerrainTitle_datedernierNotification}" />
+                        <p:outputLabel value="#{bundle.EditTerrainLabel_typeDernierNotification}" for="typeDernierNotification" />
+                        <p:inputText id="typeDernierNotification" value="#{terrainController.selected.typeDernierNotification}" title="#{bundle.EditTerrainTitle_typeDernierNotification}" />
+                        <p:outputLabel value="#{bundle.EditTerrainLabel_cpAdresse}" for="cpAdresse" />
+                        <p:inputText id="cpAdresse" value="#{terrainController.selected.cpAdresse}" title="#{bundle.EditTerrainTitle_cpAdresse}" />
                         <p:outputLabel value="#{bundle.EditTerrainLabel_rue}" for="rue" />
                         <p:selectOneMenu id="rue" value="#{terrainController.selected.rue}" >
                             <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>

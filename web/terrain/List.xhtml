@@ -61,9 +61,35 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListTerrainTitle_anneeDernierPaiement}"/>
+                                <h:outputText value="#{bundle.ListTerrainTitle_dernierPaiement}"/>
                             </f:facet>
-                            <h:outputText value="#{item.anneeDernierPaiement}"/>
+                            <h:outputText value="#{item.dernierPaiement}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_dateDeclaration}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dateDeclaration}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_datedernierNotification}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.datedernierNotification}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_typeDernierNotification}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.typeDernierNotification}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTerrainTitle_cpAdresse}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cpAdresse}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">

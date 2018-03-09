@@ -33,6 +33,7 @@ public class Redevable implements Serializable {
     private String nif;//numero d'identité fiscale
     private String adresse;
     private String email;
+    private String motDePasse;
     private String numTel;
     @OneToMany(mappedBy = "redevable")
     private List<Terrain> terrains;
@@ -148,6 +149,14 @@ public class Redevable implements Serializable {
 
     public void setTerrains(List<Terrain> terrains) {
         this.terrains = terrains;
+    }
+
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
     }
 
     @Override

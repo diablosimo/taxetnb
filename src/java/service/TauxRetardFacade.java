@@ -6,6 +6,8 @@
 package service;
 
 import bean.TauxRetard;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,6 +29,10 @@ public class TauxRetardFacade extends AbstractFacade<TauxRetard> {
 
     public TauxRetardFacade() {
         super(TauxRetard.class);
+    }
+
+    List<TauxRetard> findByMinDate(Date dateLimite) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

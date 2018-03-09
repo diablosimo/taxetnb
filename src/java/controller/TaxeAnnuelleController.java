@@ -27,7 +27,13 @@ public class TaxeAnnuelleController implements Serializable {
     private service.TaxeAnnuelleFacade ejbFacade;
     private List<TaxeAnnuelle> items = null;
     private TaxeAnnuelle selected;
-
+    
+    public void creer(){
+        System.out.println("keoifei");
+//      int x=  ejbFacade.create(selected,selected.getTerrain(),selected.getAnnee());
+//        System.out.println(x);
+    }
+    
     public TaxeAnnuelleController() {
     }
 

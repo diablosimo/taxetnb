@@ -9,6 +9,7 @@ import bean.CategorieTerrain;
 import bean.Quartier;
 import bean.Rue;
 import bean.Secteur;
+import bean.TauxRetard;
 import bean.TaxeAnnuelle;
 import bean.Terrain;
 import controller.util.DateUtil;
@@ -18,6 +19,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import controller.util.SearchUtil;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.ejb.EJB;
 
@@ -44,6 +46,10 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
     private TauxTaxeItemFacade tauxTaxeItemFacade;
     @EJB
     private TauxRetardItemFacade tauxRetardItemFacade;
+    @EJB
+    private TauxRetardFacade tauxRetardFacade;
+    @EJB
+    private TerrainFacade terrainFacade;
 
     public List<TaxeAnnuelle> findByCriteria(int annee, BigDecimal montantMin, BigDecimal montantMax, Long numLot, Date datePresentation) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
@@ -108,17 +114,22 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
 
     /**
      *
+     * @param taxeAnnuelle
      * @param terrain
      * @param annee
      * @return
      */
-    public int create(Terrain terrain, int annee) {
-        TaxeAnnuelle taxeAnnuelle = findByTerrainAndAnnee(terrain, annee);
+    public int create(TaxeAnnuelle taxeAnnuelle,Terrain terrain, int annee) {
+        Terrain loadedTerain=terrainFacade.find(terrain.getNumeroLot());
+        if(loadedTerain==null){
+            return -5;
+        }
+        taxeAnnuelle = findByTerrainAndAnnee(loadedTerain, annee);
         if (taxeAnnuelle != null) {//taxe DEJA PAYEE
             return -1;
         } else {
-            List<TaxeAnnuelle> taxes = findByTerrain(terrain);
-            if (taxes.get(0) != null) {
+            List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
+            if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
                 if (taxes.get(0).getAnnee() != annee - 1) {
                     return -2;
                 }
@@ -131,11 +142,13 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
                 return -4;
             } else {
                 taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
-                taxeAnnuelle.setTerrain(terrain);
-                taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorie(terrain.getCategorieTerrain()));
-                taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findByCategorie(terrain.getCategorieTerrain()));
+                taxeAnnuelle.setTerrain(loadedTerain);
+                taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorieAndDate(loadedTerain.getCategorieTerrain(), taxeAnnuelle.getDateTaxe()));
+                taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findByCategorieAndDate(loadedTerain.getCategorieTerrain(), taxeAnnuelle.getDatePresentaion()));
                 taxeAnnuelle = calcul(taxeAnnuelle, nbMoisRetard);
-                create(taxeAnnuelle);
+                loadedTerain.setDernierPaiement(taxeAnnuelle);
+//                create(taxeAnnuelle);
+//                terrainFacade.edit(loadedTerain);
                 return 1;
             }
 
@@ -160,6 +173,17 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         return taxeAnnuelle;
     }
 
+    
+    
+    
+//    public List<TaxeAnnuelle> getTaxeNonPayeByTerrain(Terrain terrain){
+//        Terrain loadedTerrain=terrainFacade.find(terrain.getNumeroLot());
+//        if(loadedTerrain==null){
+//            return null;
+//        }
+//        
+//    }
+    
     public void clone(TaxeAnnuelle taxeAnnuelleSource, TaxeAnnuelle taxeAnnuelleDestination) {
         taxeAnnuelleDestination.setAnnee(taxeAnnuelleSource.getAnnee());
         taxeAnnuelleDestination.setMontant(taxeAnnuelleSource.getMontant());
@@ -174,10 +198,13 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         taxeAnnuelleDestination.setTauxTaxeItem(taxeAnnuelleSource.getTauxTaxeItem());
         taxeAnnuelleDestination.setTauxRetardItem(taxeAnnuelleSource.getTauxRetardItem());
     }
-    
-    public TaxeAnnuelle clone(TaxeAnnuelle taxeAnnuelle){
-        TaxeAnnuelle cloned=new TaxeAnnuelle();
+
+    public TaxeAnnuelle clone(TaxeAnnuelle taxeAnnuelle) {
+        TaxeAnnuelle cloned = new TaxeAnnuelle();
         clone(taxeAnnuelle, cloned);
         return cloned;
     }
+
+    
+    
 }
