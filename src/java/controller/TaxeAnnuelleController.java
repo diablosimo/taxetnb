@@ -6,6 +6,8 @@ import controller.util.JsfUtil.PersistAction;
 import service.TaxeAnnuelleFacade;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import service.TerrainFacade;
 
 @Named("taxeAnnuelleController")
 @SessionScoped
@@ -27,17 +30,106 @@ public class TaxeAnnuelleController implements Serializable {
     private service.TaxeAnnuelleFacade ejbFacade;
     private List<TaxeAnnuelle> items = null;
     private TaxeAnnuelle selected;
+
+    private BigDecimal montantMin;
+    private BigDecimal montantMax;
+    private Date datePresentationMin;
+    private Date datePresentationMax;
+
+    @EJB
+    private service.TerrainFacade terrainFacade;
+    int x=0;
     
-    public void creer(){
-        System.out.println("keoifei");
-//      int x=  ejbFacade.create(selected,selected.getTerrain(),selected.getAnnee());
-//        System.out.println(x);
+    public void verifier(){
+        x=ejbFacade.verifier(selected, selected.getAnnee());
     }
     
+//    public void creer(){
+//        x=ejbFacade.create(selected, selected.getAnnee());
+//    }
+    
+    
+    public void findByTerrain(){
+        System.out.println(selected.getTerrain());
+        items=ejbFacade.findByTerrain(selected.getTerrain());
+    }
+    
+    public void findByCriteria() {
+        System.out.println("111111111111111");
+        items = ejbFacade.findByCriteria(selected.getAnnee(), montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getDatePresentaion());
+        //return "List";
+    }
+
+    public void findByAllCriteria(){
+        items=ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getTerrain().getRedevable().getCin(), selected.getTerrain().getRedevable().getNif(), selected.getTerrain().getCategorieTerrain(), selected.getTerrain().getRue(), selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur());
+    }
+
+    public TerrainFacade getTerrainFacade() {
+        return terrainFacade;
+    }
+
+    public void setTerrainFacade(TerrainFacade terrainFacade) {
+        this.terrainFacade = terrainFacade;
+    }
+
+    
+    
+    public Date getDatePresentationMin() {
+        return datePresentationMin;
+    }
+
+    public void setDatePresentationMin(Date datePresentationMin) {
+        this.datePresentationMin = datePresentationMin;
+    }
+
+    public Date getDatePresentationMax() {
+        return datePresentationMax;
+    }
+
+    public void setDatePresentationMax(Date datePresentationMax) {
+        this.datePresentationMax = datePresentationMax;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+    
+    
+    public TaxeAnnuelleFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public BigDecimal getMontantMin() {
+        return montantMin;
+    }
+
+    public void setMontantMin(BigDecimal montantMin) {
+        this.montantMin = montantMin;
+    }
+
+    public BigDecimal getMontantMax() {
+        return montantMax;
+    }
+
+    public void setMontantMax(BigDecimal montantMax) {
+        this.montantMax = montantMax;
+    }
+
     public TaxeAnnuelleController() {
     }
 
     public TaxeAnnuelle getSelected() {
+        if (selected == null) {
+            selected = new TaxeAnnuelle();
+        }
         return selected;
     }
 
@@ -81,9 +173,9 @@ public class TaxeAnnuelleController implements Serializable {
     }
 
     public List<TaxeAnnuelle> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

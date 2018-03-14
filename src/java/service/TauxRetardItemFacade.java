@@ -12,6 +12,7 @@ import controller.util.SearchUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,6 +35,8 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
     public TauxRetardItemFacade() {
         super(TauxRetardItem.class);
     }
+    @EJB
+    private TauxRetardFacade tauxRetardFacade;
 
     //false
     public TauxRetardItem findByCategorie(CategorieTerrain categorieTerrain) {
@@ -63,4 +66,15 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
     List<TauxRetard> findByMinDate(Date dateLimite, CategorieTerrain categorieTerrain) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+     public TauxRetardItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain){
+      List<TauxRetardItem> tauxRetardItems=tauxRetardFacade.findCurrentOne().getTauxRetardItems();
+      for (int i = 0; i < tauxRetardItems.size(); i++) {
+          TauxRetardItem get = tauxRetardItems.get(i);
+          if(get.getCategorieTerrain().getNom().equals(categorieTerrain.getNom())){
+              return get;
+          }
+      }
+      return null;
+  }
 }

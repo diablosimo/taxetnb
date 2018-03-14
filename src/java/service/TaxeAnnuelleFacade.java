@@ -9,7 +9,6 @@ import bean.CategorieTerrain;
 import bean.Quartier;
 import bean.Rue;
 import bean.Secteur;
-import bean.TauxRetard;
 import bean.TaxeAnnuelle;
 import bean.Terrain;
 import controller.util.DateUtil;
@@ -19,7 +18,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import controller.util.SearchUtil;
-import java.util.ArrayList;
 import java.util.Date;
 import javax.ejb.EJB;
 
@@ -56,14 +54,11 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (annee > 0) {
             req += SearchUtil.addConstraint("ta", "annee", "=", annee);
         }
-        if (montantMin.compareTo(montantMax) != 1 || montantMin.compareTo(new BigDecimal(-0.01)) > 1 || montantMax.compareTo(new BigDecimal(-0.01)) > 1) {
-            req += SearchUtil.addConstraintMinMax("ta", "montantTotal", montantMin, montantMax);
-        }
-        if (!numLot.equals(new Long(""))) {
-            req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numLot);
-        }
+        req += SearchUtil.addConstraintMinMax("ta", "montantTotal", montantMin, montantMax);
+//        if (!numLot.equals(new Long(""))) {
+        req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numLot);
+//       }
         req += SearchUtil.addConstraintDate("ta", "datePresentaion", "=", datePresentation);
-
         return em.createQuery(req).getResultList();
     }
 
@@ -82,16 +77,21 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
             req += SearchUtil.addConstraint("ta", "terrain.redevable.nif", "=", nif);
         }
         req += SearchUtil.addConstraint("ta", "terrain.categorieTerrain.id", "=", categorieTerrain.getId());
-        if (rue == null) {
-            if (quartier == null) {
-                if (secteur != null) {
+        if (rue.getId() == null) {
+            if (quartier.getId() == null) {
+                if (secteur.getCodePostal() != null) {
                     req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.secteur.codePostal", "=", secteur.getCodePostal());
+                    System.out.println("+requette du secteur");
                 }
             } else {
                 req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.id", "=", quartier.getId());
+                System.out.println("+requette du quartier");
+
             }
         } else {
             req += SearchUtil.addConstraint("ta", "terrain.rue.id", "=", rue.getId());
+            System.out.println("+requette de la rue <" + rue.getId() + ">");
+
         }
         return em.createQuery(req).getResultList();
     }
@@ -115,13 +115,44 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
     /**
      *
      * @param taxeAnnuelle
-     * @param terrain
      * @param annee
      * @return
      */
-    public int create(TaxeAnnuelle taxeAnnuelle,Terrain terrain, int annee) {
-        Terrain loadedTerain=terrainFacade.find(terrain.getNumeroLot());
-        if(loadedTerain==null){
+    public int verifier(TaxeAnnuelle taxeAnnuelle, int annee) {
+        System.out.println("debut de verification");
+        Terrain loadedTerain = terrainFacade.find(taxeAnnuelle.getTerrain().getNumeroLot());
+        if (loadedTerain == null) {
+            return -1;
+        }
+        taxeAnnuelle = findByTerrainAndAnnee(loadedTerain, annee);
+        if (taxeAnnuelle != null) {//taxe DEJA PAYEE
+            return -2;
+        } else {
+            List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
+            if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
+                if (taxes.get(0).getAnnee() != annee - 1) {
+                    return -3;
+                }
+            }
+            if (DateUtil.getDebutAnnee(annee).getTime() > new Date().getTime()) {//l'annee n'a pas encore commencée
+                return -3;
+            }
+            int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
+            if (nbMoisRetard > 6) {// le redevable doit regler le probleme avec la DIRECTION REGIONALE DES IMPOTS et non avec la commune
+                return -4;
+            }else{
+                taxeAnnuelle=new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
+                taxeAnnuelle.setTerrain(loadedTerain);
+                return 1;
+            }
+        }
+    }
+
+    public int create(TaxeAnnuelle taxeAnnuelle, int annee) {
+        System.out.println("debut du paiement");
+        Terrain loadedTerain = terrainFacade.find(taxeAnnuelle.getTerrain().getNumeroLot());
+        if (loadedTerain == null) {
+
             return -5;
         }
         taxeAnnuelle = findByTerrainAndAnnee(loadedTerain, annee);
@@ -143,12 +174,12 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
             } else {
                 taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
                 taxeAnnuelle.setTerrain(loadedTerain);
-                taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorieAndDate(loadedTerain.getCategorieTerrain(), taxeAnnuelle.getDateTaxe()));
-                taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findByCategorieAndDate(loadedTerain.getCategorieTerrain(), taxeAnnuelle.getDatePresentaion()));
+                taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorie(loadedTerain.getCategorieTerrain()));
+                taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findCurrentOneByCategorie(loadedTerain.getCategorieTerrain()));
                 taxeAnnuelle = calcul(taxeAnnuelle, nbMoisRetard);
                 loadedTerain.setDernierPaiement(taxeAnnuelle);
-//                create(taxeAnnuelle);
-//                terrainFacade.edit(loadedTerain);
+                create(clone(taxeAnnuelle));
+                terrainFacade.edit(loadedTerain);
                 return 1;
             }
 
@@ -173,9 +204,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         return taxeAnnuelle;
     }
 
-    
-    
-    
 //    public List<TaxeAnnuelle> getTaxeNonPayeByTerrain(Terrain terrain){
 //        Terrain loadedTerrain=terrainFacade.find(terrain.getNumeroLot());
 //        if(loadedTerrain==null){
@@ -183,7 +211,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
 //        }
 //        
 //    }
-    
     public void clone(TaxeAnnuelle taxeAnnuelleSource, TaxeAnnuelle taxeAnnuelleDestination) {
         taxeAnnuelleDestination.setAnnee(taxeAnnuelleSource.getAnnee());
         taxeAnnuelleDestination.setMontant(taxeAnnuelleSource.getMontant());
@@ -205,6 +232,4 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         return cloned;
     }
 
-    
-    
 }

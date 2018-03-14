@@ -9,18 +9,19 @@
     </h:head>
     <h:body>
         <f:view>
-            <h:form id="inForm">
+
+
+            <h:form>
                 <h1><h:outputText value="Create/Edit"/></h1>
                 <p:panelGrid columns="2">
-                    <p:outputLabel value="terrain:" for="terrain" />
-                    <p:inputText id="terrain" value="#{taxeAnnuelleController.selected.terrain.numeroLot}" title="terrain" />
-                    <p:outputLabel value="Annee:"/>
-                    <p:inputText value="#{taxeAnnuelleController.selected.annee}" title="Annee" />
+                    <p:outputLabel value="NumeroLot:" for="numeroLot" />
+                    <p:inputText id="numeroLot" value="#{terrainController.selected.numeroLot}" title="NumeroLot" />
+                    <p:commandButton value="Ok" actionListener="#{terrainController.quitancer()}" update=":myOutPut" />
                 </p:panelGrid>
-                <p:commandButton actionListener="#{taxeAnnuelleController.verifier()}" value="ok" update=":myLabel" />
             </h:form>
         </f:view>
-        <p:outputLabel id="myLabel" value="#{taxeAnnuelleController.x}"/>
+        <p:outputLabel id="myOutPut" value="#{terrainController.x}"  />
 
-    </h:body></html>
+    </h:body>
+</html>
 

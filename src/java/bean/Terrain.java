@@ -175,5 +175,10 @@ public class Terrain implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Terrain{" + "numeroLot=" + numeroLot + '}';
+    }
+
     
 }

@@ -42,12 +42,12 @@ public class DateUtil {
     }
     
     public static Date getDebutAnnee(int annee){
-        Date debAnnee=parse(annee+"01-01");
+        Date debAnnee=parse(annee+"-01-01");
         return debAnnee;
     }
     
     public static Date getDateLimite(int annee){
-        Date dateLimite=parse(annee+"04-01");
+        Date dateLimite=parse(annee+"-04-01");
         return dateLimite;
     }
     

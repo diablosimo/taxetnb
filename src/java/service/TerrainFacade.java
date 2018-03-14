@@ -29,4 +29,7 @@ public class TerrainFacade extends AbstractFacade<Terrain> {
         super(Terrain.class);
     }
     
+    public int quitancer(Long numLot){
+        return numLot.intValue();
+    }
 }

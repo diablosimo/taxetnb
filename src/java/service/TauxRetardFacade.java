@@ -35,4 +35,12 @@ public class TauxRetardFacade extends AbstractFacade<TauxRetard> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+     public TauxRetard findCurrentOne(){
+         List<TauxRetard> res=em.createQuery("SELECT tr FROM TauxRetard tr ORDER BY tr.dateApplication DESC").getResultList();
+         if(res!=null && res.isEmpty()!=true){
+             return res.get(0);
+         }
+         return null;
+      }
+    
 }

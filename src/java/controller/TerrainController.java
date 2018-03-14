@@ -27,11 +27,27 @@ public class TerrainController implements Serializable {
     private service.TerrainFacade ejbFacade;
     private List<Terrain> items = null;
     private Terrain selected;
+    private int x=0;
 
+    public void quitancer(){
+        x=ejbFacade.quitancer(selected.getNumeroLot());
+    }
+    
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+    
     public TerrainController() {
     }
 
     public Terrain getSelected() {
+      if (selected == null) {
+            selected = new Terrain();
+        }
         return selected;
     }
 
