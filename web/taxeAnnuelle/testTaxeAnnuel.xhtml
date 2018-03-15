@@ -18,9 +18,10 @@
                     <p:inputText value="#{taxeAnnuelleController.selected.annee}" title="Annee" />
                 </p:panelGrid>
                 <p:commandButton actionListener="#{taxeAnnuelleController.verifier()}" value="ok" update=":myLabel" />
+                <p:commandButton actionListener="#{taxeAnnuelleController.creer()}" value="creer" />
             </h:form>
         </f:view>
-        <p:outputLabel id="myLabel" value="#{taxeAnnuelleController.x}"/>
+        <p:outputLabel id="myLabel" value="#{taxeAnnuelleController.x[0]}"/>
 
     </h:body></html>
 

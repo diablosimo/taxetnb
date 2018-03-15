@@ -12,11 +12,9 @@
         <h:form id="inForm">
             <h1><h:outputText value="Create/Edit"/></h1>
             <p:panelGrid columns="2">
-
-
+                
                 <p:outputLabel value="DatePresentaionMin:" for="button" />
                 <p:calendar id="button" value="#{taxeAnnuelleController.datePresentationMin}" showOn="button" />                
-
 
                 <p:outputLabel value="DatePresentaionMax:" for="datePresentaionMax" />
                 <p:inputText id="datePresentaionMax" value="#{taxeAnnuelleController.datePresentationMax}" title="DatePresentaionMax" >

@@ -38,30 +38,37 @@ public class TaxeAnnuelleController implements Serializable {
 
     @EJB
     private service.TerrainFacade terrainFacade;
-    int x=0;
-    
-    public void verifier(){
-        x=ejbFacade.verifier(selected, selected.getAnnee());
+    private Object[] x= new Object[2];
+
+    public void verifier() {
+        x = ejbFacade.verifier(selected, selected.getAnnee());
+        selected=(TaxeAnnuelle) x[1];
+        System.out.println(selected);
     }
-    
+
+    public void creer() {
+        if (x[0]==(Object)1) {
+            System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
+             ejbFacade.create(selected, selected.getAnnee());
+        }
+    }
+
 //    public void creer(){
 //        x=ejbFacade.create(selected, selected.getAnnee());
 //    }
-    
-    
-    public void findByTerrain(){
+    public void findByTerrain() {
         System.out.println(selected.getTerrain());
-        items=ejbFacade.findByTerrain(selected.getTerrain());
+        items = ejbFacade.findByTerrain(selected.getTerrain());
     }
-    
+
     public void findByCriteria() {
         System.out.println("111111111111111");
         items = ejbFacade.findByCriteria(selected.getAnnee(), montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getDatePresentaion());
         //return "List";
     }
 
-    public void findByAllCriteria(){
-        items=ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getTerrain().getRedevable().getCin(), selected.getTerrain().getRedevable().getNif(), selected.getTerrain().getCategorieTerrain(), selected.getTerrain().getRue(), selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur());
+    public void findByAllCriteria() {
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getTerrain().getRedevable().getCin(), selected.getTerrain().getRedevable().getNif(), selected.getTerrain().getCategorieTerrain(), selected.getTerrain().getRue(), selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur());
     }
 
     public TerrainFacade getTerrainFacade() {
@@ -72,8 +79,6 @@ public class TaxeAnnuelleController implements Serializable {
         this.terrainFacade = terrainFacade;
     }
 
-    
-    
     public Date getDatePresentationMin() {
         return datePresentationMin;
     }
@@ -90,15 +95,14 @@ public class TaxeAnnuelleController implements Serializable {
         this.datePresentationMax = datePresentationMax;
     }
 
-    public int getX() {
+    public Object getX() {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setX(Object x) {
+        this.x = (Object[]) x;
     }
-    
-    
+
     public TaxeAnnuelleFacade getEjbFacade() {
         return ejbFacade;
     }
@@ -186,7 +190,7 @@ public class TaxeAnnuelleController implements Serializable {
                 if (persistAction != PersistAction.DELETE) {
                     getFacade().edit(selected);
                 } else {
-                    getFacade().remove(selected);
+                        getFacade().remove(selected);
                 }
                 JsfUtil.addSuccessMessage(successMessage);
             } catch (EJBException ex) {

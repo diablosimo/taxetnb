@@ -1,4 +1,4 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -222,5 +222,26 @@ public class TaxeAnnuelle implements Serializable {
     @Override
     public String toString() {
         return "TaxeAnnuelle{" + "id=" + id + ", annee=" + annee + ", montant=" + montant + '}';
+    }
+
+    public void clone(TaxeAnnuelle taxeAnnuelleSource, TaxeAnnuelle taxeAnnuelleDestination) {
+        taxeAnnuelleDestination.setAnnee(taxeAnnuelleSource.getAnnee());
+        taxeAnnuelleDestination.setMontant(taxeAnnuelleSource.getMontant());
+        taxeAnnuelleDestination.setNbrMoisRetard(taxeAnnuelleSource.getNbrMoisRetard());
+        taxeAnnuelleDestination.setPremierMoisRetard(taxeAnnuelleSource.getPremierMoisRetard());
+        taxeAnnuelleDestination.setAutreMoisRetard(taxeAnnuelleSource.getAutreMoisRetard());
+        taxeAnnuelleDestination.setMontantRetard(taxeAnnuelleSource.getMontantRetard());
+        taxeAnnuelleDestination.setMontantTotal(taxeAnnuelleSource.getMontantTotal());
+        taxeAnnuelleDestination.setDatePresentaion(taxeAnnuelleSource.getDatePresentaion());
+        taxeAnnuelleDestination.setDateTaxe(taxeAnnuelleSource.getDateTaxe());
+        taxeAnnuelleDestination.setTerrain(taxeAnnuelleSource.getTerrain());
+        taxeAnnuelleDestination.setTauxTaxeItem(taxeAnnuelleSource.getTauxTaxeItem());
+        taxeAnnuelleDestination.setTauxRetardItem(taxeAnnuelleSource.getTauxRetardItem());
+    }
+
+    public TaxeAnnuelle clone(TaxeAnnuelle taxeAnnuelle) {
+        TaxeAnnuelle cloned = new TaxeAnnuelle();
+        clone(taxeAnnuelle, cloned);
+        return cloned;
     }
 }

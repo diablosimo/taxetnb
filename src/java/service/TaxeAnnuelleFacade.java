@@ -118,75 +118,58 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
      * @param annee
      * @return
      */
-    public int verifier(TaxeAnnuelle taxeAnnuelle, int annee) {
+    public Object[] verifier(TaxeAnnuelle taxeAnnuelle, int annee) {
         System.out.println("debut de verification");
         Terrain loadedTerain = terrainFacade.find(taxeAnnuelle.getTerrain().getNumeroLot());
+        System.out.println("ha terrain mora loaded " + loadedTerain.getCategorieTerrain());
         if (loadedTerain == null) {
-            return -1;
+            return new Object[]{-1, null};
         }
         taxeAnnuelle = findByTerrainAndAnnee(loadedTerain, annee);
         if (taxeAnnuelle != null) {//taxe DEJA PAYEE
-            return -2;
+            return new Object[]{-2, null};
         } else {
             List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
             if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
                 if (taxes.get(0).getAnnee() != annee - 1) {
-                    return -3;
+                    return new Object[]{-3, null};
                 }
             }
             if (DateUtil.getDebutAnnee(annee).getTime() > new Date().getTime()) {//l'annee n'a pas encore commencée
-                return -3;
+                return new Object[]{-4, null};
             }
             int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
             if (nbMoisRetard > 6) {// le redevable doit regler le probleme avec la DIRECTION REGIONALE DES IMPOTS et non avec la commune
-                return -4;
-            }else{
-                taxeAnnuelle=new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
+                return new Object[]{-5, null};
+            } else {
+                taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
                 taxeAnnuelle.setTerrain(loadedTerain);
-                return 1;
+                System.out.println("ha categorie 9bel mn return 1 " + loadedTerain.getCategorieTerrain());
+                return new Object[]{1, taxeAnnuelle};
             }
         }
     }
 
     public int create(TaxeAnnuelle taxeAnnuelle, int annee) {
         System.out.println("debut du paiement");
-        Terrain loadedTerain = terrainFacade.find(taxeAnnuelle.getTerrain().getNumeroLot());
-        if (loadedTerain == null) {
+        System.out.println("terrain du taxe" + taxeAnnuelle.getTerrain());
+        System.out.println("categorie " + taxeAnnuelle.getTerrain().getCategorieTerrain());
+        taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorie(taxeAnnuelle.getTerrain().getCategorieTerrain()));
+        System.out.println("ha taux " + taxeAnnuelle.getTauxTaxeItem().toString());
+        taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findCurrentOneByCategorie(taxeAnnuelle.getTerrain().getCategorieTerrain()));
+        taxeAnnuelle = calcul(taxeAnnuelle, taxeAnnuelle.getNbrMoisRetard());
+        taxeAnnuelle.getTerrain().setDernierPaiement(taxeAnnuelle);
+        create(taxeAnnuelle.clone(taxeAnnuelle));
+        terrainFacade.edit(taxeAnnuelle.getTerrain());
+        return 1;
 
-            return -5;
-        }
-        taxeAnnuelle = findByTerrainAndAnnee(loadedTerain, annee);
-        if (taxeAnnuelle != null) {//taxe DEJA PAYEE
-            return -1;
-        } else {
-            List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
-            if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
-                if (taxes.get(0).getAnnee() != annee - 1) {
-                    return -2;
-                }
-            }
-            if (DateUtil.getDebutAnnee(annee).getTime() > new Date().getTime()) {//l'annee n'a pas encore commencée
-                return -3;
-            }
-            int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
-            if (nbMoisRetard > 6) {// le redevable doit regler le probleme avec la DIRECTION REGIONALE DES IMPOTS et non avec la commune
-                return -4;
-            } else {
-                taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
-                taxeAnnuelle.setTerrain(loadedTerain);
-                taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorie(loadedTerain.getCategorieTerrain()));
-                taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findCurrentOneByCategorie(loadedTerain.getCategorieTerrain()));
-                taxeAnnuelle = calcul(taxeAnnuelle, nbMoisRetard);
-                loadedTerain.setDernierPaiement(taxeAnnuelle);
-                create(clone(taxeAnnuelle));
-                terrainFacade.edit(loadedTerain);
-                return 1;
-            }
-
-        }
     }
 
     public TaxeAnnuelle calcul(TaxeAnnuelle taxeAnnuelle, int mois) {
+        System.out.println("hani fl calcul");
+        System.out.println("ha tauxTaxItem " + taxeAnnuelle.getTauxTaxeItem().getTaux());
+        System.out.println("ha surface " + taxeAnnuelle.getTerrain().getSurface());
+        System.out.println("ha l7ssab" + taxeAnnuelle.getTauxTaxeItem().getTaux().multiply(taxeAnnuelle.getTerrain().getSurface()));
         taxeAnnuelle.setMontant(taxeAnnuelle.getTauxTaxeItem().getTaux().multiply(taxeAnnuelle.getTerrain().getSurface()));
         if (mois >= 1) {
             taxeAnnuelle.setPremierMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxPremierMois().multiply(taxeAnnuelle.getMontant()));
@@ -211,25 +194,4 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
 //        }
 //        
 //    }
-    public void clone(TaxeAnnuelle taxeAnnuelleSource, TaxeAnnuelle taxeAnnuelleDestination) {
-        taxeAnnuelleDestination.setAnnee(taxeAnnuelleSource.getAnnee());
-        taxeAnnuelleDestination.setMontant(taxeAnnuelleSource.getMontant());
-        taxeAnnuelleDestination.setNbrMoisRetard(taxeAnnuelleSource.getNbrMoisRetard());
-        taxeAnnuelleDestination.setPremierMoisRetard(taxeAnnuelleSource.getPremierMoisRetard());
-        taxeAnnuelleDestination.setAutreMoisRetard(taxeAnnuelleSource.getAutreMoisRetard());
-        taxeAnnuelleDestination.setMontantRetard(taxeAnnuelleSource.getMontantRetard());
-        taxeAnnuelleDestination.setMontantTotal(taxeAnnuelleSource.getMontantTotal());
-        taxeAnnuelleDestination.setDatePresentaion(taxeAnnuelleSource.getDatePresentaion());
-        taxeAnnuelleDestination.setDateTaxe(taxeAnnuelleSource.getDateTaxe());
-        taxeAnnuelleDestination.setTerrain(taxeAnnuelleSource.getTerrain());
-        taxeAnnuelleDestination.setTauxTaxeItem(taxeAnnuelleSource.getTauxTaxeItem());
-        taxeAnnuelleDestination.setTauxRetardItem(taxeAnnuelleSource.getTauxRetardItem());
-    }
-
-    public TaxeAnnuelle clone(TaxeAnnuelle taxeAnnuelle) {
-        TaxeAnnuelle cloned = new TaxeAnnuelle();
-        clone(taxeAnnuelle, cloned);
-        return cloned;
-    }
-
 }
