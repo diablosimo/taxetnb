@@ -52,7 +52,6 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
             return items.get(0);
         }
 
-        
     }
 
     TauxRetardItem findByCategorieAndDate(CategorieTerrain categorieTerrain) {
@@ -66,15 +65,15 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
     List<TauxRetard> findByMinDate(Date dateLimite, CategorieTerrain categorieTerrain) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-     public TauxRetardItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain){
-      List<TauxRetardItem> tauxRetardItems=tauxRetardFacade.findCurrentOne().getTauxRetardItems();
-      for (int i = 0; i < tauxRetardItems.size(); i++) {
-          TauxRetardItem get = tauxRetardItems.get(i);
-          if(get.getCategorieTerrain().getNom().equals(categorieTerrain.getNom())){
-              return get;
-          }
-      }
-      return null;
-  }
+
+    public TauxRetardItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain) {
+        if (categorieTerrain == null) {
+            return null;
+        } else {
+            TauxRetardItem tauxRetardItem = new TauxRetardItem();
+            tauxRetardItem = (TauxRetardItem) em.createQuery("SELECT trt FROM TauxRetardItem trt LEFT JOIN trt.tauxRetard tr  WHERE trt.categorieTerrain.id='" + categorieTerrain.getId() + "' ORDER BY tr.dateApplication DESC ").getResultList().get(0);
+            System.out.println("service findTauxRetartItem " + tauxRetardItem.toString());
+            return tauxRetardItem;
+        }
+    }
 }

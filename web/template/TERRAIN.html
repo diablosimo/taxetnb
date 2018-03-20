@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head> 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>TAXETNB.com</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Custom Font Icons CSS-->
+    <link rel="stylesheet" href="css/font.css">
+    <!-- Google fonts - Muli-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="img/logo.ico">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  </head>
+  <body>
+    <header class="header">   
+      <nav class="navbar navbar-expand-lg">
+        
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+          <div class="navbar-header"><a href="AccueilU.html" class="navbar-brand">
+              <div class="brand-text brand-big visible text-uppercase"><strong class="text-primary">TAXE</strong><strong>TNB</strong></div>
+              <div class="brand-text brand-sm"><strong class="text-primary">D</strong><strong>A</strong></div></a>
+            <button class="sidebar-toggle"><i class="fa fa-long-arrow-left"></i></button>
+          </div>
+          
+              
+            
+            <li class="list-inline-item logout"><a id="logout" href="Accueil.html" class="nav-link">Logout <i class="icon-logout"></i></a></li>
+          
+        </div>
+      </nav>
+
+    </header>
+    <div class="d-flex align-items-stretch">
+     
+           <nav id="sidebar">
+        <!-- Sidebar Header-->
+        <div class="sidebar-header d-flex align-items-center">
+          <div class="avatar"><img src="img/img-01.png" alt="..." class="img-fluid rounded-circle"></div>
+          <div class="title">
+            <h1 class="h5">nom d'utilisateur</h1>
+        	<p>Utilisateur</p>
+            <p>TNB GIR</p>
+          </div>
+        </div>
+        <!-- Sidebar Navidation Menus--><span class="heading">Menu principal</span>
+        <ul class="list-unstyled">
+              <li ><a href="AccueilU.html"> <i class="icon-home"></i>ACCUEIL </a></li>
+              <li><a href="PAIEMENTAnnuel.html"> <i class="icon-grid"></i>PAIEMENT </a></li>
+              <li class="active"><a href="#exampleTERRAIN" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>TERRAIN</a>
+                  <ul id="exampleTERRAIN" class="collapse list-unstyled ">
+                    <li><a href="TERRAIN.html">CREER</a></li>
+                    <li><a href="ModifieTer.html">MODIFIER</a></li>
+                    
+                  </ul>
+                </li>
+
+              <li><a href="#exampleREDEVABLE" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>REDEVABLE</a>
+                  <ul id="exampleREDEVABLE" class="collapse list-unstyled ">
+                    <li><a href="REDEVABLE.html">CREER</a></li>
+                    <li><a href="ModifieRed.html">MODIFIER</a></li>
+                    
+                  </ul>
+                </li>
+       </ul>
+      </nav>
+
+
+
+
+      <!-- Sidebar Navigation end-->
+      <div class="page-content"  >
+        <!-- Page Header-->
+        <div class="page-header no-margin-bottom" >
+          <div class="container-fluid">
+            <h2 class="h5 no-margin-bottom"><strong>Terrain</strong></h2>
+          </div>
+        </div>
+        <!-- Breadcrumb-->
+        <div class="container-fluid"  >
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="AccueilU.html">ACCUEIL</a></li>
+            <li class="breadcrumb-item active">TERRAIN</li>
+          </ul>
+        </div>
+        <section class="no-padding-top">
+          <div class="container-fluid"  >
+            <div class="row">
+              <!-- Basic Form-->
+             
+              <!-- Modal Form-->
+             
+                    <!-- Modal-->
+                    
+              <!-- Form Elements -->
+           <div class="col-lg-12">
+                <div class="block">
+                  <div class="title"><strong>CREATION DES TERRAIN:</strong></div>
+                  <div class="block-body">
+                    <form class="form-horizontal">
+                      <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">N° DU LOT :</label>
+                        <div class="col-sm-9">
+                          <input class="form-control" type="text">
+                        </div>
+                      </div>
+                       <div class="form-group row"> 
+
+                        <label class="col-sm-3 form-control-label">CATEGORIE DE TERRAIN :</label>
+                       	 <div class="col-sm-9">
+                          <select name="account" class="form-control mb-3">
+                            
+	                            <option>Zone Villas</option>
+	                            <option>Zone D'habitude</option>
+	                            <option>Autre</option>
+	                            
+                        	
+
+                          </select>
+                      </div>
+                      </div>
+
+                        <div class="form-group row">  
+                        
+
+                        <label class="col-sm-3 form-control-label">Ville :</label>
+                       	 <div class="col-sm-9">
+                          <select name="account" class="form-control mb-3">
+                            
+	                            <option>Marrakech</option>
+	                            <option>Casa</option>
+	                            <option>Rabat</option>
+	                            <option>Fes</option>
+                        	
+
+                          </select>
+                      </div>
+                      </div>
+
+                       <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">QUARTIER</label>
+                        <div class="col-sm-9">
+                          <input class="form-control" type="text">
+                        </div>
+                      </div>  
+
+                       <div class="line"></div>
+                      <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">Date D'achat</label>
+                        <div class="col-sm-9">
+                          <input class="form-control" type="date">
+                        </div>
+                      </div>
+                      
+                      <div class="line"></div>
+                      <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">CIN DE REDEVABLE</label>
+                        <div class="col-sm-9">
+                          <input class="form-control" type="text">
+                        </div>
+                      </div>
+                       <div class="line"></div>
+                      <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">Surface en (m²)</label>
+                        <div class="col-sm-9">
+                          <input class="form-control" type="number" step="any">
+                        </div>
+                      </div>
+                      
+                      <div class="line"></div>
+                      
+                      <div class="line"></div>
+                      <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">RUE</label>
+                        <div class="col-sm-9">
+                        <input  class ="form-control" type="text" >
+                         
+                        </div>
+                      </div>
+                      
+                      
+                     
+                      <div class="line"></div>
+                      <div class="form-group row">
+                        
+                        
+                      </div>
+                      <div class="line"></div>
+                      
+                      <div class="line"></div>
+                      <div class="form-group row">
+                        
+                        
+                        
+                      </div>
+                      <div class="line"></div>
+                      
+                      <div class="line"></div>
+                      
+                      <div class="line"></div>
+                      
+                      
+                      
+                      <div class="line"> </div>
+                      <div class="row">
+                        
+                        
+                      </div>
+                      <div class="line"></div>
+                      
+                      <div class="line"></div>
+                      
+                      <div class="line"></div>
+                      
+                      <div class="line"></div>
+                      <div class="form-group row">
+                        <div class="col-sm-9 ml-auto">
+                          <button type="button" class="btn btn-secondary" id="btn1">CREER</button>
+                          <button type="submit" class="btn btn-primary" id="btn2">MODIFIER</button>
+                        </div> 
+                      </div>
+                    </form>
+                  </div>
+                </div> 
+
+
+              
+             </div>
+           </div>
+
+          </div>
+        </section>
+        
+      
+    </div>
+ 
+          
+      
+      
+    </div>
+    <!-- JavaScript files-->
+    
+
+    	
+   
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"> </script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="js/front.js"></script>
+  </body>
+</html>

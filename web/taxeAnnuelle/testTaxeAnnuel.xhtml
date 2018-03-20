@@ -18,10 +18,25 @@
                     <p:inputText value="#{taxeAnnuelleController.selected.annee}" title="Annee" />
                 </p:panelGrid>
                 <p:commandButton actionListener="#{taxeAnnuelleController.verifier()}" value="ok" update=":myLabel" />
-                <p:commandButton actionListener="#{taxeAnnuelleController.creer()}" value="creer" />
+                <p:commandButton actionListener="#{taxeAnnuelleController.creer()}" value="creer" update=":infoPanel"/>
             </h:form>
         </f:view>
         <p:outputLabel id="myLabel" value="#{taxeAnnuelleController.x[0]}"/>
+
+        <p:panelGrid columns="2" id="infoPanel">
+            
+            <h:outputText value="nombre de mois retard" />
+            <h:outputText value="#{taxeAnnuelleController.selected.nbrMoisRetard}"/>
+
+            <h:outputText value="montant sans penalité" />
+            <h:outputText value="#{taxeAnnuelleController.selected.montant}" />
+
+            <h:outputText value="frais ajouté" />
+            <h:outputText value="#{taxeAnnuelleController.selected.montantRetard}" />
+
+            <h:outputText value="montant total" />
+            <h:outputText value="#{taxeAnnuelleController.selected.montantTotal}" />
+        </p:panelGrid>
 
     </h:body>
 </html>

@@ -42,14 +42,13 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void verifier() {
         x = ejbFacade.verifier(selected, selected.getAnnee());
-        selected=(TaxeAnnuelle) x[1];
         System.out.println(selected);
     }
 
     public void creer() {
         if (x[0]==(Object)1) {
             System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
-             ejbFacade.create(selected, selected.getAnnee());
+            selected=ejbFacade.create((TaxeAnnuelle) x[1], selected.getAnnee());
         }
     }
 
