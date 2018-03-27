@@ -38,17 +38,18 @@ public class TaxeAnnuelleController implements Serializable {
 
     @EJB
     private service.TerrainFacade terrainFacade;
-    private Object[] x= new Object[2];
+    private Object[] myObjects= new Object[2];
 
-    public void verifier() {
-        x = ejbFacade.verifier(selected, selected.getAnnee());
-        System.out.println(selected);
+    public void verifyAndCreate() {
+        myObjects = ejbFacade.verifyAndCreate(selected, selected.getAnnee());
+        selected=(TaxeAnnuelle) myObjects[1];
+        //System.out.println(selected);
     }
 
     public void creer() {
-        if (x[0]==(Object)1) {
+        if (myObjects[0]==(Object)1) {
             System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
-            selected=ejbFacade.create((TaxeAnnuelle) x[1], selected.getAnnee());
+            ejbFacade.insertInDB(selected);
         }
     }
 
@@ -94,13 +95,14 @@ public class TaxeAnnuelleController implements Serializable {
         this.datePresentationMax = datePresentationMax;
     }
 
-    public Object getX() {
-        return x;
+    public Object[] getMyObjects() {
+        return myObjects;
     }
 
-    public void setX(Object x) {
-        this.x = (Object[]) x;
+    public void setMyObjects(Object[] myObjects) {
+        this.myObjects = myObjects;
     }
+
 
     public TaxeAnnuelleFacade getEjbFacade() {
         return ejbFacade;
@@ -188,6 +190,7 @@ public class TaxeAnnuelleController implements Serializable {
             try {
                 if (persistAction != PersistAction.DELETE) {
                     getFacade().edit(selected);
+                    
                 } else {
                         getFacade().remove(selected);
                 }
