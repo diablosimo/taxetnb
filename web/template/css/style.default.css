@@ -1645,7 +1645,7 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
 }
 
 .form-control::-webkit-input-placeholder {
-  font-size: 0.9rem;
+  font-size: 2.2rem;
   font-family: "Muli", sans-serif;
   color: #787b82;
 }

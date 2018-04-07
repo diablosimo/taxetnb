@@ -6,6 +6,7 @@
 package service;
 
 import bean.TauxTaxe;
+import bean.TaxeAnnuelle;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

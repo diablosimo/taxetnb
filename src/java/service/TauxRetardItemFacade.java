@@ -6,11 +6,11 @@
 package service;
 
 import bean.CategorieTerrain;
-import bean.TauxRetard;
 import bean.TauxRetardItem;
+import bean.TaxeAnnuelle;
 import controller.util.SearchUtil;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -54,16 +54,29 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
 
     }
 
-    TauxRetardItem findByCategorieAndDate(CategorieTerrain categorieTerrain) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public TaxeAnnuelle attachToTaxeAnnuelle(TaxeAnnuelle taxeAnnuelle) {
+        if (taxeAnnuelle != null) {
+            taxeAnnuelle.setTauxRetardItem(findCurrentOneByCategorie(taxeAnnuelle.getTerrain().getCategorieTerrain()));
+            taxeAnnuelle = calculRetard(taxeAnnuelle);
+            return taxeAnnuelle;
+        }
+        return null;
     }
 
-    TauxRetardItem findByCategorieAndDate(CategorieTerrain categorieTerrain, Date datePresentaion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    List<TauxRetard> findByMinDate(Date dateLimite, CategorieTerrain categorieTerrain) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public TaxeAnnuelle calculRetard(TaxeAnnuelle taxeAnnuelle) {
+        if (taxeAnnuelle == null) {
+            return null;
+        } else {
+            int nbMoisRetard = taxeAnnuelle.getNbrMoisRetard();
+            if (nbMoisRetard >= 1) {
+                taxeAnnuelle.setPremierMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxPremierMois().multiply(taxeAnnuelle.getMontant()));
+                if (taxeAnnuelle.getNbrMoisRetard() > 1) {
+                    taxeAnnuelle.setAutreMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxAutreMois().multiply(taxeAnnuelle.getMontant()).multiply(new BigDecimal(nbMoisRetard - 1)));
+                }
+            }
+            taxeAnnuelle.setMontantRetard(taxeAnnuelle.getPremierMoisRetard().add(taxeAnnuelle.getAutreMoisRetard()));
+            return taxeAnnuelle;
+        }
     }
 
     public TauxRetardItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain) {

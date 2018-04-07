@@ -17,27 +17,38 @@
                     <p:outputLabel value="Annee:"/>
                     <p:inputText value="#{taxeAnnuelleController.selected.annee}" title="Annee" />
                 </p:panelGrid>
-                <p:commandButton actionListener="#{taxeAnnuelleController.verifier()}" value="ok" update=":myLabel" />
-                <p:commandButton actionListener="#{taxeAnnuelleController.creer()}" value="creer" update=":infoPanel"/>
+                <p:commandButton actionListener="#{taxeAnnuelleController.verify()}" value="verifyAndCreate" update=":myLabel,:outputForm,:outputForm:outputInfo,inForm,:growl" />
+                <p:commandButton actionListener="#{taxeAnnuelleController.creer()}" id="createbtn" value="Create" update=":myLabel,:outputForm,:outputForm:outputInfo" rendered="#{taxeAnnuelleController.myObjects[0]==1}" />
+
             </h:form>
         </f:view>
-        <p:outputLabel id="myLabel" value="#{taxeAnnuelleController.x[0]}"/>
+        <p:outputLabel id="myLabel" value="#{taxeAnnuelleController.myObjects[0]}"/>
 
-        <p:panelGrid columns="2" id="infoPanel">
-            
-            <h:outputText value="nombre de mois retard" />
-            <h:outputText value="#{taxeAnnuelleController.selected.nbrMoisRetard}"/>
 
-            <h:outputText value="montant sans penalité" />
-            <h:outputText value="#{taxeAnnuelleController.selected.montant}" />
 
-            <h:outputText value="frais ajouté" />
-            <h:outputText value="#{taxeAnnuelleController.selected.montantRetard}" />
+      
 
-            <h:outputText value="montant total" />
-            <h:outputText value="#{taxeAnnuelleController.selected.montantTotal}" />
-        </p:panelGrid>
+
+            <h:form id="outputForm" rendered="#{taxeAnnuelleController.myObjects[0]==1}" >
+                <h1><h:outputText value="Create/Edit"/></h1>
+                <p:panelGrid id="outputInfo" columns="2">
+
+                    <h:outputText value="nombre de mois retard" />
+                    <h:outputText value="#{taxeAnnuelleController.selected.nbrMoisRetard}"/>
+
+                    <h:outputText value="montant sans penalité" />
+                    <h:outputText value="#{taxeAnnuelleController.selected.montant}" />
+
+                    <h:outputText value="frais ajouté" />
+                    <h:outputText value="#{taxeAnnuelleController.selected.montantRetard}" />
+
+                    <h:outputText value="montant total" />
+                    <h:outputText value="#{taxeAnnuelleController.selected.montantTotal}" />
+                </p:panelGrid>
+                <p:commandButton actionListener="#{taxeAnnuelleController.creer()}" value="creer"/>
+
+            </h:form>
+        
 
     </h:body>
 </html>
-
