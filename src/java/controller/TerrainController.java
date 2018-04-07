@@ -6,6 +6,7 @@ import controller.util.JsfUtil.PersistAction;
 import service.TerrainFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -25,10 +26,14 @@ public class TerrainController implements Serializable {
 
     @EJB
     private service.TerrainFacade ejbFacade;
-    private List<Terrain> items = null;
+    private List<Terrain> items;
     private Terrain selected;
     private int x=0;
 
+    public void testQ(){
+        items=ejbFacade.testQ();
+    }
+    
     public void quitancer(){
         x=ejbFacade.quitancer(selected.getNumeroLot());
     }
@@ -92,7 +97,7 @@ public class TerrainController implements Serializable {
 
     public List<Terrain> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items = new ArrayList();
         }
         return items;
     }

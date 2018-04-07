@@ -28,14 +28,14 @@ public class TaxeAnnuelle implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int annee;
-    private BigDecimal montant;//taux*surface
+    private BigDecimal montant=new BigDecimal("0.00");//taux*surface
     private int nbrMoisRetard;
-    private BigDecimal premierMoisRetard;   //tauxPremierMois*montant
-    private BigDecimal autreMoisRetard;     //tauxAutreMois*nbrMoisRetard
-    private BigDecimal montantRetard;       //premierMoisRetard+autreMoisRetard
-    private BigDecimal montantTotal;        //montant+premierMoisRetard+autreMoisRetard
+    private BigDecimal premierMoisRetard=new BigDecimal("0.00");   //tauxPremierMois*montant
+    private BigDecimal autreMoisRetard=new BigDecimal("0.00");     //tauxAutreMois*nbrMoisRetard
+    private BigDecimal montantRetard=new BigDecimal("0.00");       //premierMoisRetard+autreMoisRetard
+    private BigDecimal montantTotal=new BigDecimal("0.00");        //montant+premierMoisRetard+autreMoisRetard
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date datePresentaion;
+    private Date datePresentaion=new Date();
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateTaxe;
     @ManyToOne

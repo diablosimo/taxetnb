@@ -16,6 +16,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -38,21 +39,29 @@ public class TaxeAnnuelleController implements Serializable {
 
     @EJB
     private service.TerrainFacade terrainFacade;
-    private Object[] myObjects= new Object[2];
+    private Object[] myObjects= new Object[]{1,null};
+    private Boolean simuler=true;
 
-    public void verifyAndCreate() {
+    public void verify() {
         myObjects = ejbFacade.verifyAndCreate(selected, selected.getAnnee());
         selected=(TaxeAnnuelle) myObjects[1];
+        if(selected==null){
+            addMessage("vous pouvez effectué le paiement");
+        }
         //System.out.println(selected);
     }
 
     public void creer() {
         if (myObjects[0]==(Object)1) {
             System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
-            ejbFacade.insertInDB(selected);
+            selected=ejbFacade.create(selected, simuler);
         }
     }
-
+public void addMessage(String summary) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+    
 //    public void creer(){
 //        x=ejbFacade.create(selected, selected.getAnnee());
 //    }
@@ -79,6 +88,15 @@ public class TaxeAnnuelleController implements Serializable {
         this.terrainFacade = terrainFacade;
     }
 
+    public Boolean getSimuler() {
+        return simuler;
+    }
+
+    public void setSimuler(Boolean simuler) {
+        this.simuler = simuler;
+    }
+
+    
     public Date getDatePresentationMin() {
         return datePresentationMin;
     }

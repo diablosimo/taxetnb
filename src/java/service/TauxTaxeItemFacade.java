@@ -7,6 +7,7 @@ package service;
 
 import bean.CategorieTerrain;
 import bean.TauxTaxeItem;
+import bean.TaxeAnnuelle;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -32,23 +33,26 @@ public class TauxTaxeItemFacade extends AbstractFacade<TauxTaxeItem> {
         super(TauxTaxeItem.class);
     }
 
-    TauxTaxeItem findByCategorieAndDate(CategorieTerrain categorieTerrain) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    TauxTaxeItem findByCategorieAndDate(CategorieTerrain categorieTerrain, Date dateTaxe) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public TauxTaxeItem findByCategorie(CategorieTerrain categorieTerrain) {
-        System.out.println("ha debut diyal findtTTIByCat "+categorieTerrain.toString());
-        List<TauxTaxeItem> lst = em.createQuery("SELECT t FROM TauxTaxeItem t WHERE t.categorieTerrain.id='"+categorieTerrain.getId()+"'").getResultList();
-        System.out.println("ha tauxTaxe "+ lst);
+        System.out.println("ha debut diyal findtTTIByCat " + categorieTerrain.toString());
+        List<TauxTaxeItem> lst = em.createQuery("SELECT t FROM TauxTaxeItem t WHERE t.categorieTerrain.id='" + categorieTerrain.getId() + "'").getResultList();
+        System.out.println("ha tauxTaxe " + lst);
         if (lst != null && !lst.isEmpty()) {
             return lst.get(0);
         } else {
             return null;
         }
+    }
+
+    
+
+    public TaxeAnnuelle attachToTaxeAnnuelle(TaxeAnnuelle taxeAnnuelle) {
+        if (taxeAnnuelle != null) {
+            taxeAnnuelle.setTauxTaxeItem(findByCategorie(taxeAnnuelle.getTerrain().getCategorieTerrain()));
+            taxeAnnuelle.setMontant(taxeAnnuelle.getTauxTaxeItem().getTaux().multiply(taxeAnnuelle.getTerrain().getSurface()));
+            return taxeAnnuelle;
+        }
+        return null;
     }
 
 }

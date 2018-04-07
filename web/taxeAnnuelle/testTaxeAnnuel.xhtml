@@ -17,7 +17,9 @@
                     <p:outputLabel value="Annee:"/>
                     <p:inputText value="#{taxeAnnuelleController.selected.annee}" title="Annee" />
                 </p:panelGrid>
-                <p:commandButton actionListener="#{taxeAnnuelleController.verifyAndCreate()}" value="verifyAndCreate" update=":myLabel,:outputForm,:outputForm:outputInfo" />
+                <p:commandButton actionListener="#{taxeAnnuelleController.verify()}" value="verifyAndCreate" update=":myLabel,:outputForm,:outputForm:outputInfo,inForm,:growl" />
+                <p:commandButton actionListener="#{taxeAnnuelleController.creer()}" id="createbtn" value="Create" update=":myLabel,:outputForm,:outputForm:outputInfo" rendered="#{taxeAnnuelleController.myObjects[0]==1}" />
+
             </h:form>
         </f:view>
         <p:outputLabel id="myLabel" value="#{taxeAnnuelleController.myObjects[0]}"/>
