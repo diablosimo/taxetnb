@@ -10,9 +10,15 @@
     <h:body>
 
         <h:form id="inForm">
+            <div></div>
+            <p:growl id="msgs" showDetail="true" />
             <h1><h:outputText value="Create/Edit"/></h1>
             <p:panelGrid columns="2">
-                
+                <p:selectOneMenu id="typeRedevable" class="form-control" value="#{taxeAnnuelleController.typeRedevable}"  >
+                                    <f:selectItem itemLabel="type" itemValue="#{null}" />
+                                    <f:selectItem itemLabel="Moral" itemValue="Moral" />
+                                    <f:selectItem itemLabel="Physique" itemValue="Physique" />
+                                </p:selectOneMenu>
                 <p:outputLabel value="DatePresentaionMin:" for="button" />
                 <p:calendar id="button" value="#{taxeAnnuelleController.datePresentationMin}" showOn="button" />                
 
@@ -42,7 +48,7 @@
                 <p:outputLabel value="secteur" for="secteur" />
                 <p:inputText id="secteur" value="#{taxeAnnuelleController.selected.terrain.rue.quartier.secteur.codePostal}" title="secteur" />
             </p:panelGrid>
-            <p:commandButton actionListener="#{taxeAnnuelleController.findByAllCriteria()}" value="ok" update=":outForm:dataListForm"/>
+            <p:commandButton actionListener="#{taxeAnnuelleController.findByAllCriteria()}" onclick="rc()" value="ok" update=":outForm:dataListForm"/>
         </h:form>
 
         <f:view>

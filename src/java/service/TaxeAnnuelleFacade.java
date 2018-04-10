@@ -62,11 +62,14 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         return em.createQuery(req).getResultList();
     }
 
-    public List<TaxeAnnuelle> findByAllCriteria(Date datePresentationMin, Date datePresentationMax,
+    public List<TaxeAnnuelle> findByAllCriteria(Date datePresentationMin, Date datePresentationMax,int annee,
             BigDecimal montantMin, BigDecimal montantMax,
             Long numLot, String cin, String nif, CategorieTerrain categorieTerrain,
             Rue rue, Quartier quartier, Secteur secteur) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
+        if (annee > 0) {
+            req += SearchUtil.addConstraint("ta", "annee", "=", annee);
+        }
         req += SearchUtil.addConstraintMinMaxDate("ta", "datePresentaion", datePresentationMin, datePresentationMax);
         req += SearchUtil.addConstraintMinMax("ta", "montantTotal", montantMin, montantMax);
         req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numLot);
@@ -92,6 +95,26 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
             req += SearchUtil.addConstraint("ta", "terrain.rue.id", "=", rue.getId());
             System.out.println("+requette de la rue <" + rue.getId() + ">");
 
+        }
+        return em.createQuery(req).getResultList();
+    }
+    //pour la recherche des paiement coté utilisateur
+    public List<TaxeAnnuelle> findByCriteria(Date datePresentationMin, Date datePresentationMax,int annee,
+            BigDecimal montantMin, BigDecimal montantMax,
+            Long numLot, String cin, String nif) {
+        String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
+        if (annee > 0) {
+            req += SearchUtil.addConstraint("ta", "annee", "=", annee);
+            System.out.println("hani f req annee");
+        }
+        req += SearchUtil.addConstraintMinMaxDate("ta", "datePresentaion", datePresentationMin, datePresentationMax);
+        req += SearchUtil.addConstraintMinMax("ta", "montantTotal", montantMin, montantMax);
+        req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numLot);
+        if (!cin.equals("")) {
+            req += SearchUtil.addConstraint("ta", "terrain.redevable.cin", "=", cin);
+        }
+        if (!nif.equals("")) {
+            req += SearchUtil.addConstraint("ta", "terrain.redevable.nif", "=", nif);
         }
         return em.createQuery(req).getResultList();
     }
@@ -155,10 +178,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (taxeAnnuelle == null) {
             return null;
         } else {
-            taxeAnnuelle = tauxTaxeItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
-            System.out.println("ha taux TAXE ITEM" + taxeAnnuelle.getTauxTaxeItem().toString());
-            taxeAnnuelle = tauxRetardItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
-            System.out.println("ha taux RETARD ITEM " + taxeAnnuelle.getTauxRetardItem().toString());
             taxeAnnuelle = calcul(taxeAnnuelle);
             if (simuler == false) {
                 create(taxeAnnuelle);
@@ -174,6 +193,10 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (taxeAnnuelle == null) {
             return null;
         } else {
+            taxeAnnuelle = tauxTaxeItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
+            System.out.println("ha taux TAXE ITEM" + taxeAnnuelle.getTauxTaxeItem().toString());
+            taxeAnnuelle = tauxRetardItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
+            System.out.println("ha taux RETARD ITEM " + taxeAnnuelle.getTauxRetardItem().toString());
             taxeAnnuelle.setMontantTotal(taxeAnnuelle.getMontant().add(taxeAnnuelle.getMontantRetard()));
             return taxeAnnuelle;
         }

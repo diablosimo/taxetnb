@@ -1,5 +1,6 @@
 package controller.util;
 
+import bean.Redevable;
 import bean.Utilisateur;
 import java.io.IOException;
 import javax.faces.context.FacesContext;
@@ -16,10 +17,19 @@ public class SessionUtil {
         //clone user before
         setAttribute("user", user);
     }
+    public static void registerRedevable(Redevable redevable) {
+        //clone user before
+        setAttribute("connectedRedevable", redevable);
+    }
+    public static Redevable getConnectedRedevable() {
+        return (Redevable) getAttribute("connectedRedevable");
+    }
 
     public static Utilisateur getConnectedUser() {
         return (Utilisateur) getAttribute("user");
     }
+    
+    
 
     public static void setAttribute(String cle, Object valeur) {
         FacesContext fc = FacesContext.getCurrentInstance();

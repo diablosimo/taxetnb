@@ -178,6 +178,7 @@ public class Terrain implements Serializable {
     @Override
     public String toString() {
         return "Terrain{" + "numeroLot=" + numeroLot + '}';
+        //return numeroLot+", "+cpAdresse+", "+rue.getNom()+", "+rue.getQuartier().getNom()+", "+rue.getQuartier().getSecteur().getNom();
     }
 
     

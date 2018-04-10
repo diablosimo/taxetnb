@@ -32,39 +32,43 @@ public class TaxeAnnuelleController implements Serializable {
     private List<TaxeAnnuelle> items = null;
     private TaxeAnnuelle selected;
 
+    private int typeRedevable = 0;
+    private String cin = "";
+    private String nif = "";
+    private Long numLot;
     private BigDecimal montantMin;
     private BigDecimal montantMax;
+    private int annee;
     private Date datePresentationMin;
     private Date datePresentationMax;
 
     @EJB
     private service.TerrainFacade terrainFacade;
-    private Object[] myObjects= new Object[]{1,null};
-    private Boolean simuler=true;
+    private Object[] myObjects = new Object[]{1, null};
+    private Boolean simuler = true;
 
     public void verify() {
         myObjects = ejbFacade.verifyAndCreate(selected, selected.getAnnee());
-        selected=(TaxeAnnuelle) myObjects[1];
-        if(selected==null){
-            addMessage("vous pouvez effectué le paiement");
+        selected = (TaxeAnnuelle) myObjects[1];
+        if (myObjects[0] == (Object) 1) {
+            execute("Paiement Autorisé","");
         }
         //System.out.println(selected);
     }
 
-    public void creer() {
-        if (myObjects[0]==(Object)1) {
-            System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
-            selected=ejbFacade.create(selected, simuler);
+    public void calcul() {
+        if (myObjects[0] == (Object) 1) {
+            selected = ejbFacade.calcul(selected);
         }
     }
-public void addMessage(String summary) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
-        FacesContext.getCurrentInstance().addMessage(null, message);
+
+    public void payer() {
+        if (myObjects[0] == (Object) 1) {
+            System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
+            selected = ejbFacade.create(selected, simuler);
+        }
     }
-    
-//    public void creer(){
-//        x=ejbFacade.create(selected, selected.getAnnee());
-//    }
+
     public void findByTerrain() {
         System.out.println(selected.getTerrain());
         items = ejbFacade.findByTerrain(selected.getTerrain());
@@ -77,7 +81,52 @@ public void addMessage(String summary) {
     }
 
     public void findByAllCriteria() {
-        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getTerrain().getRedevable().getCin(), selected.getTerrain().getRedevable().getNif(), selected.getTerrain().getCategorieTerrain(), selected.getTerrain().getRue(), selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur());
+        items = ejbFacade.findByCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif);
+        JsfUtil.addSuccessMessage("hello");
+        System.out.println("successfoul" + datePresentationMin);
+        System.out.println(annee);
+    }
+public void execute(String title, String message) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, title, message));
+    }
+    public int getTypeRedevable() {
+        return typeRedevable;
+    }
+
+    public void setTypeRedevable(int typeRedevable) {
+        this.typeRedevable = typeRedevable;
+    }
+
+    public String getCin() {
+        return cin;
+    }
+
+    public void setCin(String cin) {
+        this.cin = cin;
+    }
+
+    public String getNif() {
+        return nif;
+    }
+
+    public void setNif(String nif) {
+        this.nif = nif;
+    }
+
+    public Long getNumLot() {
+        return numLot;
+    }
+
+    public void setNumLot(Long numLot) {
+        this.numLot = numLot;
+    }
+
+    public int getAnnee() {
+        return annee;
+    }
+
+    public void setAnnee(int annee) {
+        this.annee = annee;
     }
 
     public TerrainFacade getTerrainFacade() {
@@ -96,7 +145,6 @@ public void addMessage(String summary) {
         this.simuler = simuler;
     }
 
-    
     public Date getDatePresentationMin() {
         return datePresentationMin;
     }
@@ -120,7 +168,6 @@ public void addMessage(String summary) {
     public void setMyObjects(Object[] myObjects) {
         this.myObjects = myObjects;
     }
-
 
     public TaxeAnnuelleFacade getEjbFacade() {
         return ejbFacade;
@@ -208,9 +255,9 @@ public void addMessage(String summary) {
             try {
                 if (persistAction != PersistAction.DELETE) {
                     getFacade().edit(selected);
-                    
+
                 } else {
-                        getFacade().remove(selected);
+                    getFacade().remove(selected);
                 }
                 JsfUtil.addSuccessMessage(successMessage);
             } catch (EJBException ex) {

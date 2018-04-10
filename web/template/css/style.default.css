@@ -1631,6 +1631,13 @@ nav#sidebar.shrinked a[aria-expanded="true"]::after {
 *     FORMS 
 * ==========================================================
 */
+.xxx {
+  border: 1px solid #444951;
+  background: transparent;
+  border-radius: 0;
+  color: #979a9f;
+}
+
 .form-control {
   border: 1px solid #444951;
   background: transparent;
