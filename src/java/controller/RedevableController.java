@@ -1,8 +1,11 @@
 package controller;
 
 import bean.Redevable;
+import controller.util.HashageUtil;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
+import controller.util.SessionUtil;
+import java.io.IOException;
 import service.RedevableFacade;
 
 import java.io.Serializable;
@@ -28,10 +31,25 @@ public class RedevableController implements Serializable {
     private List<Redevable> items = null;
     private Redevable selected;
 
+    public String connexion() throws IOException {
+        int res = ejbFacade.seConnecter(selected);
+        if (res < 0) {
+            JsfUtil.addErrorMessage("mot de pqsse incorrect");
+            return null;
+        } else {
+            SessionUtil.registerRedevable(selected);
+            JsfUtil.addErrorMessage("Mot de passe correct");
+            return "List";
+        }
+    }
+
     public RedevableController() {
     }
 
     public Redevable getSelected() {
+        if (selected == null) {
+            selected = new Redevable();
+        }
         return selected;
     }
 
@@ -86,6 +104,7 @@ public class RedevableController implements Serializable {
             setEmbeddableKeys();
             try {
                 if (persistAction != PersistAction.DELETE) {
+                    selected.setMotDePasse(HashageUtil.sha256(selected.getMotDePasse()));
                     getFacade().edit(selected);
                 } else {
                     getFacade().remove(selected);
