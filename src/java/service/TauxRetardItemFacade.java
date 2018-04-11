@@ -9,7 +9,9 @@ import bean.CategorieTerrain;
 import bean.TauxRetard;
 import bean.TauxRetardItem;
 import controller.util.SearchUtil;
+import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,7 +22,10 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
-
+    
+    @EJB
+    private TauxRetardFacade tauxRetardFacade;
+    
     @PersistenceContext(unitName = "taxeTNBPU")
     private EntityManager em;
 
@@ -47,23 +52,33 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
             return 1;
         }
     }
-    public TauxRetard findByCategorie(CategorieTerrain categorie) {
-        String reqette = "SELECT t FROM TauxTaxeRetardItem t WHERE t.categorie.id=" + categorie.getId();
-        List<TauxRetard> lst = em.createQuery(reqette).getResultList();
-        if (lst != null && !lst.isEmpty()) {
-            return lst.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    public List<TauxRetardItem> findByCrit(Double pMin, Double pMax, Double paMin, Double paMax) {
+  
+  public TauxRetardItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain){
+      List<TauxRetardItem> tauxRetardItems=tauxRetardFacade.findCurrentOne().getTauxRetardItems();
+      for (int i = 0; i < tauxRetardItems.size(); i++) {
+          TauxRetardItem get = tauxRetardItems.get(i);
+          if(get.getCategorieTerrain().getNom().equals(categorieTerrain.getNom())){
+              return get;
+          }
+      }
+      return null;
+  }
+  
+  
+    
+    public List<TauxRetardItem> findByCrit(Double premierMin,Double premierMax,Double autreMin,Double autreMax) {
 
         String reqette = "SELECT t FROM TauxTaxeRetardItem t WHERE 1=1 ";
 
-        reqette += SearchUtil.addConstraintMinMax("t", "tauxPremierMois", pMin, pMax);
-        reqette += SearchUtil.addConstraintMinMax("t", "tauxAutreMois", paMin, paMax);
+        reqette += SearchUtil.addConstraintMinMax("t", "tauxPremierMois", premierMin, premierMax);
+        reqette += SearchUtil.addConstraintMinMax("t", "tauxAutreMois", autreMin, autreMax);
         return em.createQuery(reqette).getResultList();
+
+    }
+    public List<TauxRetardItem> findByTauxRetard(TauxRetard tauxRetard) {
+
+        String reqette = "SELECT t FROM TauxRetardItem t WHERE t.tauxRetard.id="+tauxRetard.getId()+"";
+ return em.createQuery(reqette).getResultList();
 
     }
 

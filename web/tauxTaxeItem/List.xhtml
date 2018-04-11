@@ -14,8 +14,34 @@
         </ui:define>
 
         <ui:define name="body">
-            <h:form id="TauxTaxeItemListForm">
-                <p:panel header="#{bundle.ListTauxTaxeItemTitle}">
+         
+                <f:view>
+
+
+                <h:form>
+                    <h1><h:outputText value="Chercher Les Taux De Taxe Items "/></h1>
+                    <p:panelGrid columns="2">
+                    
+                      <h:outputLabel value="premierMoisMin:" for="tauxMin" />
+                      <p:inputText id="tauxMin" value="#{tauxTaxeItemController.tauxMin}"  />
+                        <h:outputLabel value="premierMoisMax:" for="tauxMax" />
+                        <p:inputText id="tauxMax" value="#{tauxTaxeItemController.tauxMax}"  />
+                        
+                    </p:panelGrid>
+                
+                    <p:commandButton value="Checher"  actionListener="#{tauxTaxeItemController.findByTauMxMn()}" update=":TauxTaxeItemListForm:datalist"></p:commandButton>
+                 
+                    
+                    
+                </h:form>
+                 </f:view>
+                    
+                    
+                    
+                    
+                       <h:form id="TauxTaxeItemListForm">
+                    
+                     <p:panel header="#{bundle.ListTauxTaxeItemTitle}">
                     <p:dataTable id="datalist" value="#{tauxTaxeItemController.items}" var="item"
                                  selectionMode="single" selection="#{tauxTaxeItemController.selected}"
                                  paginator="true"

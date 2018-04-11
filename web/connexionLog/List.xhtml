@@ -14,6 +14,44 @@
         </ui:define>
 
         <ui:define name="body">
+            
+              <f:view>
+
+
+                <h:form>
+                    <h1><h:outputText  value="   Historique de Connexion  "/></h1>
+                    <p:panelGrid columns="2">
+              
+                        
+                        <p:outputLabel value="Log: " for="type"/>
+                        <p:selectOneMenu id="type" value="#{connexionLogController.type}" >
+                                <f:selectItem itemValue="0" itemLabel="--Select--"/>
+                                <f:selectItem  itemValue="1"  itemLabel="connexion" />
+                                <f:selectItem  itemValue="2" itemLabel="deconnexion" />
+                              
+                            </p:selectOneMenu>
+
+                        <p:outputLabel value="dateMin" for="dateMin" />
+                        <p:calendar id="dateMin" pattern="MM/dd/yyyy" value="#{connexionLogController.dateMin}" title="dateMa}"  showOn="button"/>
+                        <p:outputLabel value="dateMax" for="dateMax" />
+                        <p:calendar id="dateMax" pattern="MM/dd/yyyy" value="#{connexionLogController.dateMax}" title="dateMin"  showOn="button"/>
+                      
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{connexionLogController.stalkConnect()}" value="Chercher" update=":ConnexionLogListForm:datalist" />
+                     
+                    
+                    
+                       </h:form>
+                   
+                   
+            </f:view>
+            
+            
+            
+            
+            
+            
+            
             <h:form id="ConnexionLogListForm">
                 <p:panel header="#{bundle.ListConnexionLogTitle}">
                     <p:dataTable id="datalist" value="#{connexionLogController.items}" var="item"

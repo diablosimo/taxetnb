@@ -14,6 +14,35 @@
         </ui:define>
 
         <ui:define name="body">
+             <f:view>
+
+
+                <h:form>
+                    <h1><h:outputText value="   Historique  "/></h1>
+                    <p:panelGrid columns="2">
+              
+                        
+                        <p:outputLabel value="type: " for="type"/>
+                        <p:selectOneMenu id="type" value="#{historiqueController.type}" >
+                                <f:selectItem itemValue="0" itemLabel="--Select--"/>
+                                <f:selectItem  itemValue="1"  itemLabel="create" />
+                                <f:selectItem  itemValue="2" itemLabel="delete" />
+                                <f:selectItem  itemValue="3" itemLabel="update" />
+                            </p:selectOneMenu>
+
+                        <p:outputLabel value="dateMin" for="dateMin" />
+                        <p:calendar id="dateMin" pattern="MM/dd/yyyy" value="#{historiqueController.dateMin}" title="dateMa}"  showOn="button"/>
+                        <p:outputLabel value="dateMax" for="dateMax" />
+                        <p:calendar id="dateMax" pattern="MM/dd/yyyy" value="#{historiqueController.dateMax}" title="dateMin"  showOn="button"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{historiqueController.stalk()}" value="Chercher" update=":HistoriqueListForm:datalist" />
+                     
+                    
+                    
+                       </h:form>
+                   
+                   
+            </f:view>
             <h:form id="HistoriqueListForm">
                 <p:panel header="#{bundle.ListHistoriqueTitle}">
                     <p:dataTable id="datalist" value="#{historiqueController.items}" var="item"

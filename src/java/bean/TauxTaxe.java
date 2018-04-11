@@ -30,7 +30,7 @@ public class TauxTaxe implements Serializable {
     private Long id;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateApplication;
-    @OneToMany(mappedBy = "tauxTaxe")
+@OneToMany(mappedBy = "tauxTaxe")
     private List<TauxTaxeItem> tauxTaxeItems;
 
     public TauxTaxe() {

@@ -38,14 +38,14 @@ public class HistoriqueFacade extends AbstractFacade<Historique> {
 
     public List<Historique> rechercher(Date dateMin, Date dateMax, int type, Utilisateur user) {
         String requette = "SELECT h FROM Historique h where  1=1 ";
-        requette += SearchUtil.addConstraintMinMaxDate("h", "dateAction", dateMin, dateMax);
+        requette += SearchUtil.addConstraintMinMaxDate("h", "actionDate", dateMin, dateMax);
         if (type != 0) {
             requette += SearchUtil.addConstraint("h", "type", "=", type);
         }
         if (user != null) {
-            requette += SearchUtil.addConstraint("h", "user.matricule", "=", user.getMatricule());
+            requette += SearchUtil.addConstraint("h", "utilisateur.matricule", "=", user.getMatricule());
         }
-        requette+=" ORDER BY h.dateAction DESC";
+        requette+=" ORDER BY h.actionDate DESC";
         
         return em.createQuery(requette).getResultList();
 

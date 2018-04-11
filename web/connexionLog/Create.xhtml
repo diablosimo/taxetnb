@@ -25,7 +25,7 @@
                                            itemValue="#{utilisateurItem}"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{connexionLogController.create}" value="#{bundle.Save}" update="display,:ConnexionLogListForm:datalist,:growl" oncomplete="handleSubmit(args,'ConnexionLogCreateDialog');"/>
+                    <p:commandButton actionListener="#{connexionLogController.create}" value="#{bundle.Save}" update=":ConnexionLogListForm:datalist" oncomplete="handleSubmit(args,'ConnexionLogCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="ConnexionLogCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>

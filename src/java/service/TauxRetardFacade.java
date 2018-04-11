@@ -44,12 +44,19 @@ public class TauxRetardFacade extends AbstractFacade<TauxRetard> {
         }
     }
     
-      public List<TauxRetard> findByDate(Date DMin,Date DMax) {
+      public List<TauxRetard> findByDate(Date dMin,Date dMax) {
         
         String reqette = "SELECT t FROM TauxRetard t WHERE 1=1 ";
         
-        reqette+=SearchUtil.addConstraintMinMaxDate("t","dateApplication", DMin, DMax);
+        reqette+=SearchUtil.addConstraintMinMaxDate("t","dateApplication", dMin, dMax);
         return em.createQuery(reqette).getResultList();
         
     }
+      public TauxRetard findCurrentOne(){
+         List<TauxRetard> res=em.createQuery("SELECT tr FROM TauxRetard tr ORDER BY tr.dateApplication DESC").getResultList();
+         if(res!=null && res.isEmpty()!=true){
+             return res.get(0);
+         }
+         return null;
+      }
 }

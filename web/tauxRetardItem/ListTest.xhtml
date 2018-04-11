@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <f:view>
+
+ <h:form>
+                    <h1><h:outputText value="Rechercher Les Taux De Retard Items"/></h1>
+                    <p:panelGrid columns="4">
+                        <h:outputLabel value="premierMoisMin:" for="premierMin" />
+                        <p:inputText id="premiereMin" value="#{tauxRetardItemController.premierMin}"  />
+                        <h:outputLabel value="premierMoisMax:" for="premiereMax" />
+                        <p:inputText id="premiereMax" value="#{tauxRetardItemController.premierMax}"  />
+                        <h:outputLabel value="autreMoisMin:" for="autreMin" />
+                        <p:inputText id="autreMin" value="#{tauxRetardItemController.autreMin}"  />
+                        <h:outputLabel value="autreMoisMax:" for="autreMax" />
+                        <p:inputText id="autreMax" value="#{tauxRetardItemController.autreMax}"  />
+
+                    </p:panelGrid>
+
+                 
+                    <p:commandButton value="Rechecher" actionListener="#{tauxRetardItemController.findByMaxMin()}" update=":TauxRetardItemListForm:datalist"></p:commandButton>
+             
+                </h:form>
+            <h:form id="TauxRetardItemListForm">
+                <h1><h:outputText id="datalist" value="List"/></h1>
+                <p:dataTable value="#{tauxRetardItemController.items}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="TauxPremierMois"/>
+                        </f:facet>
+                        <h:outputText value="#{item.tauxPremierMois}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="TauxAutreMois"/>
+                        </f:facet>
+                        <h:outputText value="#{item.tauxAutreMois}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="TauxRetard"/>
+                        </f:facet>
+                        <h:outputText value="#{item.tauxRetard}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CategorieTerrain"/>
+                        </f:facet>
+                        <h:outputText value="#{item.categorieTerrain}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </f:view>
+
+    </h:body>
+</html>
+

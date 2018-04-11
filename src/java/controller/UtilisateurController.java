@@ -30,7 +30,16 @@ public class UtilisateurController implements Serializable {
 
     public UtilisateurController() {
     }
-
+public String chi7aja(List<Utilisateur>items){
+    for (int i = 0; i < items.size(); i++) {
+        Utilisateur user= items.get(i);
+        if(user!=null){
+            return user.getMatricule();
+        }
+    }
+ 
+        return null;
+}
     public Utilisateur getSelected() {
         return selected;
     }

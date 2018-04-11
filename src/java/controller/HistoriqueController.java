@@ -1,11 +1,14 @@
 package controller;
 
 import bean.Historique;
+import bean.Utilisateur;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
 import service.HistoriqueFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -27,12 +30,52 @@ public class HistoriqueController implements Serializable {
     private service.HistoriqueFacade ejbFacade;
     private List<Historique> items = null;
     private Historique selected;
-
+    private Date dateMin;
+    private Date dateMax;
+    private Utilisateur user;
+    private int type;
+    
     public HistoriqueController() {
+    }
+    
+public void stalk(){
+    items=ejbFacade.rechercher(dateMin, dateMax,type, user);
+}
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public Historique getSelected() {
         return selected;
+    }
+
+    public Date getDateMin() {
+        return dateMin;
+    }
+
+    public void setDateMin(Date dateMin) {
+        this.dateMin = dateMin;
+    }
+
+    public Date getDateMax() {
+        return dateMax;
+    }
+
+    public void setDateMax(Date dateMax) {
+        this.dateMax = dateMax;
+    }
+
+    public Utilisateur getUser() {
+        return user;
+    }
+
+    public void setUser(Utilisateur user) {
+        this.user = user;
     }
 
     public void setSelected(Historique selected) {
@@ -76,7 +119,8 @@ public class HistoriqueController implements Serializable {
 
     public List<Historique> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items = new ArrayList<>();
+         
         }
         return items;
     }

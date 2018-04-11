@@ -1,5 +1,6 @@
 package controller;
 
+import bean.TauxRetard;
 import bean.TauxRetardItem;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
@@ -27,12 +28,54 @@ public class TauxRetardItemController implements Serializable {
     private service.TauxRetardItemFacade ejbFacade;
     private List<TauxRetardItem> items = null;
     private TauxRetardItem selected;
-
+    private Double premierMin;
+    private Double premierMax;
+    private Double autreMin;
+    private Double autreMax;
+   
     public TauxRetardItemController() {
     }
 
+  
+    
+public void findByMaxMin(){
+   items=ejbFacade.findByCrit(premierMin, premierMax,autreMin, autreMax);
+}
+
     public TauxRetardItem getSelected() {
         return selected;
+    }
+
+    public Double getPremierMin() {
+        return premierMin;
+    }
+
+    public void setPremierMin(Double premierMin) {
+        this.premierMin = premierMin;
+    }
+
+    public Double getPremierMax() {
+        return premierMax;
+    }
+
+    public void setPremierMax(Double premierMax) {
+        this.premierMax = premierMax;
+    }
+
+    public Double getAutreMin() {
+        return autreMin;
+    }
+
+    public void setAutreMin(Double autreMin) {
+        this.autreMin = autreMin;
+    }
+
+    public Double getAutreMax() {
+        return autreMax;
+    }
+
+    public void setAutreMax(Double autreMax) {
+        this.autreMax = autreMax;
     }
 
     public void setSelected(TauxRetardItem selected) {

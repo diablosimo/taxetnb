@@ -14,7 +14,35 @@
         </ui:define>
 
         <ui:define name="body">
-            <h:form id="TauxRetardItemListForm">
+            
+            <f:view>
+
+
+                <h:form>
+                    <h1><h:outputText value="Rechercher Les Taux De Retard Items"/></h1>
+                    <p:panelGrid columns="4">
+                        <h:outputLabel value="premierMoisMin:" for="premierMin" />
+                        <p:inputText id="premiereMin" value="#{tauxRetardItemController.premierMin}"  />
+                        <h:outputLabel value="premierMoisMax:" for="premiereMax" />
+                        <p:inputText id="premiereMax" value="#{tauxRetardItemController.premierMax}"  />
+                        <h:outputLabel value="autreMoisMin:" for="autreMin" />
+                        <p:inputText id="autreMin" value="#{tauxRetardItemController.autreMin}"  />
+                        <h:outputLabel value="autreMoisMax:" for="autreMax" />
+                        <p:inputText id="autreMax" value="#{tauxRetardItemController.autreMax}"  />
+
+                    </p:panelGrid>
+
+                 
+                    <p:commandButton value="Rechecher" actionListener="#{tauxRetardItemController.findByMaxMin()}" update=":TauxRetardItemListForm:datalist"></p:commandButton>
+             
+                </h:form>
+            </f:view>
+
+            
+            <h:form id="TauxRetardItemListForm"> 
+                
+                   
+                
                 <p:panel header="#{bundle.ListTauxRetardItemTitle}">
                     <p:dataTable id="datalist" value="#{tauxRetardItemController.items}" var="item"
                                  selectionMode="single" selection="#{tauxRetardItemController.selected}"

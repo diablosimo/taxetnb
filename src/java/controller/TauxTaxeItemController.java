@@ -1,5 +1,6 @@
 package controller;
 
+import bean.TauxTaxe;
 import bean.TauxTaxeItem;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
@@ -18,6 +19,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import service.TauxTaxeFacade;
 
 @Named("tauxTaxeItemController")
 @SessionScoped
@@ -27,10 +29,17 @@ public class TauxTaxeItemController implements Serializable {
     private service.TauxTaxeItemFacade ejbFacade;
     private List<TauxTaxeItem> items = null;
     private TauxTaxeItem selected;
-
+    private Double tauxMin;
+    private Double tauxMax;
+    TauxTaxeFacade tauxTaxeFacade;
     public TauxTaxeItemController() {
     }
-
+    
+    
+   
+ public void findByTauMxMn(){
+     items=ejbFacade.findByTauMxMn(tauxMin, tauxMax);
+ }
     public TauxTaxeItem getSelected() {
         return selected;
     }
@@ -43,6 +52,22 @@ public class TauxTaxeItemController implements Serializable {
     }
 
     protected void initializeEmbeddableKey() {
+    }
+
+    public Double getTauxMin() {
+        return tauxMin;
+    }
+
+    public void setTauxMin(Double tauxMin) {
+        this.tauxMin = tauxMin;
+    }
+
+    public Double getTauxMax() {
+        return tauxMax;
+    }
+
+    public void setTauxMax(Double tauxMax) {
+        this.tauxMax = tauxMax;
     }
 
     private TauxTaxeItemFacade getFacade() {

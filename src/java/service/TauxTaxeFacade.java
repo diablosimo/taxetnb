@@ -45,16 +45,21 @@ public class TauxTaxeFacade extends AbstractFacade<TauxTaxe> {
         }
     }
     
-  public List<TauxTaxe> findByDate(Date DMin,Date DMax) {
-        
+  public List<TauxTaxe> findByDate(Date dateMin,Date dateMax) {
         String reqette = "SELECT t FROM TauxTaxe t WHERE 1=1 ";
-        
-        reqette+=SearchUtil.addConstraintMinMaxDate("t","dateApplication", DMin, DMax);
+        reqette+=SearchUtil.addConstraintMinMaxDate("t","dateApplication", dateMin, dateMax);
         return em.createQuery(reqette).getResultList();
         
     }
     
-    
+     public TauxTaxe findCurrentOne(){
+         List<TauxTaxe> res=em.createQuery("SELECT tr FROM TauxTaxe tr ORDER BY tr.dateApplication DESC").getResultList();
+         if(res!=null && res.isEmpty()!=true){
+             return res.get(0);
+         }
+         return null;
+      }
+}
      
 
     
@@ -63,4 +68,4 @@ public class TauxTaxeFacade extends AbstractFacade<TauxTaxe> {
     
     
     
-}
+
