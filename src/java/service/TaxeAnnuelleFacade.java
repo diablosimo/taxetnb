@@ -7,6 +7,7 @@ package service;
 
 import bean.CategorieTerrain;
 import bean.Quartier;
+import bean.Redevable;
 import bean.Rue;
 import bean.Secteur;
 import bean.TaxeAnnuelle;
@@ -62,7 +63,7 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         return em.createQuery(req).getResultList();
     }
 
-    public List<TaxeAnnuelle> findByAllCriteria(Date datePresentationMin, Date datePresentationMax,int annee,
+    public List<TaxeAnnuelle> findByAllCriteria(Date datePresentationMin, Date datePresentationMax, int annee,
             BigDecimal montantMin, BigDecimal montantMax,
             Long numLot, String cin, String nif, CategorieTerrain categorieTerrain,
             Rue rue, Quartier quartier, Secteur secteur) {
@@ -98,8 +99,9 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         }
         return em.createQuery(req).getResultList();
     }
+
     //pour la recherche des paiement coté utilisateur
-    public List<TaxeAnnuelle> findByCriteria(Date datePresentationMin, Date datePresentationMax,int annee,
+    public List<TaxeAnnuelle> findByCriteria(Date datePresentationMin, Date datePresentationMax, int annee,
             BigDecimal montantMin, BigDecimal montantMax,
             Long numLot, String cin, String nif) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
@@ -116,6 +118,19 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (!nif.equals("")) {
             req += SearchUtil.addConstraint("ta", "terrain.redevable.nif", "=", nif);
         }
+        return em.createQuery(req).getResultList();
+    }
+
+    //pour la recherche des paiements coté client
+    public List<TaxeAnnuelle> findForClient(Redevable redevable, int anneeMin, int anneeMax, Long numeroLot) {
+        if (redevable == null) {
+            return null;
+        }
+        String req = "SELECT ta FROM TaxeAnnuelle ta WHERE ta.terrain.redevable.id='" + redevable.getId() + "'";
+        if (anneeMin > 0 && anneeMax > 0) {
+            req += SearchUtil.addConstraintMinMax("ta", "annee", anneeMin, anneeMax);
+        }
+        req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numeroLot);
         return em.createQuery(req).getResultList();
     }
 
@@ -210,7 +225,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
 //            terrainFacade.edit(terrain);
 //        }
 //    }
-    
     //false
 //    public TaxeAnnuelle calcul(TaxeAnnuelle taxeAnnuelle, int mois) {
 //        System.out.println("hani fl calcul");
@@ -233,7 +247,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
 //        taxeAnnuelle.setMontantTotal(taxeAnnuelle.getMontant().add(taxeAnnuelle.getMontantRetard()));
 //        return taxeAnnuelle;
 //    }
-    
 //    public TaxeAnnuelle create(TaxeAnnuelle taxeAnnuelle, int annee) {
 //        if (taxeAnnuelle == null) {
 //            return null;

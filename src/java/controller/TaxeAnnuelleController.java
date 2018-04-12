@@ -1,5 +1,6 @@
 package controller;
 
+import bean.Redevable;
 import bean.TaxeAnnuelle;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
@@ -39,6 +40,9 @@ public class TaxeAnnuelleController implements Serializable {
     private BigDecimal montantMin;
     private BigDecimal montantMax;
     private int annee;
+    private int anneeMin;
+    private int anneeMax;
+    private Redevable redevable;
     private Date datePresentationMin;
     private Date datePresentationMax;
 
@@ -51,7 +55,7 @@ public class TaxeAnnuelleController implements Serializable {
         myObjects = ejbFacade.verifyAndCreate(selected, selected.getAnnee());
         selected = (TaxeAnnuelle) myObjects[1];
         if (myObjects[0] == (Object) 1) {
-            execute("Paiement Autorisé","");
+            execute("Paiement Autorisé", "");
         }
         //System.out.println(selected);
     }
@@ -67,6 +71,11 @@ public class TaxeAnnuelleController implements Serializable {
             System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
             selected = ejbFacade.create(selected, simuler);
         }
+    }
+
+    public void findForClient(){
+      items=ejbFacade.findForClient(redevable, anneeMin, anneeMax, numLot);
+        System.out.println(items);
     }
 
     public void findByTerrain() {
@@ -86,9 +95,38 @@ public class TaxeAnnuelleController implements Serializable {
         System.out.println("successfoul" + datePresentationMin);
         System.out.println(annee);
     }
-public void execute(String title, String message) {
+
+    public void execute(String title, String message) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, title, message));
     }
+
+    public int getAnneeMin() {
+        return anneeMin;
+    }
+
+    public void setAnneeMin(int anneeMin) {
+        this.anneeMin = anneeMin;
+    }
+
+    public int getAnneeMax() {
+        return anneeMax;
+    }
+
+    public void setAnneeMax(int anneeMax) {
+        this.anneeMax = anneeMax;
+    }
+
+    public Redevable getRedevable() {
+        if (redevable == null) {
+            redevable = new Redevable();
+        }
+        return redevable;
+    }
+
+    public void setRedevable(Redevable redevable) {
+        this.redevable = redevable;
+    }
+
     public int getTypeRedevable() {
         return typeRedevable;
     }

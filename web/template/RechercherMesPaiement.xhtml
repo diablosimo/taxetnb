@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <hmeta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <title>TAXETNB.com</title>
+        <meta name="description" content=""/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="robots" content="all,follow"/>
+        <!-- Bootstrap CSS-->
+        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css"/>
+        <!-- Font Awesome CSS-->
+        <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css"/>
+        <!-- Custom Font Icons CSS-->
+        <link rel="stylesheet" href="css/font.css"/>
+        <!-- Google fonts - Muli-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700"/>
+        <!-- theme stylesheet-->
+        <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet"/>
+        <!-- Custom stylesheet - for your changes-->
+        <link rel="stylesheet" href="css/custom.css"/>
+        <!-- Favicon-->
+        <link rel="shortcut icon" href="img/logo.ico"/>
+        <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    </h:head>
+    <h:body>
+        <header class="header">   
+            <ui:include src="bars/navBar.html"/>
+        </header>
+
+        <div class="d-flex align-items-stretch">
+
+            <ui:include src="bars/ClientSideBar.html"/>
+
+
+
+
+            <!-- Sidebar Navigation end-->
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="container-fluid">
+                        <h2 class="h5 no-margin-bottom">Consulter Mes Paiements</h2>
+                    </div>
+                </div>
+                <section class="no-padding-top">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="block">
+                                    <div class="title"><strong> </strong></div>
+                                    <div class="block-body">
+                                        <h:form class="form-horizontal" id="myForm">
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 form-control-label">Infos Redevable</label>
+                                                <div class="col-sm-9">
+                                                    <div class="row">
+                                                        <p:outputLabel value="terrain:" for="terrain" class="col-sm-2 form-control-label" >Terrain: </p:outputLabel>
+                                                        <div class="col-md-10">
+                                                            <h:selectOneMenu value="#{taxeAnnuelleController.numLot}" class="form-control mb-2">
+                                                                <p:ajax update=":myForm" />
+                                                                <f:selectItem itemLabel="--SELECT TERRAIN--" value="#{null}"/>
+                                                                <f:selectItems value="#{taxeAnnuelleController.incomplete}" />
+                                                            </h:selectOneMenu>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-sm-9">
+                                                    <div class="row">
+                                                        <label class="col-sm-3 form-control-label">Annee Min: </label>
+                                                        <div class="col-md-4">
+                                                            <p:inputMask value="#{taxeAnnuelleController.anneeMin}" placeholder="Annee Min..." class="form-control" mask="9999"></p:inputMask>
+                                                        </div>
+                                                        <label class="col-sm-3 form-control-label">Annee Min: </label>
+                                                        <div class="col-md-4">
+                                                            <p:inputMask value="#{taxeAnnuelleController.anneeMax}" placeholder="Annee Max..." class="form-control" mask="9999"></p:inputMask>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="line"></div>
+                                            <div class="col-sm-9 offset-sm-3">
+                                                <div >
+                                                    <p:commandButton value="Rechercher" actionListener="#{taxeAnnuelleController.findForClient()}" class="btn btn-primary" update=":dataListForm:dataList"/>
+                                                    <p:commandButton value="Annuler"  class="btn btn-secondary" />
+                                                </div>
+                                            </div>
+                                        </h:form>
+
+                                        <div class="col-lg-6"></div>
+                                    </div>
+                                    <div class="block" align="center">
+                                        <h:form id="dataListForm">
+                                            <div class="table-responsive"> 
+                                                <p:dataTable id="dataList" value="#{taxeAnnuelleController.items}" class="table table-striped table-hover" var="item">
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Annee"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.annee}"/>
+                                                    </p:column>
+                                                    <p:column width="11%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Payée le"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.datePresentaion}">
+                                                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                                                        </h:outputText>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Terrain"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.terrain.numeroLot}"/>
+                                                    </p:column>
+                                                    <p:column width="10%">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="N°retard" title="nombre de mois en retard"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.nbrMoisRetard}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="PremierMoisRetard"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.premierMoisRetard}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="AutreMoisRetard"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.autreMoisRetard}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="MontantTotal"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.montantTotal}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Montant"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.montant}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </div>
+                                        </h:form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script src="vendor/jquery.cookie/jquery.cookie.js"></script>
+        <script src="vendor/chart.js/Chart.min.js"></script>
+        <script src="js/front.js"></script>
+    </h:body>
+</html>
+
