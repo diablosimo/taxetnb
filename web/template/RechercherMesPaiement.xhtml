@@ -58,15 +58,14 @@
                                     <div class="block-body">
                                         <h:form class="form-horizontal" id="myForm">
                                             <div class="form-group row">
-                                                <label class="col-sm-3 form-control-label">Infos Redevable</label>
                                                 <div class="col-sm-9">
                                                     <div class="row">
-                                                        <p:outputLabel value="terrain:" for="terrain" class="col-sm-2 form-control-label" >Terrain: </p:outputLabel>
+                                                        <p:outputLabel value="Terrain:" for="terrain" class="col-sm-2 form-control-label"/>
                                                         <div class="col-md-10">
-                                                            <h:selectOneMenu value="#{taxeAnnuelleController.numLot}" class="form-control mb-2">
+                                                            <h:selectOneMenu id="terrain" value="#{taxeAnnuelleController.numLot}" class="form-control mb-2">
                                                                 <p:ajax update=":myForm" />
                                                                 <f:selectItem itemLabel="--SELECT TERRAIN--" value="#{null}"/>
-                                                                <f:selectItems value="#{taxeAnnuelleController.incomplete}" />
+                                                                <f:selectItems value="#{taxeAnnuelleController.findTerrainByCinOrNif()}" />
                                                             </h:selectOneMenu>
                                                         </div>
                                                     </div>
@@ -75,11 +74,11 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-9">
                                                     <div class="row">
-                                                        <label class="col-sm-3 form-control-label">Annee Min: </label>
+                                                        <p:outputLabel value="Année min: " class="col-sm-2 form-control-label"/>
                                                         <div class="col-md-4">
                                                             <p:inputMask value="#{taxeAnnuelleController.anneeMin}" placeholder="Annee Min..." class="form-control" mask="9999"></p:inputMask>
                                                         </div>
-                                                        <label class="col-sm-3 form-control-label">Annee Min: </label>
+                                                        <p:outputLabel value="Année max: " class="col-sm-2 form-control-label"/>
                                                         <div class="col-md-4">
                                                             <p:inputMask value="#{taxeAnnuelleController.anneeMax}" placeholder="Annee Max..." class="form-control" mask="9999"></p:inputMask>
                                                         </div>
@@ -94,7 +93,6 @@
                                                 </div>
                                             </div>
                                         </h:form>
-
                                         <div class="col-lg-6"></div>
                                     </div>
                                     <div class="block" align="center">

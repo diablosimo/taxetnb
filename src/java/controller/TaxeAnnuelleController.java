@@ -1,13 +1,21 @@
 package controller;
 
+import bean.CategorieTerrain;
+import bean.Quartier;
 import bean.Redevable;
+import bean.Rue;
+import bean.Secteur;
 import bean.TaxeAnnuelle;
+import bean.Terrain;
+import bean.Utilisateur;
+import controller.util.EmailUtil;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
+import java.io.IOException;
 import service.TaxeAnnuelleFacade;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -17,11 +25,12 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.mail.MessagingException;
+import net.sf.jasperreports.engine.JRException;
 import service.TerrainFacade;
 
 @Named("taxeAnnuelleController")
@@ -42,22 +51,26 @@ public class TaxeAnnuelleController implements Serializable {
     private int annee;
     private int anneeMin;
     private int anneeMax;
-    private Redevable redevable;
     private Date datePresentationMin;
     private Date datePresentationMax;
+    private Redevable redevable;
+    private CategorieTerrain categorieTerrain;
+    private Rue rue;
+    private Quartier quartier;
+    private Secteur secteur;
+    private Utilisateur utilisateur;
+    private List<Terrain> terrains;
+    private Object[] myObjects = new Object[]{0, null};
+    private Boolean simuler = true;
 
     @EJB
     private service.TerrainFacade terrainFacade;
-    private Object[] myObjects = new Object[]{1, null};
-    private Boolean simuler = true;
 
+/////Methodes/////////////////////// 
     public void verify() {
         myObjects = ejbFacade.verifyAndCreate(selected, selected.getAnnee());
         selected = (TaxeAnnuelle) myObjects[1];
-        if (myObjects[0] == (Object) 1) {
-            execute("Paiement Autorisé", "");
-        }
-        //System.out.println(selected);
+        JsfUtil.messageForVerificationPaiement((int) myObjects[0]);
     }
 
     public void calcul() {
@@ -68,14 +81,27 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void payer() {
         if (myObjects[0] == (Object) 1) {
-            System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
             selected = ejbFacade.create(selected, simuler);
         }
     }
 
-    public void findForClient(){
-      items=ejbFacade.findForClient(redevable, anneeMin, anneeMax, numLot);
+    public void generatePdf() throws JRException, IOException {
+        ejbFacade.printPdf(selected);
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+
+    public void findForClient() {
+        items = ejbFacade.findForClient(redevable, anneeMin, anneeMax, numLot);
         System.out.println(items);
+    }
+
+    public void findForUser() {
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, null, null, null, null);
+        //items = ejbFacade.findByCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif);
+    }
+
+    public void findForAdmin() {
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, categorieTerrain, rue, quartier, secteur, utilisateur);
     }
 
     public void findByTerrain() {
@@ -89,16 +115,14 @@ public class TaxeAnnuelleController implements Serializable {
         //return "List";
     }
 
-    public void findByAllCriteria() {
-        items = ejbFacade.findByCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif);
-        JsfUtil.addSuccessMessage("hello");
-        System.out.println("successfoul" + datePresentationMin);
-        System.out.println(annee);
+    public void findTerrainByCinOrNif() {
+        terrains = terrainFacade.findByCinOrNif(cin, nif);
     }
-
-    public void execute(String title, String message) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, title, message));
+    
+    public void sendEmail() throws MessagingException{
+        EmailUtil.sendMail("taxe.tnb@gmail.com", "taxe@TNB2018", "hello", "med.benmansour1997@gmail.com", "hello");
     }
+////GETTERS AND SETTERS/////////////////////////////////////////////////////
 
     public int getAnneeMin() {
         return anneeMin;
@@ -114,6 +138,17 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void setAnneeMax(int anneeMax) {
         this.anneeMax = anneeMax;
+    }
+
+    public List<Terrain> getTerrains() {
+        if (terrains == null) {
+            terrains = new ArrayList();
+        }
+        return terrains;
+    }
+
+    public void setTerrains(List<Terrain> terrains) {
+        this.terrains = terrains;
     }
 
     public Redevable getRedevable() {
@@ -207,14 +242,6 @@ public class TaxeAnnuelleController implements Serializable {
         this.myObjects = myObjects;
     }
 
-    public TaxeAnnuelleFacade getEjbFacade() {
-        return ejbFacade;
-    }
-
-    public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
-        this.ejbFacade = ejbFacade;
-    }
-
     public BigDecimal getMontantMin() {
         return montantMin;
     }
@@ -231,20 +258,82 @@ public class TaxeAnnuelleController implements Serializable {
         this.montantMax = montantMax;
     }
 
-    public TaxeAnnuelleController() {
+    public CategorieTerrain getCategorieTerrain() {
+        if (categorieTerrain == null) {
+            categorieTerrain = new CategorieTerrain();
+        }
+        return categorieTerrain;
     }
 
+    public void setCategorieTerrain(CategorieTerrain categorieTerrain) {
+        this.categorieTerrain = categorieTerrain;
+    }
+
+    public Rue getRue() {
+        if (rue == null) {
+            rue = new Rue();
+        }
+        return rue;
+    }
+
+    public void setRue(Rue rue) {
+        this.rue = rue;
+    }
+
+    public Quartier getQuartier() {
+        if (quartier == null) {
+            quartier = new Quartier();
+        }
+        return quartier;
+    }
+
+    public void setQuartier(Quartier quartier) {
+        this.quartier = quartier;
+    }
+
+    public Secteur getSecteur() {
+        if (secteur == null) {
+            secteur = new Secteur();
+        }
+        return secteur;
+    }
+
+    public void setSecteur(Secteur secteur) {
+        this.secteur = secteur;
+    }
+
+    public Utilisateur getUtilisateur() {
+        if (utilisateur == null) {
+            utilisateur = new Utilisateur();
+        }
+        return utilisateur;
+    }
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public TaxeAnnuelleController() {
+    }
     public TaxeAnnuelle getSelected() {
         if (selected == null) {
             selected = new TaxeAnnuelle();
         }
         return selected;
     }
-
     public void setSelected(TaxeAnnuelle selected) {
         this.selected = selected;
     }
 
+    public List<TaxeAnnuelle> getItems() {
+        return items;
+    }
+    public TaxeAnnuelleFacade getEjbFacade() {
+        return ejbFacade;
+    }
+    public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+    
     protected void setEmbeddableKeys() {
     }
 
@@ -278,13 +367,6 @@ public class TaxeAnnuelleController implements Serializable {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public List<TaxeAnnuelle> getItems() {
-//        if (items == null) {
-//            items = getFacade().findAll();
-//        }
-        return items;
     }
 
     private void persist(PersistAction persistAction, String successMessage) {

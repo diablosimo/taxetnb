@@ -12,15 +12,23 @@ import bean.Rue;
 import bean.Secteur;
 import bean.TaxeAnnuelle;
 import bean.Terrain;
+import bean.Utilisateur;
 import controller.util.DateUtil;
+import controller.util.PdfUtil;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import controller.util.SearchUtil;
+import controller.util.SessionUtil;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  *
@@ -49,6 +57,8 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
     private TauxRetardFacade tauxRetardFacade;
     @EJB
     private TerrainFacade terrainFacade;
+    @EJB
+    private UtilisateurFacade utilisateurFacade;
 
     public List<TaxeAnnuelle> findByCriteria(int annee, BigDecimal montantMin, BigDecimal montantMax, Long numLot, Date datePresentation) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
@@ -66,7 +76,7 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
     public List<TaxeAnnuelle> findByAllCriteria(Date datePresentationMin, Date datePresentationMax, int annee,
             BigDecimal montantMin, BigDecimal montantMax,
             Long numLot, String cin, String nif, CategorieTerrain categorieTerrain,
-            Rue rue, Quartier quartier, Secteur secteur) {
+            Rue rue, Quartier quartier, Secteur secteur, Utilisateur utilisateur) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
         if (annee > 0) {
             req += SearchUtil.addConstraint("ta", "annee", "=", annee);
@@ -81,16 +91,15 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
             req += SearchUtil.addConstraint("ta", "terrain.redevable.nif", "=", nif);
         }
         req += SearchUtil.addConstraint("ta", "terrain.categorieTerrain.id", "=", categorieTerrain.getId());
+        req += SearchUtil.addConstraint("ta", "utilisateur.matricule", "=", utilisateur.getMatricule());
+
         if (rue.getId() == null) {
             if (quartier.getId() == null) {
                 if (secteur.getCodePostal() != null) {
                     req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.secteur.codePostal", "=", secteur.getCodePostal());
-                    System.out.println("+requette du secteur");
                 }
             } else {
                 req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.id", "=", quartier.getId());
-                System.out.println("+requette du quartier");
-
             }
         } else {
             req += SearchUtil.addConstraint("ta", "terrain.rue.id", "=", rue.getId());
@@ -143,10 +152,12 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
     }
 
     public TaxeAnnuelle findByTerrainAndAnnee(Terrain terrain, int annee) {
+        System.out.println("im in findByTerrain&annee");
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
         req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", terrain.getNumeroLot());
         req += SearchUtil.addConstraint("ta", "annee", "=", annee);
         List<TaxeAnnuelle> res = em.createQuery(req).getResultList();
+        System.out.println(res);
         if (res != null && !res.isEmpty()) {
             return res.get(0);
         } else {
@@ -169,20 +180,22 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (taxeAnnuelle != null) {//taxe DEJA PAYEE
             return new Object[]{-2, null};
         } else {
-            List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
-            if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
-                if (taxes.get(0).getAnnee() != annee - 1) {
-                    return new Object[]{-3, null};
-                }
-            }
             if (DateUtil.getDebutAnnee(annee).getTime() > new Date().getTime()) {//l'annee n'a pas encore commencée
                 return new Object[]{-4, null};
             }
+            List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
+            if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
+                if (taxes.get(0).getAnnee() < annee - 1) {
+                    return new Object[]{-3, null};
+                }
+            }
+
             int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
             if (nbMoisRetard > 6) {// le redevable doit regler le probleme avec la DIRECTION REGIONALE DES IMPOTS et non avec la commune
                 return new Object[]{-5, null};
             } else {
                 taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
+                taxeAnnuelle.setId(generate("TaxeAnnuelle", "id"));
                 taxeAnnuelle.setTerrain(loadedTerain);
                 return new Object[]{1, taxeAnnuelle};
             }
@@ -215,6 +228,36 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
             taxeAnnuelle.setMontantTotal(taxeAnnuelle.getMontant().add(taxeAnnuelle.getMontantRetard()));
             return taxeAnnuelle;
         }
+    }
+
+    public void printPdf(TaxeAnnuelle taxeAnnuelle) throws JRException, IOException {
+        List myList = new ArrayList();
+        myList.add(taxeAnnuelle);
+        //Utilisateur utilisateur = utilisateurFacade.find(SessionUtil.getConnectedUser().getMatricule());
+        Utilisateur utilisateur = utilisateurFacade.find("13089122");
+        System.out.println(utilisateur);
+        String cinNif;
+        String prenom =taxeAnnuelle.getTerrain().getRedevable().getPrenom();
+        if (taxeAnnuelle.getTerrain().getRedevable().getCin().equals("")) {
+            cinNif = taxeAnnuelle.getTerrain().getRedevable().getNif();
+        } else {
+            cinNif = taxeAnnuelle.getTerrain().getRedevable().getCin();
+        }
+        if(taxeAnnuelle.getTerrain().getRedevable().getPrenom() == null){
+            prenom="";
+        }
+        Map<String, Object> params = new HashMap();
+        params.put("redevableId", cinNif);
+        params.put("redevable", taxeAnnuelle.getTerrain().getRedevable().getNom().toUpperCase() + " " + prenom);
+        params.put("terrain", taxeAnnuelle.getTerrain().toString());
+        params.put("id", taxeAnnuelle.getId().toString());
+        params.put("categorie", taxeAnnuelle.getTerrain().getCategorieTerrain().getNom());
+        params.put("montantTotal", taxeAnnuelle.getMontantTotal());
+        params.put("utilisateur", utilisateur.getNom().toUpperCase()+" "+utilisateur.getPrenom().toUpperCase());
+        //params.put("utilisateur", "BENMANSOUR MOHAMMED");
+        System.out.println(params);
+        System.out.println(taxeAnnuelle);
+        PdfUtil.generatePdf(myList, params, "Quitance_" + taxeAnnuelle.getId() + ".pdf", "/jasper/Quitance.jasper");
     }
 
 //    public void insertInDB(TaxeAnnuelle taxeAnnuelle) {

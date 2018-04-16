@@ -20,6 +20,8 @@
                         <!-- TODO: update below reference to list of available items-->
                         <f:selectItems value="#{terrainController.itemsAvailableSelectOne}"/>
                     </p:selectOneMenu>
+                   
+                    <p:commandButton value="sendEmail" actionListener="#{taxeAnnuelleController.sendEmail()}" />
                     <p:commandButton value="Ok" actionListener="#{taxeAnnuelleController.findByTerrain()}" update=":dataListForm:dataList" />
                 </p:panelGrid>
             </h:form>

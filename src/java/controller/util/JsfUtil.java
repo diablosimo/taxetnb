@@ -9,6 +9,31 @@ import javax.faces.model.SelectItem;
 
 public class JsfUtil {
 
+    public static void messageForVerificationPaiement(int x) {
+        switch (x) {
+            case -1:
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "fatal!", "terrain non trouvé."));
+                break;
+            case -3:
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error!", "il vous reste une annnée non payée."));
+                break;
+            case -2:
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error!", "taxe dejà payée."));
+                break;
+            case 1:
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Vous pouvez réaliser ce paiement."));
+                break;
+            case -5:
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error!", "Depassement du délai, le paiement doit etre effectué à la DIRECTION REGIONALE DES IMPOTS."));
+                break;
+            case -4:
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "error!", "l'année n'a pas encore commencée."));
+                break;
+            default:
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "warning!", ".................."));
+        }
+    }
+
     public static SelectItem[] getSelectItems(List<?> entities, boolean selectOne) {
         int size = selectOne ? entities.size() + 1 : entities.size();
         SelectItem[] items = new SelectItem[size];
