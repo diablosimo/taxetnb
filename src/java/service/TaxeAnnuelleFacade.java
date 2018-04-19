@@ -14,6 +14,7 @@ import bean.TaxeAnnuelle;
 import bean.Terrain;
 import bean.Utilisateur;
 import controller.util.DateUtil;
+import controller.util.EmailUtil;
 import controller.util.PdfUtil;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
 import net.sf.jasperreports.engine.JRException;
 
 /**
@@ -90,12 +92,15 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (!nif.equals("")) {
             req += SearchUtil.addConstraint("ta", "terrain.redevable.nif", "=", nif);
         }
-        req += SearchUtil.addConstraint("ta", "terrain.categorieTerrain.id", "=", categorieTerrain.getId());
-        req += SearchUtil.addConstraint("ta", "utilisateur.matricule", "=", utilisateur.getMatricule());
-
-        if (rue.getId() == null) {
-            if (quartier.getId() == null) {
-                if (secteur.getCodePostal() != null) {
+        if (categorieTerrain != null) {
+            req += SearchUtil.addConstraint("ta", "terrain.categorieTerrain.id", "=", categorieTerrain.getId());
+        }
+        if (utilisateur != null) {
+            req += SearchUtil.addConstraint("ta", "utilisateur.matricule", "=", utilisateur.getMatricule());
+        }
+        if (rue == null || rue.getId() == null) {
+            if (quartier == null || quartier.getId() == null) {
+                if (secteur != null && secteur.getCodePostal() != null) {
                     req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.secteur.codePostal", "=", secteur.getCodePostal());
                 }
             } else {
@@ -104,8 +109,8 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         } else {
             req += SearchUtil.addConstraint("ta", "terrain.rue.id", "=", rue.getId());
             System.out.println("+requette de la rue <" + rue.getId() + ">");
-
         }
+        System.out.println("ha la requette globale=> " + req);
         return em.createQuery(req).getResultList();
     }
 
@@ -189,7 +194,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
                     return new Object[]{-3, null};
                 }
             }
-
             int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
             if (nbMoisRetard > 6) {// le redevable doit regler le probleme avec la DIRECTION REGIONALE DES IMPOTS et non avec la commune
                 return new Object[]{-5, null};
@@ -197,6 +201,7 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
                 taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
                 taxeAnnuelle.setId(generate("TaxeAnnuelle", "id"));
                 taxeAnnuelle.setTerrain(loadedTerain);
+                taxeAnnuelle = calcul(taxeAnnuelle);
                 return new Object[]{1, taxeAnnuelle};
             }
         }
@@ -206,7 +211,7 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (taxeAnnuelle == null) {
             return null;
         } else {
-            taxeAnnuelle = calcul(taxeAnnuelle);
+            //taxeAnnuelle = calcul(taxeAnnuelle);
             if (simuler == false) {
                 create(taxeAnnuelle);
                 Terrain terrain = taxeAnnuelle.getTerrain();
@@ -230,84 +235,50 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         }
     }
 
-    public void printPdf(TaxeAnnuelle taxeAnnuelle) throws JRException, IOException {
+    public TaxeAnnuelle createForNotification(Terrain terrain, int annee) {
+        int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
+        TaxeAnnuelle taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
+        taxeAnnuelle = calcul(taxeAnnuelle);
+        return taxeAnnuelle;
+    }
+
+    public String printPdf(TaxeAnnuelle taxeAnnuelle) throws JRException, IOException, MessagingException {
         List myList = new ArrayList();
         myList.add(taxeAnnuelle);
         //Utilisateur utilisateur = utilisateurFacade.find(SessionUtil.getConnectedUser().getMatricule());
         Utilisateur utilisateur = utilisateurFacade.find("13089122");
         System.out.println(utilisateur);
+        Redevable redevable = taxeAnnuelle.getTerrain().getRedevable();
         String cinNif;
-        String prenom =taxeAnnuelle.getTerrain().getRedevable().getPrenom();
+        String prenom = taxeAnnuelle.getTerrain().getRedevable().getPrenom();
         if (taxeAnnuelle.getTerrain().getRedevable().getCin().equals("")) {
             cinNif = taxeAnnuelle.getTerrain().getRedevable().getNif();
         } else {
             cinNif = taxeAnnuelle.getTerrain().getRedevable().getCin();
         }
-        if(taxeAnnuelle.getTerrain().getRedevable().getPrenom() == null){
-            prenom="";
+        if (taxeAnnuelle.getTerrain().getRedevable().getPrenom() == null) {
+            prenom = "";
         }
         Map<String, Object> params = new HashMap();
+        String fileName = null;
+        fileName = "Quitance_" + taxeAnnuelle.getId();
         params.put("redevableId", cinNif);
-        params.put("redevable", taxeAnnuelle.getTerrain().getRedevable().getNom().toUpperCase() + " " + prenom);
+        params.put("redevable", redevable.getNom().toUpperCase() + " " + prenom);
         params.put("terrain", taxeAnnuelle.getTerrain().toString());
         params.put("id", taxeAnnuelle.getId().toString());
         params.put("categorie", taxeAnnuelle.getTerrain().getCategorieTerrain().getNom());
         params.put("montantTotal", taxeAnnuelle.getMontantTotal());
-        params.put("utilisateur", utilisateur.getNom().toUpperCase()+" "+utilisateur.getPrenom().toUpperCase());
+        params.put("utilisateur", utilisateur.getNom().toUpperCase() + " " + utilisateur.getPrenom().toUpperCase());
         //params.put("utilisateur", "BENMANSOUR MOHAMMED");
         System.out.println(params);
         System.out.println(taxeAnnuelle);
-        PdfUtil.generatePdf(myList, params, "Quitance_" + taxeAnnuelle.getId() + ".pdf", "/jasper/Quitance.jasper");
+        PdfUtil.generatePdf(myList, params, fileName, "/jasper/Quitance.jasper");
+        // sendQuitanceInEmail(redevable.getEmail(),"ci-joint vous trouverez le recu du paiement du terrain "+taxeAnnuelle.getTerrain().getNumeroLot() , "quitance "+taxeAnnuelle.getAnnee(), "C:\\Users\\simob\\Dropbox\\ARCHITECTURE REPARTIE\\Quitances\\"+"Quitance_" + taxeAnnuelle.getId() + ".pdf");
+        return fileName;
     }
 
-//    public void insertInDB(TaxeAnnuelle taxeAnnuelle) {
-//        if (taxeAnnuelle != null) {
-//            create(taxeAnnuelle);
-//            Terrain terrain = taxeAnnuelle.getTerrain();
-//            terrain.setDernierPaiement(taxeAnnuelle);
-//            terrainFacade.edit(terrain);
-//        }
-//    }
-    //false
-//    public TaxeAnnuelle calcul(TaxeAnnuelle taxeAnnuelle, int mois) {
-//        System.out.println("hani fl calcul");
-//        System.out.println("ha tauxTaxItem " + taxeAnnuelle.getTauxTaxeItem().getTaux());
-//        System.out.println("ha surface " + taxeAnnuelle.getTerrain().getSurface());
-//        System.out.println("ha l7ssab" + taxeAnnuelle.getTauxTaxeItem().getTaux().multiply(taxeAnnuelle.getTerrain().getSurface()));
-//        taxeAnnuelle.setMontant(taxeAnnuelle.getTauxTaxeItem().getTaux().multiply(taxeAnnuelle.getTerrain().getSurface()));
-//        if (mois >= 1) {
-//            taxeAnnuelle.setPremierMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxPremierMois().multiply(taxeAnnuelle.getMontant()));
-//            if (mois > 1) {
-//                taxeAnnuelle.setAutreMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxAutreMois().multiply(taxeAnnuelle.getMontant()).multiply(new BigDecimal(mois - 1)));
-//            } else {
-//                taxeAnnuelle.setAutreMoisRetard(new BigDecimal("0.00"));
-//            }
-//        } else {
-//            taxeAnnuelle.setPremierMoisRetard(new BigDecimal("0.00"));
-//            taxeAnnuelle.setAutreMoisRetard(new BigDecimal("0.00"));
-//        }
-//        taxeAnnuelle.setMontantRetard(taxeAnnuelle.getPremierMoisRetard().add(taxeAnnuelle.getAutreMoisRetard()));
-//        taxeAnnuelle.setMontantTotal(taxeAnnuelle.getMontant().add(taxeAnnuelle.getMontantRetard()));
-//        return taxeAnnuelle;
-//    }
-//    public TaxeAnnuelle create(TaxeAnnuelle taxeAnnuelle, int annee) {
-//        if (taxeAnnuelle == null) {
-//            return null;
-//        }
-//        taxeAnnuelle.setId(generate("TaxeAnnuelle", "id"));
-//        System.out.println("1 debut du paiement");
-//        System.out.println("2 terrain du taxe" + taxeAnnuelle.getTerrain());
-//        System.out.println("3 categorie " + taxeAnnuelle.getTerrain().getCategorieTerrain());
-//        taxeAnnuelle.setTauxTaxeItem(tauxTaxeItemFacade.findByCategorie(taxeAnnuelle.getTerrain().getCategorieTerrain()));
-//        System.out.println("ha taux TAXE ITEM" + taxeAnnuelle.getTauxTaxeItem().toString());
-//        taxeAnnuelle.setTauxRetardItem(tauxRetardItemFacade.findCurrentOneByCategorie(taxeAnnuelle.getTerrain().getCategorieTerrain()));
-//        System.out.println("ha taux RETARD ITEM " + taxeAnnuelle.getTauxRetardItem().toString());
-//        taxeAnnuelle = calcul(taxeAnnuelle, taxeAnnuelle.getNbrMoisRetard());
-//        System.out.println("ha terrain " + taxeAnnuelle.getTerrain().toString());
-//
-////        taxeAnnuelle.getTerrain().setDernierPaiement(taxeAnnuelle);
-//        //create(taxeAnnuelle.clone(taxeAnnuelle));
-//        //terrainFacade.edit(taxeAnnuelle.getTerrain());
-//        return taxeAnnuelle;
-//    }
+    public void sendQuitanceInEmail(String to, String message, String subject, String fileAttachment) throws MessagingException {
+        EmailUtil.sendMail("taxe.tnb@gmail.com", "taxe@TNB2018", message, to, subject, fileAttachment);
+    }
+
 }

@@ -8,9 +8,9 @@ import bean.Secteur;
 import bean.TaxeAnnuelle;
 import bean.Terrain;
 import bean.Utilisateur;
-import controller.util.EmailUtil;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
+import controller.util.SessionUtil;
 import java.io.IOException;
 import service.TaxeAnnuelleFacade;
 import java.io.Serializable;
@@ -32,6 +32,7 @@ import javax.faces.convert.FacesConverter;
 import javax.mail.MessagingException;
 import net.sf.jasperreports.engine.JRException;
 import service.TerrainFacade;
+import service.UtilisateurFacade;
 
 @Named("taxeAnnuelleController")
 @SessionScoped
@@ -62,9 +63,13 @@ public class TaxeAnnuelleController implements Serializable {
     private List<Terrain> terrains;
     private Object[] myObjects = new Object[]{0, null};
     private Boolean simuler = true;
-
+    private String fileName;
+    private Utilisateur connectedUser;
     @EJB
     private service.TerrainFacade terrainFacade;
+    @EJB
+    private service.UtilisateurFacade utilisateurFacade;
+    
 
 /////Methodes/////////////////////// 
     public void verify() {
@@ -85,9 +90,37 @@ public class TaxeAnnuelleController implements Serializable {
         }
     }
 
-    public void generatePdf() throws JRException, IOException {
-        ejbFacade.printPdf(selected);
+    public void generatePdf() throws JRException, IOException, MessagingException {
+        fileName = ejbFacade.printPdf(selected);
         FacesContext.getCurrentInstance().responseComplete();
+    }
+
+    public void annuler() {
+        myObjects = new Object[]{0, null};
+        selected = null;
+        items = null;
+        terrains = null;
+        cin = "";
+        nif = "";
+        numLot = null;
+        montantMin = null;
+        montantMax = null;
+        annee = 0;
+        anneeMin = 0;
+        anneeMax = 0;
+        datePresentationMin = null;
+        datePresentationMax = null;
+        redevable = null;
+        categorieTerrain = null;
+        rue = null;
+        quartier = null;
+        secteur = null;
+        terrains = null;
+        myObjects = new Object[]{0, null};
+        simuler = true;
+        fileName = null;
+        utilisateur = null;
+        utilisateur = getUtilisateur();
     }
 
     public void findForClient() {
@@ -97,13 +130,23 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void findForUser() {
         items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, null, null, null, null);
-        //items = ejbFacade.findByCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif);
     }
 
     public void findForAdmin() {
-        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, categorieTerrain, rue, quartier, secteur, utilisateur);
+        //items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, categorieTerrain, rue, quartier, secteur, utilisateur);
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, null, null, null, utilisateur);
     }
 
+    public void findTerrainByCinOrNif() {
+        terrains = terrainFacade.findByCinOrNif(cin, nif);
+    }
+
+    public void sendEmail() throws MessagingException {
+        if (fileName != null) {
+            ejbFacade.sendQuitanceInEmail(selected.getTerrain().getRedevable().getEmail(), "ci-joint vous trouverez le recu du paiement du terrain:" + selected.getTerrain(), "quitance ", "C:\\Users\\simob\\Dropbox\\ARCHITECTURE REPARTIE\\Quitances\\" + fileName + ".pdf");
+        }
+    }
+    
     public void findByTerrain() {
         System.out.println(selected.getTerrain());
         items = ejbFacade.findByTerrain(selected.getTerrain());
@@ -115,13 +158,7 @@ public class TaxeAnnuelleController implements Serializable {
         //return "List";
     }
 
-    public void findTerrainByCinOrNif() {
-        terrains = terrainFacade.findByCinOrNif(cin, nif);
-    }
     
-    public void sendEmail() throws MessagingException{
-        EmailUtil.sendMail("taxe.tnb@gmail.com", "taxe@TNB2018", "hello", "med.benmansour1997@gmail.com", "hello");
-    }
 ////GETTERS AND SETTERS/////////////////////////////////////////////////////
 
     public int getAnneeMin() {
@@ -176,6 +213,24 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void setCin(String cin) {
         this.cin = cin;
+    }
+
+    public Utilisateur getConnectedUser() {
+        if(connectedUser==null)
+            connectedUser=SessionUtil.getConnectedUser();
+        return connectedUser;
+    }
+
+    public void setConnectedUser(Utilisateur connectedUser) {
+        this.connectedUser = connectedUser;
+    }
+
+    public UtilisateurFacade getUtilisateurFacade() {
+        return utilisateurFacade;
+    }
+
+    public void setUtilisateurFacade(UtilisateurFacade utilisateurFacade) {
+        this.utilisateurFacade = utilisateurFacade;
     }
 
     public String getNif() {
@@ -258,6 +313,14 @@ public class TaxeAnnuelleController implements Serializable {
         this.montantMax = montantMax;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public CategorieTerrain getCategorieTerrain() {
         if (categorieTerrain == null) {
             categorieTerrain = new CategorieTerrain();
@@ -308,18 +371,22 @@ public class TaxeAnnuelleController implements Serializable {
         }
         return utilisateur;
     }
+
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
     }
 
     public TaxeAnnuelleController() {
+        SessionUtil.registerUser(new Utilisateur("13089123", "azerty", "simo", "diablo"));
     }
+
     public TaxeAnnuelle getSelected() {
         if (selected == null) {
             selected = new TaxeAnnuelle();
         }
         return selected;
     }
+
     public void setSelected(TaxeAnnuelle selected) {
         this.selected = selected;
     }
@@ -327,13 +394,15 @@ public class TaxeAnnuelleController implements Serializable {
     public List<TaxeAnnuelle> getItems() {
         return items;
     }
+
     public TaxeAnnuelleFacade getEjbFacade() {
         return ejbFacade;
     }
+
     public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
         this.ejbFacade = ejbFacade;
     }
-    
+
     protected void setEmbeddableKeys() {
     }
 
@@ -448,7 +517,5 @@ public class TaxeAnnuelleController implements Serializable {
                 return null;
             }
         }
-
     }
-
 }

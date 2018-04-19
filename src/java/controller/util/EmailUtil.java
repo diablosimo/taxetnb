@@ -5,24 +5,31 @@
  */
 package controller.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
  * @author HP
  */
 public class EmailUtil {
- 
-     public static boolean sendMail(String from, String password, String message, String to, String subject) throws MessagingException {
+
+    public static boolean sendMail(String from, String password, String message, String to, String subject,String fileAttachment) throws MessagingException {
         System.out.println("hanii :D");
         String host = "smtp.gmail.com";
         Properties props = System.getProperties();
@@ -35,7 +42,8 @@ public class EmailUtil {
         props.put("mail.smtp.auth", "true");
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage mimeMessage = new MimeMessage(session);
-
+//
+        
         try {
             mimeMessage.setFrom(new InternetAddress(from));
 //            InternetAddress[] toAdress=new InternetAddress[to.length];
@@ -45,6 +53,19 @@ public class EmailUtil {
 //            }
             mimeMessage.setSubject(subject);
             mimeMessage.setText(message, "UTF-8", "html");
+            if(fileAttachment!=null){
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText(message);
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            messageBodyPart = new MimeBodyPart();
+            
+            DataSource source = new FileDataSource(fileAttachment);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(fileAttachment);
+            multipart.addBodyPart(messageBodyPart);
+            mimeMessage.setContent(multipart);
+            }
             System.out.println("haa lcontent " + mimeMessage.getContent());
             Transport transport = session.getTransport("smtp");
             transport.connect(host, from, password);
