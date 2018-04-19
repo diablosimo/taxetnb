@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition 
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+        <h:head>
+            <hmeta charset="utf-8"/>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <title>TAXETNB.com</title>
+            <meta name="description" content=""/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <meta name="robots" content="all,follow"/>
+            <!-- Bootstrap CSS-->
+            <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css"/>
+            <!-- Font Awesome CSS-->
+            <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css"/>
+            <!-- Custom Font Icons CSS-->
+            <link rel="stylesheet" href="css/font.css"/>
+            <!-- Google fonts - Muli-->
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700"/>
+            <!-- theme stylesheet-->
+            <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet"/>
+            <!-- Custom stylesheet - for your changes-->
+            <link rel="stylesheet" href="css/custom.css"/>
+            <!-- Favicon-->
+            <link rel="shortcut icon" href="img/logo.ico"/>
+            <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+                <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+                <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+        </h:head>
+        <h:body>
+            <header class="header">   
+                <ui:include src="bars/navBar.html"/>
+            </header>
+            <div class="d-flex align-items-stretch">
+                <ui:include src="bars/userSideBar.xhtml"/>
+                <div class="page-content">
+                    <div class="page-header no-margin-bottom" >
+                        <div class="container-fluid">
+                            <h2 class="h5 no-margin-bottom">Paiement</h2>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="AccueilU.html">ACCUEIL</a></li>
+                            <li class="breadcrumb-item active">PAIEMENT  </li>
+                        </ul>
+                    </div>
+
+                    <section class="no-padding-top">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="block margin-bottom-sm">
+                                        <div class="title"><strong>INFORMATION TERRAIN/REDEVABLE</strong></div>
+                                        <div class="block-body">
+                                            <h:form id="inputForm" class="form-horizontal">
+                                                <p:messages id="messages" showDetail="true" closable="true"></p:messages>
+                                                <div class="form-group row">
+                                                    <p:outputLabel value="Redevable: " for="cinInput" class="col-sm-3 form-control-label"/>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <h:selectOneMenu value="#{taxeAnnuelleController.typeRedevable}" class="form-control mb-2">
+                                                                    <p:ajax update=":inputForm:cinInput" />
+                                                                    <f:selectItem itemLabel="Moral" itemValue="1"/>
+                                                                    <f:selectItem itemLabel="Physique" itemValue="2" />
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <p:inputText id="cinInput" value="#{(taxeAnnuelleController.typeRedevable==2)?taxeAnnuelleController.cin:taxeAnnuelleController.nif}" placeholder="#{(taxeAnnuelleController.typeRedevable==2)?'cin...':'nif...'}" class="form-control"/>
+                                                                        <div class="input-group-prepend">
+                                                                            <p:commandButton  icon="ui-icon-refresh" actionListener="#{taxeAnnuelleController.findTerrainByCinOrNif()}" update="terrainMenu" class="btn btn-primary" styleClass="white-button"/>  
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="line"></div>
+                                                <div class="form-group row">
+                                                    <p:outputLabel value="Terrain: " for="terrainMenu" class="col-sm-3 form-control-label"/>
+                                                    <div class="col-sm-9">
+                                                        <h:selectOneMenu id="terrainMenu" value="#{taxeAnnuelleController.selected.terrain.numeroLot}" class="form-control mb-2">
+                                                            <f:selectItem itemLabel="--SELECT--" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{taxeAnnuelleController.terrains}" itemLabel="#{terrain}" var="terrain" itemValue="#{terrain.numeroLot}" />
+                                                        </h:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                                <div class="line"></div>
+                                                <div class="form-group row">
+                                                    <p:outputLabel class="col-sm-3 form-control-label">Année: </p:outputLabel>
+                                                    <div class="col-sm-9">
+                                                        <p:inputText value="#{taxeAnnuelleController.selected.annee}" title="Annee" placeholder="annee..." class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <p:outputLabel class="col-sm-3 form-control-label">Simuler: </p:outputLabel>
+                                                    <div class="col-sm-9">
+                                                        <p:selectOneRadio id="simuler" value="#{taxeAnnuelleController.simuler}">
+                                                            <div class="i-checks">
+                                                                <f:selectItem itemLabel="Oui" itemValue="#{true}" class="radio-template"/>
+                                                            </div>
+                                                            <div class="i-checks">
+                                                                <f:selectItem itemLabel="Non" itemValue="#{false}" class="radio-template"/>
+                                                            </div>
+                                                        </p:selectOneRadio>
+                                                    </div>
+                                                </div>
+                                                <div class="line"></div>
+                                                <div class="col-sm-9 offset-sm-3">
+                                                    <div>
+                                                        <p:commandButton actionListener="#{taxeAnnuelleController.verify()}" value="verifier/calculer" class="btn btn-primary" update="inputForm,:infoPaiement"/>
+                                                        <p:commandButton value="Payer" actionListener="#{taxeAnnuelleController.payer()}" class="btn btn-primary" rendered="#{taxeAnnuelleController.myObjects[0]==1}"/>
+                                                        <p:commandButton  actionListener="#{taxeAnnuelleController.annuler()}" value="annuler" class="btn btn-secondary" update="inputForm,:infoPaiement"/>
+                                                    </div>
+                                                </div>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="block margin-bottom-sm">
+                                        <h:form id="infoPaiement">
+                                            <div class="form-group">
+                                                <p:outputLabel value="Montant sans retard:#{taxeAnnuelleController.selected.montant} DH" class="form-control-label"/>
+                                            </div>
+                                            <div class="form-group">       
+                                                <p:outputLabel value="Retard: #{taxeAnnuelleController.selected.nbrMoisRetard} mois"  class="form-control-label"/>
+                                            </div>
+                                            <div class="form-group">       
+                                                <p:outputLabel value="Frais ajoutés: #{taxeAnnuelleController.selected.montantRetard} DH"  class="form-control-label"/>
+                                            </div>
+                                            <div class="form-group">       
+                                                <p:outputLabel value="Montant à payer: #{taxeAnnuelleController.selected.montantTotal} DH"  class="form-control-label"/>
+                                            </div>
+                                            <div class="form-group">       
+                                                <p:commandButton value="Imprimer"   action="#{taxeAnnuelleController.generatePdf()}" class="btn btn-primary" rendered="#{taxeAnnuelleController.myObjects[0]==1}" ajax="false"/>
+                                                <p:commandButton id="print" value="Envoyer@" actionListener="#{taxeAnnuelleController.sendEmail()}" class="btn btn-primary" rendered="#{taxeAnnuelleController.myObjects[0]==1}"/>
+                                            </div>
+                                        </h:form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+            <script src="vendor/jquery.cookie/jquery.cookie.js"></script>
+            <script src="vendor/chart.js/Chart.min.js"></script>
+            <script src="js/front.js"></script>
+        </h:body>
+    </ui:composition>
+</html>
+

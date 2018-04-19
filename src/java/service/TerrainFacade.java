@@ -33,11 +33,11 @@ public class TerrainFacade extends AbstractFacade<Terrain> {
     public TerrainFacade() {
         super(Terrain.class);
     }
-    
-    public int quitancer(Long numLot){
+
+    public int quitancer(Long numLot) {
         return numLot.intValue();
     }
-    
+
     public List<Terrain> notifier(int annee, int typeDernierNot, int dureeNot) {
         Date dateP = DateUtil.parse(annee + "-04-30");
         Long ldateP = dateP.getTime();
@@ -60,14 +60,34 @@ public class TerrainFacade extends AbstractFacade<Terrain> {
         Date ldateToDay = DateUtil.convertFormUtilToSql(dateToDay);
         System.out.println(ldateToDay);
         String req = "SELECT te FROM Terrain te WHERE 1=1";
-       req+=" AND FUNCTION('DATEDIFF','" + ldateToDay + "', te.DatedernierNotification)> 30";
+        req += " AND FUNCTION('DATEDIFF','" + ldateToDay + "', te.DatedernierNotification)> 30";
         res = em.createQuery(req).getResultList();
         System.out.println(res.size());
         System.out.println(res.get(0).getNumeroLot());
         System.out.println(res.size());
-        
+
         return res;
     }
 
+    public List<Terrain> findByCinOrNif(String cin, String nif) {
+        System.out.println("cin:" + cin);
+        System.out.println("nif:" + nif);
+        String req = "SELECT t FROM Terrain t WHERE 1=1";
+        if (!cin.equals("")) {
+            req += SearchUtil.addConstraint("t", "redevable.cin", "=", cin);
+            System.out.println("im in req cin");
+        }
+        else if (!nif.equals("")) {
+            req += SearchUtil.addConstraint("t", "redevable.nif", "=", nif);
+            System.out.println("im in req nif");
+        } else {
+            return null;
+        }
+        List<Terrain> res = new ArrayList();
+        System.out.println(req);
+        res = em.createQuery(req).getResultList();
+        System.out.println(res);
+        return res;
+    }
 
 }

@@ -1,12 +1,21 @@
 package controller;
 
+import bean.CategorieTerrain;
+import bean.Quartier;
+import bean.Redevable;
+import bean.Rue;
+import bean.Secteur;
 import bean.TaxeAnnuelle;
+import bean.Terrain;
+import bean.Utilisateur;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
+import controller.util.SessionUtil;
+import java.io.IOException;
 import service.TaxeAnnuelleFacade;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -16,12 +25,14 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.mail.MessagingException;
+import net.sf.jasperreports.engine.JRException;
 import service.TerrainFacade;
+import service.UtilisateurFacade;
 
 @Named("taxeAnnuelleController")
 @SessionScoped
@@ -39,21 +50,32 @@ public class TaxeAnnuelleController implements Serializable {
     private BigDecimal montantMin;
     private BigDecimal montantMax;
     private int annee;
+    private int anneeMin;
+    private int anneeMax;
     private Date datePresentationMin;
     private Date datePresentationMax;
-
+    private Redevable redevable;
+    private CategorieTerrain categorieTerrain;
+    private Rue rue;
+    private Quartier quartier;
+    private Secteur secteur;
+    private Utilisateur utilisateur;
+    private List<Terrain> terrains;
+    private Object[] myObjects = new Object[]{0, null};
+    private Boolean simuler = true;
+    private String fileName;
+    private Utilisateur connectedUser;
     @EJB
     private service.TerrainFacade terrainFacade;
-    private Object[] myObjects = new Object[]{1, null};
-    private Boolean simuler = true;
+    @EJB
+    private service.UtilisateurFacade utilisateurFacade;
+    
 
+/////Methodes/////////////////////// 
     public void verify() {
         myObjects = ejbFacade.verifyAndCreate(selected, selected.getAnnee());
         selected = (TaxeAnnuelle) myObjects[1];
-        if (myObjects[0] == (Object) 1) {
-            execute("Paiement Autorisé","");
-        }
-        //System.out.println(selected);
+        JsfUtil.messageForVerificationPaiement((int) myObjects[0]);
     }
 
     public void calcul() {
@@ -64,11 +86,67 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void payer() {
         if (myObjects[0] == (Object) 1) {
-            System.out.println("ha categorie 9bel mn return 1 " + selected.getTerrain().getCategorieTerrain());
             selected = ejbFacade.create(selected, simuler);
         }
     }
 
+    public void generatePdf() throws JRException, IOException, MessagingException {
+        fileName = ejbFacade.printPdf(selected);
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+
+    public void annuler() {
+        myObjects = new Object[]{0, null};
+        selected = null;
+        items = null;
+        terrains = null;
+        cin = "";
+        nif = "";
+        numLot = null;
+        montantMin = null;
+        montantMax = null;
+        annee = 0;
+        anneeMin = 0;
+        anneeMax = 0;
+        datePresentationMin = null;
+        datePresentationMax = null;
+        redevable = null;
+        categorieTerrain = null;
+        rue = null;
+        quartier = null;
+        secteur = null;
+        terrains = null;
+        myObjects = new Object[]{0, null};
+        simuler = true;
+        fileName = null;
+        utilisateur = null;
+        utilisateur = getUtilisateur();
+    }
+
+    public void findForClient() {
+        items = ejbFacade.findForClient(redevable, anneeMin, anneeMax, numLot);
+        System.out.println(items);
+    }
+
+    public void findForUser() {
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, null, null, null, null);
+    }
+
+    public void findForAdmin() {
+        //items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, categorieTerrain, rue, quartier, secteur, utilisateur);
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, null, null, null, utilisateur);
+    }
+
+    public void findTerrainByCinOrNif() {
+        terrains = terrainFacade.findByCinOrNif(cin, nif);
+    }
+
+    public void sendEmail() throws MessagingException {
+        if (fileName != null) {
+            ejbFacade.sendQuitanceInEmail(selected.getTerrain().getRedevable().getEmail(), "ci-joint vous trouverez le recu du paiement du terrain:" + selected.getTerrain(), "quitance ", "C:\\Users\\simob\\Dropbox\\ARCHITECTURE REPARTIE\\Quitances\\" + fileName + ".pdf");
+        }
+    }
+    
     public void findByTerrain() {
         System.out.println(selected.getTerrain());
         items = ejbFacade.findByTerrain(selected.getTerrain());
@@ -80,15 +158,47 @@ public class TaxeAnnuelleController implements Serializable {
         //return "List";
     }
 
-    public void findByAllCriteria() {
-        items = ejbFacade.findByCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif);
-        JsfUtil.addSuccessMessage("hello");
-        System.out.println("successfoul" + datePresentationMin);
-        System.out.println(annee);
+    
+////GETTERS AND SETTERS/////////////////////////////////////////////////////
+
+    public int getAnneeMin() {
+        return anneeMin;
     }
-public void execute(String title, String message) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, title, message));
+
+    public void setAnneeMin(int anneeMin) {
+        this.anneeMin = anneeMin;
     }
+
+    public int getAnneeMax() {
+        return anneeMax;
+    }
+
+    public void setAnneeMax(int anneeMax) {
+        this.anneeMax = anneeMax;
+    }
+
+    public List<Terrain> getTerrains() {
+        if (terrains == null) {
+            terrains = new ArrayList();
+        }
+        return terrains;
+    }
+
+    public void setTerrains(List<Terrain> terrains) {
+        this.terrains = terrains;
+    }
+
+    public Redevable getRedevable() {
+        if (redevable == null) {
+            redevable = new Redevable();
+        }
+        return redevable;
+    }
+
+    public void setRedevable(Redevable redevable) {
+        this.redevable = redevable;
+    }
+
     public int getTypeRedevable() {
         return typeRedevable;
     }
@@ -103,6 +213,24 @@ public void execute(String title, String message) {
 
     public void setCin(String cin) {
         this.cin = cin;
+    }
+
+    public Utilisateur getConnectedUser() {
+        if(connectedUser==null)
+            connectedUser=SessionUtil.getConnectedUser();
+        return connectedUser;
+    }
+
+    public void setConnectedUser(Utilisateur connectedUser) {
+        this.connectedUser = connectedUser;
+    }
+
+    public UtilisateurFacade getUtilisateurFacade() {
+        return utilisateurFacade;
+    }
+
+    public void setUtilisateurFacade(UtilisateurFacade utilisateurFacade) {
+        this.utilisateurFacade = utilisateurFacade;
     }
 
     public String getNif() {
@@ -169,14 +297,6 @@ public void execute(String title, String message) {
         this.myObjects = myObjects;
     }
 
-    public TaxeAnnuelleFacade getEjbFacade() {
-        return ejbFacade;
-    }
-
-    public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
-        this.ejbFacade = ejbFacade;
-    }
-
     public BigDecimal getMontantMin() {
         return montantMin;
     }
@@ -193,7 +313,71 @@ public void execute(String title, String message) {
         this.montantMax = montantMax;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public CategorieTerrain getCategorieTerrain() {
+        if (categorieTerrain == null) {
+            categorieTerrain = new CategorieTerrain();
+        }
+        return categorieTerrain;
+    }
+
+    public void setCategorieTerrain(CategorieTerrain categorieTerrain) {
+        this.categorieTerrain = categorieTerrain;
+    }
+
+    public Rue getRue() {
+        if (rue == null) {
+            rue = new Rue();
+        }
+        return rue;
+    }
+
+    public void setRue(Rue rue) {
+        this.rue = rue;
+    }
+
+    public Quartier getQuartier() {
+        if (quartier == null) {
+            quartier = new Quartier();
+        }
+        return quartier;
+    }
+
+    public void setQuartier(Quartier quartier) {
+        this.quartier = quartier;
+    }
+
+    public Secteur getSecteur() {
+        if (secteur == null) {
+            secteur = new Secteur();
+        }
+        return secteur;
+    }
+
+    public void setSecteur(Secteur secteur) {
+        this.secteur = secteur;
+    }
+
+    public Utilisateur getUtilisateur() {
+        if (utilisateur == null) {
+            utilisateur = new Utilisateur();
+        }
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
     public TaxeAnnuelleController() {
+        SessionUtil.registerUser(new Utilisateur("13089123", "azerty", "simo", "diablo"));
     }
 
     public TaxeAnnuelle getSelected() {
@@ -205,6 +389,18 @@ public void execute(String title, String message) {
 
     public void setSelected(TaxeAnnuelle selected) {
         this.selected = selected;
+    }
+
+    public List<TaxeAnnuelle> getItems() {
+        return items;
+    }
+
+    public TaxeAnnuelleFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
     }
 
     protected void setEmbeddableKeys() {
@@ -240,13 +436,6 @@ public void execute(String title, String message) {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public List<TaxeAnnuelle> getItems() {
-//        if (items == null) {
-//            items = getFacade().findAll();
-//        }
-        return items;
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
@@ -328,7 +517,5 @@ public void execute(String title, String message) {
                 return null;
             }
         }
-
     }
-
 }

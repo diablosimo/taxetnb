@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:body>
+        <nav id="sidebar">
+            <!-- Sidebar Header-->
+            <div class="sidebar-header d-flex align-items-center">
+                <div class="avatar"><img src="img/img-01.png" alt="..." class="img-fluid rounded-circle"/></div>
+                <div class="title">
+                    <h1 class="h5"><h:outputText value="#{taxeAnnuelleController.connectedUser.nom} #{taxeAnnuelleController.connectedUser.prenom}" /></h1>
+                    <p>Utilisateur</p>
+                    <p>TNB GIR</p>
+                </div>
+            </div>
+            <span class="heading">Menu principal</span>
+            <ul class="list-unstyled">
+                <li ><a href="AccueilU.html"> <i class="icon-home"></i>ACCUEIL </a></li>
+                <li><a href="#examplePaiement" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>PAIEMENT</a>
+                    <ul id="examplePaiement" class="collapse list-unstyled ">
+                        <li><a href="EffectuerPaiement.xhtml">Effectuer</a></li>
+                        <li><a href="RecherchePaiement.xhtml">Rechercher</a></li>
+                    </ul>
+                </li>
+                <li><a href="#exampleTERRAIN" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>TERRAIN</a>
+                    <ul id="exampleTERRAIN" class="collapse list-unstyled ">
+                        <li><a href="TERRAIN.html">CREER</a></li>
+                        <li><a href="ModifieTer.html">MODIFIER</a></li>
+                    </ul>
+                </li>
+                <li><a href="#exampleREDEVABLE" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>REDEVABLE</a>
+                    <ul id="exampleREDEVABLE" class="collapse list-unstyled ">
+                        <li><a href="REDEVABLE.html">CREER</a></li>
+                        <li><a href="ModifieRed.html">MODIFIER</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </h:body>
+</html>
+
