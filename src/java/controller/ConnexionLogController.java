@@ -38,9 +38,9 @@ public class ConnexionLogController implements Serializable {
    
    public String chi7aja(int type){
        if(type==1){
-           return "Loged in";
+           return "connecte";
        }else if(type==2){
-           return "Loged out";
+           return "deconnecte";
        }
        else return null;
    } 

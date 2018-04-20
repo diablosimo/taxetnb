@@ -45,6 +45,9 @@ public class RedevableController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
+//  public void cree(){
+//      ejbFacade.create(selected);
+//  }
     private RedevableFacade getFacade() {
         return ejbFacade;
     }
@@ -85,7 +88,9 @@ public class RedevableController implements Serializable {
         if (selected != null) {
             setEmbeddableKeys();
             try {
-                if (persistAction != PersistAction.DELETE) {
+                if (persistAction == PersistAction.CREATE) {
+                    getFacade().create(selected);}
+                    else if (persistAction != PersistAction.DELETE) {
                     getFacade().edit(selected);
                 } else {
                     getFacade().remove(selected);

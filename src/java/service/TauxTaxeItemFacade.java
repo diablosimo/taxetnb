@@ -9,6 +9,7 @@ import bean.CategorieTerrain;
 import bean.TauxTaxe;
 import bean.TauxTaxeItem;
 import controller.util.SearchUtil;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -31,7 +32,25 @@ public class TauxTaxeItemFacade extends AbstractFacade<TauxTaxeItem> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
+public List<TauxTaxeItem> Add(TauxTaxeItem tauxTaxeItem ,List<TauxTaxeItem> tauxTaxeItems){
+    int x=0;
+    for (int i = 0; i < tauxTaxeItems.size(); i++) {
+      TauxTaxeItem item =tauxTaxeItems.get(i);
+      if(tauxTaxeItem.getCategorieTerrain().getId()==item.getCategorieTerrain().getId()){
+          System.out.println("in condition of ct");
+          x=1;
+      }
+    }
+    if(x==0){
+       // tauxTaxeItem.getTauxTaxe().setDateApplication(new Date());
+        tauxTaxeItems.add(clone(tauxTaxeItem));
+        
+    }
+    return tauxTaxeItems;
+    
+   
+}
     public List<TauxTaxeItem> findByTauxTaxe(TauxTaxe tauxTaxe) {
         String reqette = "SELECT t FROM TauxTaxeItem t WHERE t.tauxTaxe.id=" + tauxTaxe.getId() + "";
         List<TauxTaxeItem> tauxTaxeItems= em.createQuery(reqette).getResultList();
@@ -43,18 +62,7 @@ public class TauxTaxeItemFacade extends AbstractFacade<TauxTaxeItem> {
         super(TauxTaxeItem.class);
     }
 
-    public int ajouter(TauxTaxeItem tauxTaxeItem) {
-        if (tauxTaxeItem == null) {
-            return -1;
-        } else if (tauxTaxeItem.getCategorieTerrain() == null) {
-            return -2;
-        } else if (tauxTaxeItem.getTaux() == null) {
-            return -3;
-        } else {
-            create(tauxTaxeItem);
-            return 1;
-        }
-    }
+ 
 
     public TauxTaxeItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain) {
         List<TauxTaxeItem> tauxTaxeItems = tauxTaxeFacade.findCurrentOne().getTauxTaxeItems();
@@ -89,6 +97,8 @@ public class TauxTaxeItemFacade extends AbstractFacade<TauxTaxeItem> {
     public void clone(TauxTaxeItem tauxTaxeItemOriginal, TauxTaxeItem tauxTaxeItemCloned) {
         tauxTaxeItemOriginal.setCategorieTerrain(tauxTaxeItemOriginal.getCategorieTerrain());
         tauxTaxeItemCloned.setTaux(tauxTaxeItemOriginal.getTaux());
+        tauxTaxeItemCloned.setCategorieTerrain(tauxTaxeItemOriginal.getCategorieTerrain());
+                
 
     }
 

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+<h:form >
+               
+                    <p:panelGrid columns="2" >
+                        <p:outputLabel value="" for="matricule" />
+                        <p:inputText id="matricule" value="#{utilisateurController.selected.matricule}" title="#{bundle.CreateUtilisateurTitle_matricule}" />
+                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_motDepasse}" for="motDepasse" />
+                        <p:inputText id="motDepasse" value="#{utilisateurController.selected.motDepasse}" title="#{bundle.CreateUtilisateurTitle_motDepasse}" />
+                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_nom}" for="nom" />
+                        <p:inputText id="nom" value="#{utilisateurController.selected.nom}" title="#{bundle.CreateUtilisateurTitle_nom}" />
+                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_prenom}" for="prenom" />
+                        <p:inputText id="prenom" value="#{utilisateurController.selected.prenom}" title="#{bundle.CreateUtilisateurTitle_prenom}" />
+                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_secteur}" for="secteur" />
+                        <p:selectOneMenu id="secteur" value="#{utilisateurController.selected.secteur}" >
+                            <f:selectItems value="#{secteurController.itemsAvailableSelectOne}"
+                                           var="secteurItem"
+                                           itemValue="#{secteurItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateUtilisateurLabel_isAdmin}" for="isAdmin" />
+                        <p:selectBooleanCheckbox id="isAdmin" value="#{utilisateurController.selected.isAdmin}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{utilisateurController.cree()}" value="#{bundle.Save}" />
+                    <p:commandButton value="#{bundle.Cancel}" onclick="UtilisateurCreateDialog.hide()"/>
+            
+            </h:form>    </h:body>
+</html>
+

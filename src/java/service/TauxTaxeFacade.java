@@ -6,9 +6,11 @@
 package service;
 
 import bean.TauxTaxe;
+import bean.TauxTaxeItem;
 import controller.util.SearchUtil;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,6 +24,10 @@ public class TauxTaxeFacade extends AbstractFacade<TauxTaxe> {
 
     @PersistenceContext(unitName = "taxeTNBPU")
     private EntityManager em;
+    @EJB
+    private CategorieTerrainFacade categorieTerrainFacade;
+    @EJB
+    private TauxTaxeItemFacade tauxTaxeItemFacade;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -32,17 +38,18 @@ public class TauxTaxeFacade extends AbstractFacade<TauxTaxe> {
         super(TauxTaxe.class);
     }
    
-    public int ajouter(TauxTaxe tauxTaxe) {
-        if (tauxTaxe == null) {
-            return -1;
-        } else if (tauxTaxe.getTauxTaxeItems()== null) {
-            return -2;
-        } else if (tauxTaxe.getDateApplication() == null) {
-            return -3;
-        } else {
-            create(tauxTaxe);
-            return 1;
+    public int ajouter(List<TauxTaxeItem>tauxTaxeItems) {
+
+        if(tauxTaxeItems.size()==categorieTerrainFacade.findAll().size()){
+              create(tauxTaxeItems.get(0).getTauxTaxe());
+              for (int i = 0; i < tauxTaxeItems.size(); i++) {
+               TauxTaxeItem item= tauxTaxeItems.get(i);
+                  tauxTaxeItemFacade.create(item);
+                
+            }
+              return 1;
         }
+       return -1;
     }
     
   public List<TauxTaxe> findByDate(Date dateMin,Date dateMax) {

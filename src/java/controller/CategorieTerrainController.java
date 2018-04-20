@@ -32,6 +32,9 @@ public class CategorieTerrainController implements Serializable {
     }
 
     public CategorieTerrain getSelected() {
+        if(selected==null){
+            selected=new CategorieTerrain();
+       }
         return selected;
     }
 
@@ -54,7 +57,10 @@ public class CategorieTerrainController implements Serializable {
         initializeEmbeddableKey();
         return selected;
     }
-
+  public void createw() {
+      
+      ejbFacade.create(selected);
+  }
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("CategorieTerrainCreated"));
         if (!JsfUtil.isValidationFailed()) {

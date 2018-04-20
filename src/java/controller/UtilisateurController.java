@@ -30,6 +30,9 @@ public class UtilisateurController implements Serializable {
 
     public UtilisateurController() {
     }
+    public void cree(){
+        ejbFacade.create(selected);
+    }
 public String chi7aja(List<Utilisateur>items){
     for (int i = 0; i < items.size(); i++) {
         Utilisateur user= items.get(i);
@@ -41,6 +44,9 @@ public String chi7aja(List<Utilisateur>items){
         return null;
 }
     public Utilisateur getSelected() {
+        if(selected==null){
+            selected=new Utilisateur();
+        }
         return selected;
     }
 

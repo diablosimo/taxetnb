@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form>
+           
+            <p:panelGrid columns="2">
+            <p:outputLabel value="categorieTerrain" for="categorieTerrain" />
+            <p:selectOneMenu id="categorieTerrain" value="#{tauxTaxeItemController.selected.categorieTerrain}" >
+                <f:selectItems value="#{categorieTerrainController.itemsAvailableSelectOne}"
+                               var="categorieTerrainItem"
+                               itemValue="#{categorieTerrainItem}"/>
+            </p:selectOneMenu>
+
+
+            <p:outputLabel value="taux" for="taux" />
+            <p:inputText id="taux" value="#{tauxTaxeItemController.selected.taux}"  />
+            <p:commandButton  action="#{tauxTaxeItemController.fillInList()}" update=":FormList:List" value="Add" />
+            </p:panelGrid >
+            </h:form>
+          
+                
+                
+                
+                
+                
+            
+
+
+      
+
+
+            <h:form id="FormList">
+                <h1><h:outputText value="List"/></h1>
+                <p:dataTable id="List" value="#{tauxTaxeItemController.items}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Taux"/>
+                        </f:facet>
+                        <h:outputText value="#{item.taux}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="TauxTaxe"/>
+                        </f:facet>
+                        <h:outputText value="#{item.tauxTaxe}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CategorieTerrain"/>
+                        </f:facet>
+                        <h:outputText value="#{item.categorieTerrain}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:commandButton  action="#{tauxTaxeItemController.cree()}" value="create" update=":FormList2:Lista" />
+            </h:form>
+    
+
+        
+      
+
+
+            <h:form id="FormList2">
+                <h1><h:outputText value="List"/></h1>
+                <p:dataTable id="Lista" value="#{tauxTaxeController.items}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DateApplication"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dateApplication}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+     
+
+
+                
+                
+                
+                
+                
+                
+                
+                
+      
+    </h:body>
+
+</html>
+

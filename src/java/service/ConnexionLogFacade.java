@@ -8,6 +8,7 @@ package service;
 import bean.ConnexionLog;
 import bean.Utilisateur;
 import controller.util.SearchUtil;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -47,4 +48,20 @@ public class ConnexionLogFacade extends AbstractFacade<ConnexionLog> {
 
     }
 
+
+
+   public void createHistoryLog(Utilisateur loadedUser, int type) {
+        ConnexionLog connexionHistory = new ConnexionLog();
+        connexionHistory.setUtilisateur(loadedUser);
+        if (type == 1) {
+            connexionHistory.setType(1);
+            connexionHistory.setActionDate(new Date());
+        }
+        if (type == 2) {
+            connexionHistory.setType(2);
+            connexionHistory.setActionDate(new Date());
+        }
+      
+        create(connexionHistory);
+    }
 }

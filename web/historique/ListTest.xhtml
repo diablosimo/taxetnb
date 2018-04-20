@@ -29,6 +29,7 @@
                         <p:calendar id="dateMax" pattern="MM/dd/yyyy" value="#{historiqueController.dateMax}" title="dateMin"  showOn="button"/>
                                             <p:outputLabel value="utilisateur " for="utilisateur"/>
                                             <p:selectOneMenu id="utilisateur" value="#{historiqueController.user}" >
+                                               <f:selectItem value="#{null}" itemLabel="--Select--"/>
                                                 <f:selectItems value="#{utilisateurController.itemsAvailableSelectMany}"
                                            var="utilisateurItem"
                                            itemValue="#{utilisateurItem}"/>
@@ -45,8 +46,8 @@
                    
                    
             <h:form id="HistoriqueListForm">
-                <h1><h:outputText id="List" value="List"/></h1>
-                <p:dataTable value="#{historiqueController.items}" var="item">
+                <h1><h:outputText value="List"/></h1>
+                <p:dataTable id="List" value="#{historiqueController.items}" var="item">
                     <p:column>
                         <f:facet name="header">
                             <h:outputText value="Id"/>

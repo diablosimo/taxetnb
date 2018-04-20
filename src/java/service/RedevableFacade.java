@@ -28,5 +28,5 @@ public class RedevableFacade extends AbstractFacade<Redevable> {
     public RedevableFacade() {
         super(Redevable.class);
     }
-    
+
 }

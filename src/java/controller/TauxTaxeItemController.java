@@ -7,6 +7,7 @@ import controller.util.JsfUtil.PersistAction;
 import service.TauxTaxeItemFacade;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -31,16 +32,31 @@ public class TauxTaxeItemController implements Serializable {
     private TauxTaxeItem selected;
     private Double tauxMin;
     private Double tauxMax;
-    TauxTaxeFacade tauxTaxeFacade;
-    public TauxTaxeItemController() {
-    }
-    
-    
+    private TauxTaxe tauxTaxe;
    
+    @EJB
+    private TauxTaxeFacade tauxTaxeFacade;
+    
+    public TauxTaxeItemController() {
+      tauxTaxe=new TauxTaxe();
+      tauxTaxe.setDateApplication(new Date());
+      tauxTaxe.setId(ejbFacade.);
+        
+    }
+
+    public void cree(){
+        tauxTaxeFacade.ajouter(items);
+    }
+   public void fillInList(){
+       items=ejbFacade.Add(selected,items);
+   }
  public void findByTauMxMn(){
      items=ejbFacade.findByTauMxMn(tauxMin, tauxMax);
  }
     public TauxTaxeItem getSelected() {
+        if(selected==null){
+            selected=new TauxTaxeItem();
+        }
         return selected;
     }
 

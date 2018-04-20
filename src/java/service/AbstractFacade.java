@@ -6,6 +6,7 @@
 package service;
 
 import java.util.List;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 
 /**
@@ -19,15 +20,20 @@ public abstract class AbstractFacade<T> {
     public AbstractFacade(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
+    @EJB
+    private HistoriqueFacade historyFacade;
 
     protected abstract EntityManager getEntityManager();
 
     public void create(T entity) {
         getEntityManager().persist(entity);
+         historyFacade.createHistorique(entity, 1);
+       
     }
 
     public void edit(T entity) {
         getEntityManager().merge(entity);
+         historyFacade.createHistorique(entity, 2);
     }
 
     public void remove(T entity) {

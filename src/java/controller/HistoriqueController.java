@@ -37,7 +37,18 @@ public class HistoriqueController implements Serializable {
     
     public HistoriqueController() {
     }
-    
+      
+   public String chi7aja(int type){
+       if(type==1){
+           return "cree";
+       }else if(type==2){
+           return "supprime";
+       }
+       else if(type==3){
+           return "modifie";
+       }
+       else return null;
+   } 
 public void stalk(){
     items=ejbFacade.rechercher(dateMin, dateMax,type, user);
 }
