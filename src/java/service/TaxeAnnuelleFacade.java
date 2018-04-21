@@ -15,6 +15,7 @@ import bean.Terrain;
 import bean.Utilisateur;
 import controller.util.DateUtil;
 import controller.util.EmailUtil;
+import controller.util.FrenchNumberToWords;
 import controller.util.PdfUtil;
 import java.math.BigDecimal;
 import java.util.List;
@@ -268,6 +269,7 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         params.put("id", taxeAnnuelle.getId().toString());
         params.put("categorie", taxeAnnuelle.getTerrain().getCategorieTerrain().getNom());
         params.put("montantTotal", taxeAnnuelle.getMontantTotal());
+        params.put("montantTotalWord", FrenchNumberToWords.convert(taxeAnnuelle.getMontantTotal()));
         params.put("utilisateur", utilisateur.getNom().toUpperCase() + " " + utilisateur.getPrenom().toUpperCase());
         //params.put("utilisateur", "BENMANSOUR MOHAMMED");
         System.out.println(params);
