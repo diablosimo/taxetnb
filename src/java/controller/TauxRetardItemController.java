@@ -1,12 +1,12 @@
 package controller;
 
-import bean.TauxRetard;
 import bean.TauxRetardItem;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
 import service.TauxRetardItemFacade;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -19,6 +19,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import service.TauxRetardFacade;
 
 @Named("tauxRetardItemController")
 @SessionScoped
@@ -32,17 +33,47 @@ public class TauxRetardItemController implements Serializable {
     private Double premierMax;
     private Double autreMin;
     private Double autreMax;
+   private Date dateApplication;
+   @EJB
+   private TauxRetardFacade tauxRetardFacade;
    
     public TauxRetardItemController() {
     }
-
-  
+    
+  public String cree(){
+        tauxRetardFacade.ajouter(items,dateApplication);
+        return "/tauTaxe/newjsf1";
+    }
+   public void fillInList(){
+       items=ejbFacade.Add(selected,items);
+   }
     
 public void findByMaxMin(){
    items=ejbFacade.findByCrit(premierMin, premierMax,autreMin, autreMax);
 }
 
+    public TauxRetardItemFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(TauxRetardItemFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public Date getDateApplication() {
+        if(dateApplication==null){
+            dateApplication=new Date();
+        }
+        return dateApplication;
+    }
+
+    public void setDateApplication(Date dateApplication) {
+        this.dateApplication = dateApplication;
+    }
+
     public TauxRetardItem getSelected() {
+        if(selected==null)
+            selected=new TauxRetardItem();
         return selected;
     }
 

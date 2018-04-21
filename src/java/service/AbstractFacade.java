@@ -24,6 +24,15 @@ public abstract class AbstractFacade<T> {
     private HistoriqueFacade historyFacade;
 
     protected abstract EntityManager getEntityManager();
+    
+  public Long generateId(String beanName, String idName) {
+        String query=" Select max(item." + idName + ") FROM " + beanName + " item";
+        List<Long> maxId = getEntityManager().createQuery(query).getResultList();
+        if (maxId == null || maxId.isEmpty() || maxId.get(0) == null) {
+            return 1L;
+        }
+        return maxId.get(0) + 1;
+    }
 
     public void create(T entity) {
         getEntityManager().persist(entity);

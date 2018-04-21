@@ -37,42 +37,39 @@ public class TauxTaxeFacade extends AbstractFacade<TauxTaxe> {
     public TauxTaxeFacade() {
         super(TauxTaxe.class);
     }
-   
-    public int ajouter(List<TauxTaxeItem>tauxTaxeItems) {
 
-        if(tauxTaxeItems.size()==categorieTerrainFacade.findAll().size()){
-              create(tauxTaxeItems.get(0).getTauxTaxe());
-              for (int i = 0; i < tauxTaxeItems.size(); i++) {
-               TauxTaxeItem item= tauxTaxeItems.get(i);
-                  tauxTaxeItemFacade.create(item);
-                
+    public int ajouter(List<TauxTaxeItem> tauxTaxeItems, Date dateApplication) {
+        TauxTaxe tauxTaxe = new TauxTaxe(generateId("TauxTaxe", "id"), dateApplication);
+        System.out.println("1");
+        if (tauxTaxeItems.size() == categorieTerrainFacade.findAll().size()) {
+                    System.out.println("2");
+
+            create(tauxTaxe);
+            for (int i = 0; i < tauxTaxeItems.size(); i++) {
+                TauxTaxeItem item = tauxTaxeItems.get(i);
+                item.setTauxTaxe(tauxTaxe);
+                tauxTaxeItemFacade.create(item);
+                        System.out.println("3");
+
+
             }
-              return 1;
+            return 1;
         }
-       return -1;
+        return -1;
     }
-    
-  public List<TauxTaxe> findByDate(Date dateMin,Date dateMax) {
+
+    public List<TauxTaxe> findByDate(Date dateMin, Date dateMax) {
         String reqette = "SELECT t FROM TauxTaxe t WHERE 1=1 ";
-        reqette+=SearchUtil.addConstraintMinMaxDate("t","dateApplication", dateMin, dateMax);
+        reqette += SearchUtil.addConstraintMinMaxDate("t", "dateApplication", dateMin, dateMax);
         return em.createQuery(reqette).getResultList();
-        
+
     }
-    
-     public TauxTaxe findCurrentOne(){
-         List<TauxTaxe> res=em.createQuery("SELECT tr FROM TauxTaxe tr ORDER BY tr.dateApplication DESC").getResultList();
-         if(res!=null && res.isEmpty()!=true){
-             return res.get(0);
-         }
-         return null;
-      }
+
+    public TauxTaxe findCurrentOne() {
+        List<TauxTaxe> res = em.createQuery("SELECT tr FROM TauxTaxe tr ORDER BY tr.dateApplication DESC").getResultList();
+        if (res != null && res.isEmpty() != true) {
+            return res.get(0);
+        }
+        return null;
+    }
 }
-     
-
-    
-    
-    
-    
-    
-    
-

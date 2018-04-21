@@ -33,7 +33,24 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+public List<TauxRetardItem> Add(TauxRetardItem tauxRetardItem ,List<TauxRetardItem> tauxRetardItems){
+    int x=0;
+    for (int i = 0; i < tauxRetardItems.size(); i++) {
+      TauxRetardItem item =tauxRetardItems.get(i);
+      if(tauxRetardItem.getCategorieTerrain().getId()==item.getCategorieTerrain().getId()){
+          System.out.println("in condition of ct");
+          x=1;
+      }
+    }
+    if(x==0){
+       // tauxTaxeItem.getTauxTaxe().setDateApplication(new Date());
+        tauxRetardItems.add(clone(tauxRetardItem));
+        
+    }
+    return tauxRetardItems;
+    
+   
+}
     public TauxRetardItemFacade() {
         super(TauxRetardItem.class);
     }
@@ -83,5 +100,17 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
     }
 
   
+  public void clone(TauxRetardItem tauxRetardItemOriginal, TauxRetardItem tauxTaxeItemCloned) {
+        tauxRetardItemOriginal.setCategorieTerrain(tauxRetardItemOriginal.getCategorieTerrain());
+        tauxTaxeItemCloned.setTauxRetard(tauxRetardItemOriginal.getTauxRetard());
+        tauxTaxeItemCloned.setCategorieTerrain(tauxRetardItemOriginal.getCategorieTerrain());
+                
 
+    }
+
+    public TauxRetardItem clone(TauxRetardItem tauxRetardItem) {
+        TauxRetardItem cloned = new TauxRetardItem();
+        clone(tauxRetardItem, cloned);
+        return cloned;
+    }
 }

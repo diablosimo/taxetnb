@@ -6,9 +6,11 @@
 package service;
 
 import bean.TauxRetard;
+import bean.TauxRetardItem;
 import controller.util.SearchUtil;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,21 +29,27 @@ public class TauxRetardFacade extends AbstractFacade<TauxRetard> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    @EJB
+    private TauxRetardItemFacade tauxRetardItemFacade;
+    @EJB
+    private CategorieTerrainFacade categorieTerrainFacade;
 
     public TauxRetardFacade() {
         super(TauxRetard.class);
     }
-      public int ajouter(TauxRetard tauxRetard) {
-        if (tauxRetard == null) {
-            return -1;
-        } else if (tauxRetard.getDateApplication()== null) {
-            return -2;
-        } else if (tauxRetard.getTauxRetardItems()== null) {
-            return -3;
-        } else {
+     public int ajouter(List<TauxRetardItem> tauxRetardItems, Date dateApplication) {
+        TauxRetard tauxRetard = new TauxRetard(generateId("TauxRetard", "id"), dateApplication);
+        if (tauxRetardItems.size() == categorieTerrainFacade.findAll().size()) {
             create(tauxRetard);
+            for (int i = 0; i < tauxRetardItems.size(); i++) {
+                TauxRetardItem item = tauxRetardItems.get(i);
+                item.setTauxRetard(tauxRetard);
+                tauxRetardItemFacade.create(item);
+
+            }
             return 1;
         }
+        return -1;
     }
     
       public List<TauxRetard> findByDate(Date dMin,Date dMax) {

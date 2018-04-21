@@ -31,6 +31,11 @@ public class CategorieTerrainController implements Serializable {
     public CategorieTerrainController() {
     }
 
+    public void test(){
+        List<CategorieTerrain> cts=getItemsAvailableSelectOne();
+        System.out.println(cts);
+    }
+    
     public CategorieTerrain getSelected() {
         if(selected==null){
             selected=new CategorieTerrain();
@@ -125,6 +130,7 @@ public class CategorieTerrainController implements Serializable {
 
     public List<CategorieTerrain> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+        
     }
 
     @FacesConverter(forClass = CategorieTerrain.class)

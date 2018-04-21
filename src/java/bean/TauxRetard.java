@@ -33,6 +33,11 @@ public class TauxRetard implements Serializable {
     @OneToMany(mappedBy = "tauxRetard")
     private List<TauxRetardItem> tauxRetardItems;
 
+    public TauxRetard(Long id, Date dateApplication) {
+        this.id = id;
+        this.dateApplication = dateApplication;
+    }
+
     public TauxRetard() {
     }
 
