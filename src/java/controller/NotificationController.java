@@ -1,11 +1,13 @@
 package controller;
 
 import bean.Notification;
+import bean.Terrain;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
 import service.NotificationFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -26,12 +28,43 @@ public class NotificationController implements Serializable {
     @EJB
     private service.NotificationFacade ejbFacade;
     private List<Notification> items = null;
+    private List<Terrain> terrains;
     private Notification selected;
+    private int anneeNotifie;
+    private int typeNotification;
 
-    public NotificationController() {
+    public void notifier() {
+        items = ejbFacade.creerNotification(anneeNotifie,typeNotification);
     }
 
+    public int getAnneeNotifie() {
+        return anneeNotifie;
+    }
+
+    public void setAnneeNotifie(int anneeNotifie) {
+        this.anneeNotifie = anneeNotifie;
+    }
+
+    public List<Terrain> getTerrains() {
+        if (terrains == null) {
+            terrains = new ArrayList();  
+        }
+        return terrains;
+    }
+
+
+    public void setTerrains(List<Terrain> terrains) {
+        this.terrains = terrains;
+    }
+    
+
+    public NotificationController() {
+    } 
+
     public Notification getSelected() {
+        if(selected==null){
+            selected=new Notification();
+        }
         return selected;
     }
 
@@ -47,6 +80,14 @@ public class NotificationController implements Serializable {
 
     private NotificationFacade getFacade() {
         return ejbFacade;
+    }
+
+    public int getTypeNotification() {
+        return typeNotification;
+    }
+
+    public void setTypeNotification(int typeNotification) {
+        this.typeNotification = typeNotification;
     }
 
     public Notification prepareCreate() {
@@ -76,7 +117,7 @@ public class NotificationController implements Serializable {
 
     public List<Notification> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items = new ArrayList();
         }
         return items;
     }

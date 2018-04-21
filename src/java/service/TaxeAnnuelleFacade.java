@@ -69,9 +69,9 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
             req += SearchUtil.addConstraint("ta", "annee", "=", annee);
         }
         req += SearchUtil.addConstraintMinMax("ta", "montantTotal", montantMin, montantMax);
-//        if (!numLot.equals(new Long(""))) {
+        //        if (!numLot.equals(new Long(""))) {
         req += SearchUtil.addConstraint("ta", "terrain.numeroLot", "=", numLot);
-//       }
+        //       }
         req += SearchUtil.addConstraintDate("ta", "datePresentaion", "=", datePresentation);
         return em.createQuery(req).getResultList();
     }
@@ -236,13 +236,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         }
     }
 
-    public TaxeAnnuelle createForNotification(Terrain terrain, int annee) {
-        int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
-        TaxeAnnuelle taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
-        taxeAnnuelle = calcul(taxeAnnuelle);
-        return taxeAnnuelle;
-    }
-
     public String printPdf(TaxeAnnuelle taxeAnnuelle) throws JRException, IOException, MessagingException {
         List myList = new ArrayList();
         myList.add(taxeAnnuelle);
@@ -283,4 +276,16 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         EmailUtil.sendMail("taxe.tnb@gmail.com", "taxe@TNB2018", message, to, subject, fileAttachment);
     }
 
+    public TaxeAnnuelle createForNotification(Terrain terrain,int annee){
+        System.out.println("ha terrain="+terrain);
+        System.out.println("ha annee="+annee);
+        int nbMoisRetard=DateUtil.getNombreMoisRetard(annee);
+        System.out.println("hq nb retard="+nbMoisRetard);
+        TaxeAnnuelle taxeAnnuelle=new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
+        System.out.println("ha taxan="+taxeAnnuelle);
+        taxeAnnuelle.setTerrain(terrain);
+        taxeAnnuelle=calcul(taxeAnnuelle);
+        System.out.println("hq taxeqnn appres calcul="+taxeAnnuelle);
+        return taxeAnnuelle;
+    }
 }
