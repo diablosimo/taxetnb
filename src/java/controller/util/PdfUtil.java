@@ -20,7 +20,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  *
- * @author Khalid
+ * @author simob
  */
 public class PdfUtil {
 
