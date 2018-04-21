@@ -424,9 +424,9 @@ DIVISION DE DEVELOPPEMENT DES RESSOURCES FINANCIERES]]></text>
 				<textFieldExpression><![CDATA[$P{utilisateur}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="10" y="0" width="208" height="22" uuid="4811ff00-e870-445a-a079-645efbe4f693"/>
+				<reportElement x="10" y="0" width="232" height="22" uuid="4811ff00-e870-445a-a079-645efbe4f693"/>
 				<textElement>
-					<font size="13" isBold="true" isUnderline="true"/>
+					<font size="13" isBold="true" isItalic="true" isUnderline="true" isStrikeThrough="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{montantTotalWord}]]></textFieldExpression>
 			</textField>
