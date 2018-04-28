@@ -6,11 +6,10 @@
 package service;
 
 import bean.CategorieTerrain;
+import bean.TauxRetard;
 import bean.TauxRetardItem;
-import bean.TaxeAnnuelle;
 import controller.util.SearchUtil;
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -19,11 +18,14 @@ import javax.persistence.PersistenceContext;
 
 /**
  *
- * @author simob
+ * @author Aniela
  */
 @Stateless
 public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
-
+    
+    @EJB
+    private TauxRetardFacade tauxRetardFacade;
+    
     @PersistenceContext(unitName = "taxeTNBPU")
     private EntityManager em;
 
@@ -31,62 +33,84 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
+public List<TauxRetardItem> Add(TauxRetardItem tauxRetardItem ,List<TauxRetardItem> tauxRetardItems){
+    int x=0;
+    for (int i = 0; i < tauxRetardItems.size(); i++) {
+      TauxRetardItem item =tauxRetardItems.get(i);
+      if(tauxRetardItem.getCategorieTerrain().getId()==item.getCategorieTerrain().getId()){
+          System.out.println("in condition of ct");
+          x=1;
+      }
+    }
+    if(x==0){
+       // tauxTaxeItem.getTauxTaxe().setDateApplication(new Date());
+        tauxRetardItems.add(clone(tauxRetardItem));
+        
+    }
+    return tauxRetardItems;
+    
+   
+}
     public TauxRetardItemFacade() {
         super(TauxRetardItem.class);
     }
-    @EJB
-    private TauxRetardFacade tauxRetardFacade;
-
-    //false
-    public TauxRetardItem findByCategorie(CategorieTerrain categorieTerrain) {
-        List<TauxRetardItem> items = new ArrayList();
-        String req = "SELECT tri FROM TauxRetard tr JOIN tr.tauxRetardItems tri WHERE 1=1";
-        req += " AND tr.tauxRetardItems.id=tri.id";
-        req += SearchUtil.addConstraint("tri", "categorieTerrain.id", "=", categorieTerrain.getId());
-        req += "ORDER BY tr.dateApplication DESC";
-        items = em.createQuery(req).getResultList();
-        if (items.isEmpty() == true || items == null) {
-            return null;
-        } else {
-            return items.get(0);
+    
+  public int creer(TauxRetardItem tauxRetardItem){
+        if (tauxRetardItem==null){
+            return -1;
+        }else
+            if (tauxRetardItem.getTauxPremierMois()==null){
+            return -2;
+        }else if(tauxRetardItem.getTauxAutreMois()==null){
+            return -3;
         }
+        else{
+               create(tauxRetardItem);
+            return 1;
+        }
+    }
+  
+  public TauxRetardItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain){
+      List<TauxRetardItem> tauxRetardItems=tauxRetardFacade.findCurrentOne().getTauxRetardItems();
+      for (int i = 0; i < tauxRetardItems.size(); i++) {
+          TauxRetardItem get = tauxRetardItems.get(i);
+          if(get.getCategorieTerrain().getNom().equals(categorieTerrain.getNom())){
+              return get;
+          }
+      }
+      return null;
+  }
+  
+  
+    
+    public List<TauxRetardItem> findByCrit(Double premierMin,Double premierMax,Double autreMin,Double autreMax) {
+
+        String reqette = "SELECT t FROM TauxTaxeRetardItem t WHERE 1=1 ";
+
+        reqette += SearchUtil.addConstraintMinMax("t", "tauxPremierMois", premierMin, premierMax);
+        reqette += SearchUtil.addConstraintMinMax("t", "tauxAutreMois", autreMin, autreMax);
+        return em.createQuery(reqette).getResultList();
+
+    }
+    public List<TauxRetardItem> findByTauxRetard(TauxRetard tauxRetard) {
+
+        String reqette = "SELECT t FROM TauxRetardItem t WHERE t.tauxRetard.id="+tauxRetard.getId()+"";
+ return em.createQuery(reqette).getResultList();
 
     }
 
-    public TaxeAnnuelle attachToTaxeAnnuelle(TaxeAnnuelle taxeAnnuelle) {
-        if (taxeAnnuelle != null) {
-            taxeAnnuelle.setTauxRetardItem(findCurrentOneByCategorie(taxeAnnuelle.getTerrain().getCategorieTerrain()));
-            taxeAnnuelle = calculRetard(taxeAnnuelle);
-            return taxeAnnuelle;
-        }
-        return null;
+  
+  public void clone(TauxRetardItem tauxRetardItemOriginal, TauxRetardItem tauxTaxeItemCloned) {
+        tauxRetardItemOriginal.setCategorieTerrain(tauxRetardItemOriginal.getCategorieTerrain());
+        tauxTaxeItemCloned.setTauxRetard(tauxRetardItemOriginal.getTauxRetard());
+        tauxTaxeItemCloned.setCategorieTerrain(tauxRetardItemOriginal.getCategorieTerrain());
+                
+
     }
 
-    public TaxeAnnuelle calculRetard(TaxeAnnuelle taxeAnnuelle) {
-        if (taxeAnnuelle == null) {
-            return null;
-        } else {
-            int nbMoisRetard = taxeAnnuelle.getNbrMoisRetard();
-            if (nbMoisRetard >= 1) {
-                taxeAnnuelle.setPremierMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxPremierMois().multiply(taxeAnnuelle.getMontant()));
-                if (taxeAnnuelle.getNbrMoisRetard() > 1) {
-                    taxeAnnuelle.setAutreMoisRetard(taxeAnnuelle.getTauxRetardItem().getTauxAutreMois().multiply(taxeAnnuelle.getMontant()).multiply(new BigDecimal(nbMoisRetard - 1)));
-                }
-            }
-            taxeAnnuelle.setMontantRetard(taxeAnnuelle.getPremierMoisRetard().add(taxeAnnuelle.getAutreMoisRetard()));
-            return taxeAnnuelle;
-        }
-    }
-
-    public TauxRetardItem findCurrentOneByCategorie(CategorieTerrain categorieTerrain) {
-        if (categorieTerrain == null) {
-            return null;
-        } else {
-            TauxRetardItem tauxRetardItem = new TauxRetardItem();
-            tauxRetardItem = (TauxRetardItem) em.createQuery("SELECT trt FROM TauxRetardItem trt LEFT JOIN trt.tauxRetard tr  WHERE trt.categorieTerrain.id='" + categorieTerrain.getId() + "' ORDER BY tr.dateApplication DESC ").getResultList().get(0);
-            System.out.println("service findTauxRetartItem " + tauxRetardItem.toString());
-            return tauxRetardItem;
-        }
+    public TauxRetardItem clone(TauxRetardItem tauxRetardItem) {
+        TauxRetardItem cloned = new TauxRetardItem();
+        clone(tauxRetardItem, cloned);
+        return cloned;
     }
 }

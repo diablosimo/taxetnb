@@ -36,6 +36,11 @@ public class TauxTaxe implements Serializable {
     public TauxTaxe() {
     }
 
+    public TauxTaxe(Long id, Date dateApplication) {
+        this.id = id;
+        this.dateApplication = dateApplication;
+    }
+
     public Long getId() {
         return id;
     }

@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <f:view>
+
+     <h:form>
+                    <h1><h:outputText value="   Historique  "/></h1>
+                    <p:panelGrid columns="2">
+              
+                        
+                        <p:outputLabel value="type: " for="type"/>
+                        <p:selectOneMenu id="type" value="#{historiqueController.type}" >
+                                <f:selectItem itemValue="0" itemLabel="--Select--"/>
+                                <f:selectItem  itemValue="1"  itemLabel="create" />
+                                <f:selectItem  itemValue="2" itemLabel="delete" />
+                                <f:selectItem  itemValue="3" itemLabel="update" />
+                            </p:selectOneMenu>
+
+                        <p:outputLabel value="dateMin" for="dateMin" />
+                        <p:calendar id="dateMin" pattern="MM/dd/yyyy" value="#{historiqueController.dateMin}" title="dateMa}"  showOn="button"/>
+                        <p:outputLabel value="dateMax" for="dateMax" />
+                        <p:calendar id="dateMax" pattern="MM/dd/yyyy" value="#{historiqueController.dateMax}" title="dateMin"  showOn="button"/>
+                                            <p:outputLabel value="utilisateur " for="utilisateur"/>
+                                            <p:selectOneMenu id="utilisateur" value="#{historiqueController.user}" >
+                                               <f:selectItem value="#{null}" itemLabel="--Select--"/>
+                                                <f:selectItems value="#{utilisateurController.itemsAvailableSelectMany}"
+                                           var="utilisateurItem"
+                                           itemValue="#{utilisateurItem}"/>
+                        </p:selectOneMenu>
+                    
+                    
+                    </p:panelGrid>
+                    
+                    <p:commandButton actionListener="#{historiqueController.stalk()}" value="Chercher" update=":HistoriqueListForm:List" />
+                     
+                    
+                    
+                       </h:form>
+                   
+                   
+            <h:form id="HistoriqueListForm">
+                <h1><h:outputText value="List"/></h1>
+                <p:dataTable id="List" value="#{historiqueController.items}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Type"/>
+                        </f:facet>
+                        <h:outputText value="#{item.type}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="AncienValeur"/>
+                        </f:facet>
+                        <h:outputText value="#{item.ancienValeur}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NouvelleValeur"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nouvelleValeur}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NomBean"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nomBean}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ActionDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.actionDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Utilisateur"/>
+                        </f:facet>
+                        <h:outputText value="#{item.utilisateur}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </f:view>
+
+    </h:body>
+</html>
+
