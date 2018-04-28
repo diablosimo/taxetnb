@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <f:view>
+ <h:form>
+                    <h1><h:outputText value="Chercher Les Taux De Retard "/></h1>
+                    <p:panelGrid columns="2">
+              
+                       
+                       
+                        <p:outputLabel value="dateMin" for="dateMin" />
+                        <p:calendar id="dateMin" pattern="MM/dd/yyyy" value="#{tauxRetardController.dateMin}" title="dateMa}"  showOn="button"/>
+                        <p:outputLabel value="dateMax" for="dateMax" />
+                        <p:calendar id="dateMax" pattern="MM/dd/yyyy" value="#{tauxRetardController.dateMax}" title="dateMin"  showOn="button"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tauxRetardController.searchby()}" value="Chercher" update=":TauxRetardListForm:datalist" />
+                     
+                    
+                    
+                       </h:form>
+        </f:view> 
+
+            <h:form id="TauxRetardListForm">
+                <h1><h:outputText id="datalist" value="List"/></h1>
+                <p:dataTable value="#{tauxRetardController.items}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DateApplication"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dateApplication}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                        <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Action" />
+                    </f:facet>
+                    <p:commandButton  value="details" actionListener="#{tauxRetardController.detail(item)}" update=":TauxRetardItemListForm:datalist2"/>
+
+                </p:column>
+                </p:dataTable>
+            </h:form>
+            <h:form id="TauxRetardItemListForm"> 
+                
+                   
+                
+                <p:panel header="ListTauxRetardItem">
+                    <p:dataTable id="datalist2" value="#{tauxRetardController.selected.tauxRetardItems}" var="item"
+                               
+                                 >
+
+                      
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTauxRetardItemTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTauxRetardItemTitle_tauxPremierMois}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxPremierMois}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTauxRetardItemTitle_tauxAutreMois}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxAutreMois}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTauxRetardItemTitle_tauxRetard}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tauxRetard}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTauxRetardItemTitle_categorieTerrain}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.categorieTerrain}"/>
+                        </p:column>
+                     
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+                
+        
+
+    </h:body>
+</html>
+

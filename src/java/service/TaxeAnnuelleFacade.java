@@ -227,9 +227,9 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (taxeAnnuelle == null) {
             return null;
         } else {
-            taxeAnnuelle = tauxTaxeItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
+          //  taxeAnnuelle = tauxTaxeItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
             System.out.println("ha taux TAXE ITEM" + taxeAnnuelle.getTauxTaxeItem().toString());
-            taxeAnnuelle = tauxRetardItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
+          //  taxeAnnuelle = tauxRetardItemFacade.attachToTaxeAnnuelle(taxeAnnuelle);
             System.out.println("ha taux RETARD ITEM " + taxeAnnuelle.getTauxRetardItem().toString());
             taxeAnnuelle.setMontantTotal(taxeAnnuelle.getMontant().add(taxeAnnuelle.getMontantRetard()));
             return taxeAnnuelle;
