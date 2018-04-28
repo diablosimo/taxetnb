@@ -5,34 +5,16 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <hmeta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <title>TAXETNB.com</title>
-        <meta name="description" content=""/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta name="robots" content="all,follow"/>
-        <!-- Bootstrap CSS-->
-        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css"/>
-        <!-- Font Awesome CSS-->
-        <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css"/>
-        <!-- Custom Font Icons CSS-->
-        <link rel="stylesheet" href="css/font.css"/>
-        <!-- Google fonts - Muli-->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700"/>
-        <!-- theme stylesheet-->
-        <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet"/>
-        <!-- Custom stylesheet - for your changes-->
-        <link rel="stylesheet" href="css/custom.css"/>
-        <!-- Favicon-->
-        <link rel="shortcut icon" href="img/logo.ico"/>
-    </h:head>
+    <ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:include src="../template/bars/head.xhtml"></ui:include>
     <h:body>
         <header class="header">   
-            <ui:include src="bars/navBar.html"/>
+            <ui:include src="../template/bars/navBar.xhtml"/>
         </header>
         <div class="d-flex align-items-stretch">
-            <ui:include src="bars/userSideBar.xhtml"/>
+            <ui:include src="../template/bars/adminSideBar.xhtml"/>
             <div class="page-content">
                 <div class="page-header">
                     <div class="container-fluid">
@@ -109,10 +91,20 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 form-control-label">Utilisateur: </label>
+                                                <div class="col-sm-9">
+                                                    <div class="row">
+                                                        <div class="col-md-3" >
+                                                            <p:inputText  value="#{taxeAnnuelleController.utilisateur.matricule}" placeholder="Matricule..." class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="line"></div>
                                             <div class="col-sm-9 offset-sm-3">
                                                 <div >
-                                                    <p:commandButton value="Rechercher" actionListener="#{taxeAnnuelleController.findForUser()}" class="btn btn-primary" update=":dataListForm:dataList"/>
+                                                    <p:commandButton value="Rechercher" actionListener="#{taxeAnnuelleController.findForAdmin()}" class="btn btn-primary" update=":dataListForm:dataList"/>
                                                     <p:commandButton value="Annuler" actionListener="#{taxeAnnuelleController.annuler()}" class="btn btn-secondary" update="myForm,:dataListForm:dataList"/>
                                                 </div>
                                             </div>                                           
@@ -186,10 +178,11 @@
 
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-        <script src="vendor/jquery.cookie/jquery.cookie.js"></script>
-        <script src="vendor/chart.js/Chart.min.js"></script>
-        <script src="js/front.js"></script>
+        <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
+        <script src="../template/vendor/chart.js/Chart.min.js"></script>
+        <script src="../template/js/front.js"></script>
     </h:body>
+    </ui:composition>
 </html>
 

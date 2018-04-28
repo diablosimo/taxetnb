@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:body>
+        <nav id="sidebar">
+            <!-- Sidebar Header-->
+            <div class="sidebar-header d-flex align-items-center">
+                <div class="avatar"><img src="../template/img/img-01.png" alt="..." class="img-fluid rounded-circle"/></div>
+                <div class="title">
+                    <h1 class="h5"><h:outputText value="#{taxeAnnuelleController.connectedUser.nom} #{taxeAnnuelleController.connectedUser.prenom}" /></h1>
+                    <p>Admin</p>
+                    <p>TNB GIR</p>
+                </div>
+            </div>
+            <span class="heading">Menu principal</span>
+            <ul class="list-unstyled">
+                <li ><a href="../utilisateur/AccueilAdmin.xhtml"> <i class="icon-home"></i>ACCUEIL </a></li>
+                <li><a href="../taxeAnnuelle/consulterPaiement.xhtml"> <i class="icon-windows"></i>Consulter paiement</a></li>
+                <li><a href="../terrain/consulterTerrain.xhtml"> <i class="icon-windows"></i>Consulter Terrain</a></li>
+                <li><a href="../redevable/consulterRedevable.xhtml"> <i class="icon-windows"></i>Consulter Redevable</a></li>
+                <li><a href="../connnexionLog/consulterConnexion.xhtml"> <i class="icon-windows"></i>Consulter Connexion</a></li>
+                <li><a href="#exampleNotification" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>Notification</a>
+                    <ul id="exampleNotification" class="collapse list-unstyled ">
+                        <li><a href="../notification/.xhtml">xxxx</a></li>
+                        <li><a href="../notification/.xhtml">yyyy</a></li>
+                    </ul>
+                </li>
+                <li><a href="#exampleVente" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>Vente</a>
+                    <ul id="exampleVente" class="collapse list-unstyled ">
+                        <li><a href="../vente/.xhtml">xxxx</a></li>
+                        <li><a href="../vente/.xhtml">yyyy</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#exampleStatistique" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>Statistique</a>
+                    <ul id="exampleStatistique" class="collapse list-unstyled ">
+                        <li><a href="../statistique/.xhtml">xxxx</a></li>
+                        <li><a href="../statistique/.xhtml">yyyy</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </h:body>
+</html>
+

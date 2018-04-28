@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:body>
+        <nav id="sidebar">
+            <!-- Sidebar Header-->
+            <div class="sidebar-header d-flex align-items-center">
+                <div class="avatar"><img src="../template/img/img-01.png" alt="..." class="img-fluid rounded-circle"/></div>
+                <div class="title">
+                    <h1 class="h5"><h:outputText value="#{taxeAnnuelleController.connectedUser.nom} #{taxeAnnuelleController.connectedUser.prenom}" /></h1>
+                    <p>Super Admin</p>
+                    <p>TNB GIR</p>
+                </div>
+            </div>
+            <span class="heading">Menu principal</span>
+            <ul class="list-unstyled">
+                <li class="active"><a href="../utilisateur/AccueilSuperAdmin.xhtml"> <i class="icon-home"></i>Accueil</a></li>
+                <li><a href="#userMenu" aria-expanded="false" data-toggle="collapse"> <i class="icon-user"></i>Utilisateur</a>
+                    <ul id="userMenu" class="collapse list-unstyled ">
+                        <li><a href="crudUser.html">créer</a></li>
+                        <li><a href="crudUser.html">modifier</a></li>
+                        <li><a href="crudUser.html">supprimer</a></li>
+                        <li><a href="ListUser.html">rechercher</a></li>
+
+                    </ul>
+                </li>
+                <li><a href="#categorieMenu" aria-expanded="false" data-toggle="collapse"> <i class="icon-settings-1"></i>Categorie Du Terrain</a>
+                    <ul id="categorieMenu" class="collapse list-unstyled ">
+                        <li><a href="crudCat.html">créer</a></li>
+                        <li><a href="crudCat.html">modifier</a></li>
+                        <li><a href="crudCat.html">rechercher</a></li>
+                    </ul>
+                </li>
+                <li><a href="#tauxMenu" aria-expanded="false" data-toggle="collapse"> <i class="icon-cloud"></i>Taux</a>
+                    <ul id="tauxMenu" class="collapse list-unstyled ">
+                        <li><a href="crudTaux.html">créer</a></li>
+                        <li><a href="crudTaux.html">consulter</a></li>
+                    </ul>
+                </li>
+                <li><a href="#retardMenu" aria-expanded="false" data-toggle="collapse"> <i class="icon-pie-chart"></i>Taux De Retard</a>
+                    <ul id="retardMenu" class="collapse list-unstyled ">
+                        <li><a href="crudRetard.html">créer</a></li>
+                        <li><a href="crudRetard.html">consulter</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </h:body>
+</html>
+
