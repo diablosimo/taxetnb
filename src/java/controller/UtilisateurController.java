@@ -1,11 +1,14 @@
 package controller;
 
+import bean.Secteur;
 import bean.Utilisateur;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
+import controller.util.SessionUtil;
 import service.UtilisateurFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +21,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 
 @Named("utilisateurController")
 @SessionScoped
@@ -27,16 +32,175 @@ public class UtilisateurController implements Serializable {
     private service.UtilisateurFacade ejbFacade;
     private List<Utilisateur> items = null;
     private Utilisateur selected;
+    private Utilisateur utilisateur;
+    private Utilisateur connectedUser;
+    private Object[] cnx = new Object[]{0, null};
+    
+
+    private int type;
+    private String nom;
+    private String prenom;
+    private String matricule;
+    private Secteur secteur;
 
     public UtilisateurController() {
     }
 
+    public Utilisateur getConnectedUser() {
+        if(connectedUser==null)
+            connectedUser=SessionUtil.getConnectedUser();
+        return connectedUser;
+    }
+
+    public void setConnectedUser(Utilisateur connectedUser) {
+        this.connectedUser = connectedUser;
+    }
+
+    
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public Utilisateur getSelected() {
+        if (selected == null) {
+            selected = new Utilisateur();
+        }
         return selected;
     }
 
     public void setSelected(Utilisateur selected) {
         this.selected = selected;
+    }
+
+    public UtilisateurFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(UtilisateurFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    public Object[] getCnx() {
+        return cnx;
+    }
+
+    public void setCnx(Object[] cnx) {
+        this.cnx = cnx;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public String getMatricule() {
+        return matricule;
+    }
+
+    public void setMatricule(String matricule) {
+        this.matricule = matricule;
+    }
+
+    public Secteur getSecteur() {
+        return secteur;
+    }
+
+    public void setSecteur(Secteur secteur) {
+        this.secteur = secteur;
+    }
+
+    public String modifier() {
+        ejbFacade.edit(selected);
+        return "RechercheUser";
+    }
+
+    public String modifieItem(Utilisateur utilisateur) {
+        selected = utilisateur;
+        return "ModificatonUser";
+    }
+
+    public String sedeconnecte() {
+        HttpSession session = SessionUtil.getSession();
+        session.invalidate();
+        return "/index";
+    }
+
+    public void search() {
+        items = ejbFacade.findByCritaria(nom, prenom, matricule, secteur, type);
+    }
+
+    public String connexion() {
+        cnx = ejbFacade.Connecter(selected, 3);
+        if ((int) cnx[0] < 0) {
+            return null;
+        } else {
+            SessionUtil.registerUser((Utilisateur) cnx[1]);
+            return "AccueilUser";
+        }
+    }
+
+    public String connexionAdmin() {
+        cnx = ejbFacade.Connecter(selected, 2);
+        System.out.println("ha res=" + cnx[1]);
+        if ((int) cnx[0] < 0) {
+            JsfUtil.addErrorMessage("Mot de passe incorrect");
+            return null;
+        } else {
+            SessionUtil.registerUser((Utilisateur) cnx[1]);
+            JsfUtil.addSuccessMessage("Mot de passe correct");
+            return "AccueilAdmin";
+        }
+    }
+    
+    public String connexionSuperAdmin() {
+        cnx = ejbFacade.Connecter(selected, 1);
+        System.out.println("ha res=" + cnx[1]);
+        if ((int) cnx[0] < 0) {
+            JsfUtil.addErrorMessage("Mot de passe incorrect");
+            return null;
+        } else {
+            SessionUtil.registerUser((Utilisateur) cnx[1]);
+            JsfUtil.addSuccessMessage("Mot de passe correct");
+            return "AccueilSuperAdmin";
+        }
+    }
+
+    public void affiche() {
+        JsfUtil.addSuccessMessage("Bonjour" + SessionUtil.getConnectedUser().getNom());
+    }
+
+    public void remove(Utilisateur item) {
+        ejbFacade.removeByRib(item.getMatricule());
+        items.remove(items.indexOf(item));
+    }
+
+    public String creation() throws MessagingException {
+        ejbFacade.cree(selected);
+        selected = null;
+        return "AccueilSuperAdmin";
     }
 
     protected void setEmbeddableKeys() {
@@ -76,7 +240,7 @@ public class UtilisateurController implements Serializable {
 
     public List<Utilisateur> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items = new ArrayList();
         }
         return items;
     }

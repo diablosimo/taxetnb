@@ -11,14 +11,14 @@
             <div class="sidebar-header d-flex align-items-center">
                 <div class="avatar"><img src="../template/img/img-01.png" alt="..." class="img-fluid rounded-circle"/></div>
                 <div class="title">
-                    <h1 class="h5"><h:outputText value="#{taxeAnnuelleController.connectedUser.nom} #{taxeAnnuelleController.connectedUser.prenom}" /></h1>
+                    <h1 class="h5"><h:outputText value="#{utilisateurController.connectedUser.nom} #{utilisateurController.connectedUser.prenom}"/></h1>
                     <p>Utilisateur</p>
                     <p>TNB GIR</p>
                 </div>
             </div>
             <span class="heading">Menu principal</span>
             <ul class="list-unstyled">
-                <li ><a href="../utilisateur/AccueilAdmin.xhtml"> <i class="icon-home"></i>ACCUEIL </a></li>
+                <li ><a href="../utilisateur/AccueilUser.xhtml"> <i class="icon-home"></i>ACCUEIL </a></li>
                 <li><a href="#examplePaiement" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>PAIEMENT</a>
                     <ul id="examplePaiement" class="collapse list-unstyled ">
                         <li><a href="../taxeAnnuelle/EffectuerPaiement.xhtml">Effectuer</a></li>

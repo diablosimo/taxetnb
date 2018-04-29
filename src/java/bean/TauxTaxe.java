@@ -33,9 +33,16 @@ public class TauxTaxe implements Serializable {
     @OneToMany(mappedBy = "tauxTaxe")
     private List<TauxTaxeItem> tauxTaxeItems;
 
+    
     public TauxTaxe() {
     }
 
+    public TauxTaxe(Long id, Date dateApplication) {
+        this.id = id;
+        this.dateApplication = dateApplication;
+    }
+
+    
     public Long getId() {
         return id;
     }

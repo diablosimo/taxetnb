@@ -10,10 +10,11 @@ import bean.Terrain;
 import bean.Utilisateur;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
-import controller.util.SessionUtil;
 import java.io.IOException;
 import service.TaxeAnnuelleFacade;
-import java.io.Serializable;
+import javax.mail.MessagingException;
+import net.sf.jasperreports.engine.JRException;
+import service.UtilisateurFacade;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,16 +24,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.mail.MessagingException;
-import net.sf.jasperreports.engine.JRException;
 import service.TerrainFacade;
-import service.UtilisateurFacade;
+///////////////////////////////////////
+///// import charts //////
+//////////////////////////////////////
+//import javax.annotation.PostConstruct;
+import java.io.Serializable;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.inject.Named;
+
 
 @Named("taxeAnnuelleController")
 @SessionScoped
@@ -69,7 +74,16 @@ public class TaxeAnnuelleController implements Serializable {
     private service.TerrainFacade terrainFacade;
     @EJB
     private service.UtilisateurFacade utilisateurFacade;
-    
+    @EJB
+    private service.SecteurFacade secteurFacade;
+
+    private BigDecimal y;
+    private int valeurDaffichage;
+    private List<BigDecimal> list = new ArrayList();
+    private List<Object[]> listOfObjects = new ArrayList();
+    private List<Object[]> resultsOfCategories = new ArrayList();
+
+    private List<Quartier> quartiers = null;
 
 /////Methodes/////////////////////// 
     public void verify() {
@@ -86,11 +100,13 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void payer() {
         if (myObjects[0] == (Object) 1) {
+            selected.setUtilisateur(getConnectedUser());
             selected = ejbFacade.create(selected, simuler);
         }
     }
 
     public void generatePdf() throws JRException, IOException, MessagingException {
+        selected.setUtilisateur(getConnectedUser());
         fileName = ejbFacade.printPdf(selected);
         FacesContext.getCurrentInstance().responseComplete();
     }
@@ -146,7 +162,7 @@ public class TaxeAnnuelleController implements Serializable {
             ejbFacade.sendQuitanceInEmail(selected.getTerrain().getRedevable().getEmail(), "ci-joint vous trouverez le recu du paiement du terrain:" + selected.getTerrain(), "quitance ", "C:\\Users\\simob\\Dropbox\\ARCHITECTURE REPARTIE\\Quitances\\" + fileName + ".pdf");
         }
     }
-    
+
     public void findByTerrain() {
         System.out.println(selected.getTerrain());
         items = ejbFacade.findByTerrain(selected.getTerrain());
@@ -157,9 +173,87 @@ public class TaxeAnnuelleController implements Serializable {
         items = ejbFacade.findByCriteria(selected.getAnnee(), montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getDatePresentaion());
         //return "List";
     }
-
     
+    /// ZARBAG controllers DON'T touch///////////////////
+    public void calculRevenuesQuartiersDansSecteur() {
+        valeurDaffichage=2;
+        listOfObjects = ejbFacade.calculRevenuesQuartiersDansSecteur(selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getAnnee());
+     controller.util.SessionUtil.setAttribute("listOfObjects", listOfObjects);
+    }
+     public void revenuesQuartierParCategorie() {
+        valeurDaffichage=3;
+       
+       resultsOfCategories = ejbFacade.revenuesQuartierParCategorie(selected.getTerrain().getRue().getQuartier().getSecteur(),selected.getTerrain().getRue().getQuartier(), selected.getAnnee());
+     controller.util.SessionUtil.setAttribute("resultsOfCategories", resultsOfCategories);
+    }
+public void changeSecteurs(final AjaxBehaviorEvent event ) {
+       quartiers=secteurFacade.findQuartiersBySecteur( selected.getTerrain().getRue().getQuartier().getSecteur().getCodePostal());
+    }
+   
+
+    public void calculRevenuesParMois() {
+        valeurDaffichage=1;
+        list = ejbFacade.calculRevenuesParMois(selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getAnnee());
+        controller.util.SessionUtil.setAttribute("listRevenue", list);
+    }
+
+    public void calculRevenuesAnnuelle() {
+        y = ejbFacade.calculRevenuesAnnuelle(selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getAnnee());
+    }
+   
+
 ////GETTERS AND SETTERS/////////////////////////////////////////////////////
+    public int getValeurDaffichage() {
+        return valeurDaffichage;
+    }
+
+    public void setValeurDaffichage(int valeurDaffichage) {
+        this.valeurDaffichage = valeurDaffichage;
+    }
+
+    public Utilisateur getConnectedUser() {
+        return connectedUser;
+    }
+
+    public List<Object[]> getResultsOfCategories() {
+        return resultsOfCategories;
+    }
+
+    public void setResultsOfCategories(List<Object[]> ResultsOfCategories) {
+        this.resultsOfCategories = ResultsOfCategories;
+    }
+
+    public BigDecimal getY() {
+        return y;
+    }
+
+    public void setY(BigDecimal y) {
+        this.y = y;
+    }
+
+    public List<Quartier> getQuartiers() {
+        return quartiers;
+    }
+
+    public void setQuartiers(List<Quartier> quartiers) {
+        this.quartiers = quartiers;
+    }
+
+    public List<BigDecimal> getList() {
+        return list;
+    }
+
+    public void setList(List<BigDecimal> list) {
+        this.list = list;
+    }
+
+    public List<Object[]> getListOfObjects() {
+        return listOfObjects;
+    }
+
+    public void setListOfObjects(List<Object[]> listOfObjects) {
+        this.listOfObjects = listOfObjects;
+    }
 
     public int getAnneeMin() {
         return anneeMin;
@@ -213,24 +307,6 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void setCin(String cin) {
         this.cin = cin;
-    }
-
-    public Utilisateur getConnectedUser() {
-        if(connectedUser==null)
-            connectedUser=SessionUtil.getConnectedUser();
-        return connectedUser;
-    }
-
-    public void setConnectedUser(Utilisateur connectedUser) {
-        this.connectedUser = connectedUser;
-    }
-
-    public UtilisateurFacade getUtilisateurFacade() {
-        return utilisateurFacade;
-    }
-
-    public void setUtilisateurFacade(UtilisateurFacade utilisateurFacade) {
-        this.utilisateurFacade = utilisateurFacade;
     }
 
     public String getNif() {
@@ -297,6 +373,14 @@ public class TaxeAnnuelleController implements Serializable {
         this.myObjects = myObjects;
     }
 
+    public TaxeAnnuelleFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
     public BigDecimal getMontantMin() {
         return montantMin;
     }
@@ -311,6 +395,18 @@ public class TaxeAnnuelleController implements Serializable {
 
     public void setMontantMax(BigDecimal montantMax) {
         this.montantMax = montantMax;
+    }
+
+    public void setConnectedUser(Utilisateur connectedUser) {
+        this.connectedUser = connectedUser;
+    }
+
+    public UtilisateurFacade getUtilisateurFacade() {
+        return utilisateurFacade;
+    }
+
+    public void setUtilisateurFacade(UtilisateurFacade utilisateurFacade) {
+        this.utilisateurFacade = utilisateurFacade;
     }
 
     public String getFileName() {
@@ -377,7 +473,6 @@ public class TaxeAnnuelleController implements Serializable {
     }
 
     public TaxeAnnuelleController() {
-        SessionUtil.registerUser(new Utilisateur("13089123", "azerty", "simo", "diablo"));
     }
 
     public TaxeAnnuelle getSelected() {
@@ -392,15 +487,10 @@ public class TaxeAnnuelleController implements Serializable {
     }
 
     public List<TaxeAnnuelle> getItems() {
+        if (items == null) {
+            items = new ArrayList();
+        }
         return items;
-    }
-
-    public TaxeAnnuelleFacade getEjbFacade() {
-        return ejbFacade;
-    }
-
-    public void setEjbFacade(TaxeAnnuelleFacade ejbFacade) {
-        this.ejbFacade = ejbFacade;
     }
 
     protected void setEmbeddableKeys() {

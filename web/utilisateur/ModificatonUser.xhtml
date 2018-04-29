@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+        <ui:include src="../template/bars/head.xhtml"></ui:include>
+        <h:body>
+            <header class="header">   
+                <ui:include src="../template/bars/navBar.xhtml"/>
+            </header>
+            <div class="d-flex align-items-stretch">
+                <ui:include src="../template/bars/userSideBar.xhtml"/>
+                <div class="page-content">
+                    <div class="page-header">
+                        <div class="container-fluid">
+                            <h2 class="h5 no-margin-bottom">Recherche des utilisateur</h2>
+                        </div>
+                    </div>
+                    <section class="no-padding-top">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <!-- Form Elements -->
+                                <div class="col-lg-12">
+                                    <div class="block">
+                                        <div class="title"><strong> </strong></div>
+                                        <div class="block-body">
+                                            <h:form class="form-horizontal" id="myForm">
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Matricule:</label>
+                                                    <div class="col-sm-6">
+                                                        <div class="row">
+                                                            <p:inputText  value="#{utilisateurController.selected.matricule}" placeholder="Matricule..." class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Prenom:</label>
+                                                    <div class="col-sm-6">
+                                                        <div class="row">
+                                                            <p:inputText  value="#{utilisateurController.selected.prenom}" placeholder="Prenom..." class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Email:</label>
+                                                    <div class="col-sm-6">
+                                                        <div class="row">
+                                                            <p:inputText  value="#{utilisateurController.selected.email}"  class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Nom: </label>
+                                                    <div class="col-sm-6">
+                                                        <div class="row">
+                                                            <p:inputText  value="#{utilisateurController.selected.nom}" placeholder="Nom..." class="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Type:</label>
+                                                    <div class="col-sm-6">
+                                                        <div class="row">
+                                                            <h:selectOneMenu value="#{utilisateurController.selected.type}" class="form-control mb-2">
+                                                                <p:ajax update=":myForm" />
+                                                                <f:selectItem itemLabel="--SELECT TYPE--" itemValue="#{null}"/>
+                                                                <f:selectItem itemLabel="Super admin" itemValue="1"/>
+                                                                <f:selectItem itemLabel="Admin" itemValue="2" />
+                                                                <f:selectItem itemLabel="User" itemValue="3" />
+                                                            </h:selectOneMenu>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+
+
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Secteur: </label>
+                                                    <div class="col-sm-6">
+                                                        <div class="row">
+                                                            <h:selectOneMenu id="secteurMenu" value="#{utilisateurController.selected.secteur}" class="form-control mb-2">
+                                                                <f:selectItem itemLabel="--SELECT SECTEUR--" itemValue="#{null}"/>
+                                                                <f:selectItems value="#{secteurController.items}" itemLabel="#{item.nom}" var="item" itemValue="#{item}" />
+                                                            </h:selectOneMenu>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="line"></div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-3 form-control-label"></div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row">
+                                                            <p:commandButton value="Modification" action="#{utilisateurController.modifier()}" class="btn btn-primary" />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </h:form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+            <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
+            <script src="../template/vendor/chart.js/Chart.min.js"></script>
+            <script src="../template/js/front.js"></script>
+        </h:body>
+    </ui:composition>
+</html>
+

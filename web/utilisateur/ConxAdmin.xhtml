@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+        <ui:include src="../template/bars/head.xhtml"/>
+        <h:body>
+
+            <div class="login-page">
+                <div class="container d-flex align-items-center">
+                    <div class="form-holder has-shadow">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div>
+                                    <div class="content">
+                                        <div class="logo">
+                                            <h1 align="center"><br/><br/><img src="../template/img/img-01.png" alt="IMG"/></h1>
+                                        </div>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 bg-white">
+                                <div class="form d-flex align-items-center">
+                                    <div class="content">
+                                        <img  class="img-fluid rounded-circle" src="../template/img/2.png" alt="IMG"/> 
+                                        <h1 >Espace <strong>Admin</strong></h1>
+                                        <h:form>
+                                            <div class="form-group">
+                                                <p:inputText class="input-material" placeholder="  matricule..." value="#{utilisateurController.selected.email}"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <p:password class="input-material" placeholder="  mot de passe..." value="#{utilisateurController.selected.motDepasse}" /> 
+                                            </div>
+                                            <div>
+                                                <p:commandButton value="se connecter" class="btn btn-primary" action="#{utilisateurController.connexionAdmin()}"></p:commandButton>
+                                                <p:commandButton value="Annuler" class="btn btn-secondary" />
+                                            </div>
+                                            <p:commandLink class="forgot-pass"> Mot de passe oublié?</p:commandLink>
+                                        </h:form><br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- JavaScript files-->
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+            <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
+            <script src="../template/vendor/chart.js/Chart.min.js"></script>
+            <script src="../template/js/front.js"></script>
+        </h:body>
+    </ui:composition>
+</html>
+

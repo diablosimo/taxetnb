@@ -6,6 +6,8 @@ import controller.util.JsfUtil.PersistAction;
 import service.TauxRetardFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,20 +20,63 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import service.TauxRetardItemFacade;
 
 @Named("tauxRetardController")
 @SessionScoped
 public class TauxRetardController implements Serializable {
 
-    @EJB
-    private service.TauxRetardFacade ejbFacade;
+    
     private List<TauxRetard> items = null;
     private TauxRetard selected;
-
+    @EJB
+    private service.TauxRetardFacade ejbFacade;
+   
+    private Date dateMax;
+    private Date dateMin;
+    @EJB
+    TauxRetardItemFacade tauxRetardItemFacade;
+    
     public TauxRetardController() {
     }
 
+  public void detail(TauxRetard tauxRetard){
+       getSelected().setTauxRetardItems(tauxRetardItemFacade.findByTauxRetard(tauxRetard));
+     
+    }
+    public void searchby() {
+      items = ejbFacade.findByDate(dateMin, dateMax);
+        System.out.println(items);
+   }
+
+    public TauxRetardFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(TauxRetardFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public Date getDateMin() {
+        return dateMin;
+        
+    }
+
+    public void setDateMin(Date dateMin) {
+        this.dateMin = dateMin;
+    }
+
+   public Date getDateMax() {
+      return dateMax;
+   }
+
+   public void setDateMax(Date dateMax) {
+      this.dateMax = dateMax;
+    }
+    
     public TauxRetard getSelected() {
+        if(selected==null)
+            selected=new TauxRetard();
         return selected;
     }
 
@@ -76,7 +121,7 @@ public class TauxRetardController implements Serializable {
 
     public List<TauxRetard> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items =new ArrayList();
         }
         return items;
     }
