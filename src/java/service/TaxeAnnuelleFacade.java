@@ -193,9 +193,11 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
                 return new Object[]{-4, null};
             }
             List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
-            if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
-                if (taxes.get(0).getAnnee() < annee - 1) {
-                    return new Object[]{-3, null};
+            if (taxes != null && taxes.size()>0) {
+                if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
+                    if (taxes.get(0).getAnnee() < annee - 1) {
+                        return new Object[]{-3, null};
+                    }
                 }
             }
             int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
@@ -246,7 +248,7 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         //Utilisateur utilisateur = utilisateurFacade.find(SessionUtil.getConnectedUser().getMatricule());
         //Utilisateur utilisateur = utilisateurFacade.find("13089122");
         Utilisateur utilisateur = taxeAnnuelle.getUtilisateur();
-        //System.out.println(utilisateur);
+        System.out.println("pdf"+utilisateur);
         Redevable redevable = taxeAnnuelle.getTerrain().getRedevable();
         String cinNif;
         String prenom = taxeAnnuelle.getTerrain().getRedevable().getPrenom();

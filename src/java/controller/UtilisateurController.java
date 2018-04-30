@@ -29,6 +29,8 @@ import javax.servlet.http.HttpSession;
 public class UtilisateurController implements Serializable {
 
     @EJB
+    private service.ConnexionLogFacade connexionLogFacade;
+    @EJB
     private service.UtilisateurFacade ejbFacade;
     private List<Utilisateur> items = null;
     private Utilisateur selected;
@@ -144,8 +146,9 @@ public class UtilisateurController implements Serializable {
 
     public String sedeconnecte() {
         HttpSession session = SessionUtil.getSession();
+                connexionLogFacade.createHistoryLog(getConnectedUser(), 2);
         session.invalidate();
-        return "/index";
+        return "faces/start.xhtml";
     }
 
     public void search() {

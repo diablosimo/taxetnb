@@ -65,7 +65,6 @@ public class TerrainFacade extends AbstractFacade<Terrain> {
         List<Terrain> res = new ArrayList();
         System.out.println(req);
         res = em.createQuery(req).getResultList();
-        System.out.println(res);
         return res;
     }
 

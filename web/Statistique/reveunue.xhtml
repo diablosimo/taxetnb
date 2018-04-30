@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+     <ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+        <ui:include src="../template/bars/head.xhtml"/>
+        <h:body>
+            <header class="header">   
+                <ui:include src="../template/bars/navBar.xhtml"/>
+            </header>
+            <div class="d-flex align-items-stretch">
+                <ui:include src="../template/bars/adminSideBar.xhtml"/>
+            <div class="page-content">
+
+                <div class="page-header">
+
+                    <div class="container-fluid">
+
+                        <h2 class="h5 no-margin-bottom">Bienvenue</h2>
+
+            <h:form>
+                <h1><h:outputText value="Statistique des reveunue"/></h1>
+              <div class="col-sm-12">
+                    <h3><h:outputText value=" calcul des reveunue Par mois :"/></h3>
+                                <div class="row">
+                                    <div class="col-md-6" >
+                                         <p:outputLabel value="secteur:" class="col-sm-3 form-control-label" />
+                                        <h:selectOneMenu class="form-control mb-2"  id="secteur"  value="#{taxeAnnuelleController.selected.terrain.rue.quartier.secteur}" >
+                                            <f:selectItem itemValue="#{null}" itemLabel="Choisissez un secteur"/>  
+                                            <p:ajax  update="quartier"  listener="#{taxeAnnuelleController.changeSecteurs(valueChange)}"> </p:ajax>
+                                            <f:selectItems value="#{secteurController.items}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                        </h:selectOneMenu>
+                                    </div>
+                                    <div class="col-md-6">
+                                         <p:outputLabel value="quartier:"  class="col-sm-3 form-control-label" />
+                                        <h:selectOneMenu  class="form-control mb-2" id="quartier"  value="#{taxeAnnuelleController.selected.terrain.rue.quartier}" >
+                                            <f:selectItem itemValue="#{null}" itemLabel="Choisissez un quartier"/>  
+                                            <f:selectItems value="#{taxeAnnuelleController.quartiers}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                        </h:selectOneMenu>
+                                    </div>
+                                </div>
+              </div>     
+              <div class="col-sm-9">
+                                    <div class="row">
+                                        <div class="col-md-4" >
+                                            <p:outputLabel class="col-sm-3 form-control-label"  value="Annee:" for="annee" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p:inputText class="form-control"  id="annee" value="#{taxeAnnuelleController.selected.annee}" title="Annee"  />  
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p:commandButton  class="btn-primary" action="#{taxeAnnuelleController.calculRevenuesParMois()}"   value="show chart"/>  
+                                        </div>
+                                    </div>
+                                </div>
+                       </h:form>        
+       ///////////////////////////////////////////////////////////////////////////////////////////////////
+       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ////////////////////////////////////////////////
+        <h:form>
+                <h1><h:outputText value="Statistique des reveunue"/></h1>
+              <div class="col-sm-12">
+                    <h3><h:outputText value=" calcul des reveunue Par secteur par quartier :"/></h3>
+                                <div class="row">
+                                    <div class="col-md-6" >
+                                         <p:outputLabel value="secteur:" class="col-sm-3 form-control-label" />
+                                        <h:selectOneMenu class="form-control mb-2" id="secteur2"   value="#{taxeAnnuelleController.selected.terrain.rue.quartier.secteur}" >
+                                            <f:selectItem itemValue="#{null}" itemLabel="Choisissez un secteur"/>  
+                                           
+                                            <f:selectItems value="#{secteurController.items}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                        </h:selectOneMenu>
+                                    </div>
+                                    <div class="col-md-6">
+                                        
+                                    </div>
+                                </div>
+              </div>     
+              <div class="col-sm-9">
+                                    <div class="row">
+                                        <div class="col-md-4" >
+                                            <p:outputLabel class="col-sm-3 form-control-label"  value="Annee:" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p:inputText class="form-control"  id="annee2" value="#{taxeAnnuelleController.selected.annee}" title="Annee"  />  
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p:commandButton  class="btn-primary"  title="show chart" action="#{taxeAnnuelleController.calculRevenuesQuartiersDansSecteur()}"   value="show chart"/>  
+                                        </div>
+                                    </div>
+                                </div>
+                       </h:form>        
+                    
+                    
+                    
+                    </div> </div>    
+
+            </div> </div> 
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+            <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
+            <script src="../template/vendor/chart.js/Chart.min.js"></script>
+            <script src="../template/js/front.js"></script>
+        </h:body>
+    </ui:composition>  
+
+</html>
+

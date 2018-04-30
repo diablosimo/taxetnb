@@ -10,6 +10,7 @@ import bean.Terrain;
 import bean.Utilisateur;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
+import controller.util.SessionUtil;
 import java.io.IOException;
 import service.TaxeAnnuelleFacade;
 import javax.mail.MessagingException;
@@ -37,7 +38,7 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Named;
-
+import service.SecteurFacade;
 
 @Named("taxeAnnuelleController")
 @SessionScoped
@@ -84,6 +85,7 @@ public class TaxeAnnuelleController implements Serializable {
     private List<Object[]> resultsOfCategories = new ArrayList();
 
     private List<Quartier> quartiers = null;
+    private List<Rue> rues=null;
 
 /////Methodes/////////////////////// 
     public void verify() {
@@ -145,12 +147,12 @@ public class TaxeAnnuelleController implements Serializable {
     }
 
     public void findForUser() {
-        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, null, null, null, null);
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, rue, quartier, secteur, null);
     }
 
     public void findForAdmin() {
         //items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, categorieTerrain, rue, quartier, secteur, utilisateur);
-        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, null, null, null, utilisateur);
+        items = ejbFacade.findByAllCriteria(datePresentationMin, datePresentationMax, annee, montantMin, montantMax, numLot, cin, nif, null, rue, quartier, secteur, utilisateur);
     }
 
     public void findTerrainByCinOrNif() {
@@ -173,34 +175,49 @@ public class TaxeAnnuelleController implements Serializable {
         items = ejbFacade.findByCriteria(selected.getAnnee(), montantMin, montantMax, selected.getTerrain().getNumeroLot(), selected.getDatePresentaion());
         //return "List";
     }
-    
-    /// ZARBAG controllers DON'T touch///////////////////
-    public void calculRevenuesQuartiersDansSecteur() {
-        valeurDaffichage=2;
-        listOfObjects = ejbFacade.calculRevenuesQuartiersDansSecteur(selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getAnnee());
-     controller.util.SessionUtil.setAttribute("listOfObjects", listOfObjects);
-    }
-     public void revenuesQuartierParCategorie() {
-        valeurDaffichage=3;
-       
-       resultsOfCategories = ejbFacade.revenuesQuartierParCategorie(selected.getTerrain().getRue().getQuartier().getSecteur(),selected.getTerrain().getRue().getQuartier(), selected.getAnnee());
-     controller.util.SessionUtil.setAttribute("resultsOfCategories", resultsOfCategories);
-    }
-public void changeSecteurs(final AjaxBehaviorEvent event ) {
-       quartiers=secteurFacade.findQuartiersBySecteur( selected.getTerrain().getRue().getQuartier().getSecteur().getCodePostal());
-    }
-   
 
-    public void calculRevenuesParMois() {
-        valeurDaffichage=1;
+    public void findQuartiersBySecteur() {
+        System.out.println("wa  hani dkhlt");
+        quartiers = secteurFacade.findQuartiersBySecteur(secteur.getCodePostal());
+        System.out.println("wa hani khrjt");
+        rues = null;
+    }
+    
+    public void findRuesBySecteur(final AjaxBehaviorEvent event) {
+        rues = secteurFacade.findRuesByQuartier(quartier.getId());
+    }
+
+    /// ZARBAG controllers DON'T touch///////////////////
+    public String calculRevenuesQuartiersDansSecteur() {
+        valeurDaffichage = 2;
+        listOfObjects = ejbFacade.calculRevenuesQuartiersDansSecteur(selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getAnnee());
+        controller.util.SessionUtil.setAttribute("listOfObjects", listOfObjects);
+        return "revenueChart";
+    }
+
+    public String revenuesQuartierParCategorie() {
+        valeurDaffichage = 3;
+
+        resultsOfCategories = ejbFacade.revenuesQuartierParCategorie(selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getTerrain().getRue().getQuartier(), selected.getAnnee());
+        controller.util.SessionUtil.setAttribute("resultsOfCategories", resultsOfCategories);
+        return "revenueParCategorieChart";
+    }
+
+    public void changeSecteurs(final AjaxBehaviorEvent event) {
+        quartiers = secteurFacade.findQuartiersBySecteur(selected.getTerrain().getRue().getQuartier().getSecteur().getCodePostal());
+    }
+
+    public String calculRevenuesParMois() {
+        valeurDaffichage = 1;
         list = ejbFacade.calculRevenuesParMois(selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getAnnee());
         controller.util.SessionUtil.setAttribute("listRevenue", list);
+        return "revenueChart";
+        
     }
 
     public void calculRevenuesAnnuelle() {
         y = ejbFacade.calculRevenuesAnnuelle(selected.getTerrain().getRue().getQuartier(), selected.getTerrain().getRue().getQuartier().getSecteur(), selected.getAnnee());
     }
-   
 
 ////GETTERS AND SETTERS/////////////////////////////////////////////////////
     public int getValeurDaffichage() {
@@ -212,6 +229,9 @@ public void changeSecteurs(final AjaxBehaviorEvent event ) {
     }
 
     public Utilisateur getConnectedUser() {
+        if (connectedUser == null) {
+            connectedUser = SessionUtil.getConnectedUser();
+        }
         return connectedUser;
     }
 
@@ -232,6 +252,8 @@ public void changeSecteurs(final AjaxBehaviorEvent event ) {
     }
 
     public List<Quartier> getQuartiers() {
+        if(quartiers==null)
+            quartiers=new ArrayList();
         return quartiers;
     }
 
@@ -243,6 +265,26 @@ public void changeSecteurs(final AjaxBehaviorEvent event ) {
         return list;
     }
 
+    public List<Rue> getRues() {
+        if(rues==null)
+            rues=new  ArrayList<>();
+        return rues;
+    }
+
+    public void setRues(List<Rue> rues) {
+        this.rues = rues;
+    }
+
+    public SecteurFacade getSecteurFacade() {
+        return secteurFacade;
+    }
+
+    public void setSecteurFacade(SecteurFacade secteurFacade) {
+        this.secteurFacade = secteurFacade;
+    }
+
+    
+    
     public void setList(List<BigDecimal> list) {
         this.list = list;
     }

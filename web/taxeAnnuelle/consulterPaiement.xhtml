@@ -8,181 +8,208 @@
     <ui:composition
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:ui="http://java.sun.com/jsf/facelets">
-    <ui:include src="../template/bars/head.xhtml"></ui:include>
-    <h:body>
-        <header class="header">   
-            <ui:include src="../template/bars/navBar.xhtml"/>
-        </header>
-        <div class="d-flex align-items-stretch">
-            <ui:include src="../template/bars/adminSideBar.xhtml"/>
-            <div class="page-content">
-                <div class="page-header">
-                    <div class="container-fluid">
-                        <h2 class="h5 no-margin-bottom">Recherche des paiements</h2>
+        <ui:include src="../template/bars/head.xhtml"></ui:include>
+        <h:body>
+            <header class="header">   
+                <ui:include src="../template/bars/navBar.xhtml"/>
+            </header>
+            <div class="d-flex align-items-stretch">
+                <ui:include src="../template/bars/adminSideBar.xhtml"/>
+                <div class="page-content">
+                    <div class="page-header">
+                        <div class="container-fluid">
+                            <h2 class="h5 no-margin-bottom">Recherche des paiements</h2>
+                        </div>
                     </div>
-                </div>
-                <section class="no-padding-top">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <!-- Form Elements -->
-                            <div class="col-lg-12">
-                                <div class="block">
-                                    <div class="title"><strong> </strong></div>
-                                    <div class="block-body">
-                                        <h:form class="form-horizontal" id="myForm">
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 form-control-label">Infos Redevable</label>
-                                                <div class="col-sm-9">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <h:selectOneMenu value="#{taxeAnnuelleController.typeRedevable}" class="form-control mb-2">
-                                                                <p:ajax update=":myForm:cinInput" />
-                                                                <f:selectItem itemLabel="Moral" itemValue="1"/>
-                                                                <f:selectItem itemLabel="Physique" itemValue="2" />
-                                                            </h:selectOneMenu>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <div class="input-group">
-                                                                <p:inputText id="cinInput" value="#{(taxeAnnuelleController.typeRedevable==2)?taxeAnnuelleController.cin:taxeAnnuelleController.nif}" placeholder="#{(taxeAnnuelleController.typeRedevable==2)?'cin...':'nif...'}" class="form-control"/>
-                                                                <div class="input-group-prepend">
-                                                                    <p:commandButton  icon="ui-icon-refresh" actionListener="#{taxeAnnuelleController.findTerrainByCinOrNif()}" update="terrainMenu" class="btn btn-primary" styleClass="white-button"/>  
+                    <section class="no-padding-top">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <!-- Form Elements -->
+                                <div class="col-lg-12">
+                                    <div class="block">
+                                        <div class="title"><strong> </strong></div>
+                                        <div class="block-body">
+                                            <h:form class="form-horizontal" id="myForm">
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Infos Redevable</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <h:selectOneMenu value="#{taxeAnnuelleController.typeRedevable}" class="form-control mb-2">
+                                                                    <p:ajax update=":myForm:cinInput" />
+                                                                    <f:selectItem itemLabel="Moral" itemValue="1"/>
+                                                                    <f:selectItem itemLabel="Physique" itemValue="2" />
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="input-group">
+                                                                    <p:inputText id="cinInput" value="#{(taxeAnnuelleController.typeRedevable==2)?taxeAnnuelleController.cin:taxeAnnuelleController.nif}" placeholder="#{(taxeAnnuelleController.typeRedevable==2)?'cin...':'nif...'}" class="form-control"/>
+                                                                    <div class="input-group-prepend">
+                                                                        <p:commandButton  icon="ui-icon-refresh" actionListener="#{taxeAnnuelleController.findTerrainByCinOrNif()}" update="terrainMenu" class="btn btn-primary" styleClass="white-button"/>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-5" >
-                                                            <h:selectOneMenu id="terrainMenu" value="#{taxeAnnuelleController.numLot}" class="form-control mb-2">
-                                                                <f:selectItem itemLabel="--SELECT TERRAIN--" itemValue="#{null}"/>
-                                                                <f:selectItems value="#{taxeAnnuelleController.terrains}" itemLabel="#{terrain}" var="terrain" itemValue="#{terrain.numeroLot}" />
-                                                            </h:selectOneMenu>
-                                                        </div>                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 form-control-label">Montant: </label>
-                                                <div class="col-sm-9">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <p:inputText  value="#{taxeAnnuelleController.montantMin}" placeholder="Montant Min..." class="form-control"/>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <p:inputText value="#{taxeAnnuelleController.montantMax}" placeholder="Montant Max..." class="form-control"/>
+                                                            <div class="col-md-5" >
+                                                                <h:selectOneMenu id="terrainMenu" value="#{taxeAnnuelleController.numLot}" class="form-control mb-2">
+                                                                    <f:selectItem itemLabel="--SELECT TERRAIN--" itemValue="#{null}"/>
+                                                                    <f:selectItems value="#{taxeAnnuelleController.terrains}" itemLabel="#{terrain}" var="terrain" itemValue="#{terrain.numeroLot}" />
+                                                                </h:selectOneMenu>
+                                                            </div>                                                        
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 form-control-label">Date: </label>
-                                                <div class="col-sm-9">
-                                                    <div class="row">
-                                                        <div class="col-md-3" >
-                                                            <p:inputMask  placeholder="Date Presentation Min..." value="#{taxeAnnuelleController.datePresentationMin}" mask="99/99/9999" class="form-control">                                                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Montant: </label>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <p:inputText  value="#{taxeAnnuelleController.montantMin}" placeholder="Montant Min..." class="form-control"/>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <p:inputText value="#{taxeAnnuelleController.montantMax}" placeholder="Montant Max..." class="form-control"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Date: </label>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-md-3" >
+                                                                <p:inputMask  placeholder="Date Presentation Min..." value="#{taxeAnnuelleController.datePresentationMin}" mask="99/99/9999" class="form-control">                                                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                                                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                                </p:inputMask>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <p:inputMask  placeholder="Date Presentation Max..." value="#{taxeAnnuelleController.datePresentationMax}" mask="99/99/9999" class="form-control">
+                                                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                                </p:inputMask>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <p:inputMask value="#{taxeAnnuelleController.annee}" placeholder="Annee..." class="form-control" mask="9999"></p:inputMask>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Utilisateur: </label>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-md-3" >
+                                                                <p:inputText  value="#{taxeAnnuelleController.utilisateur.matricule}" placeholder="Matricule..." class="form-control"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 form-control-label">Date: </label>
+                                                    <div class="col-sm-9">
+                                                        <div class="row">
+                                                            <div class="col-md-4" >
+                                                                <h:selectOneMenu class="form-control mb-2"  id="secteur"  value="#{taxeAnnuelleController.secteur}" >
+                                                                    <f:selectItem itemValue="#{null}" itemLabel="Choisissez un secteur"/>  
+                                                                    <p:ajax  update=":myForm:quartier,:myForm:rue" listener="#{taxeAnnuelleController.findQuartiersBySecteur}"> </p:ajax>
+                                                                    <f:selectItems value="#{secteurController.itemsAvailableSelectOne}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <h:selectOneMenu  class="form-control mb-2" id="quartier"   value="#{taxeAnnuelleController.quartier}" >
+                                                                    <f:selectItem itemValue="#{null}" itemLabel="Choisissez un quartier"/>  
+                                                                    <p:ajax event="valueChange" update=":myForm:rue"   listener="#{taxeAnnuelleController.findRuesBySecteur(valueChange)}" > </p:ajax>
+                                                                    <f:selectItems value="#{taxeAnnuelleController.quartiers}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <h:selectOneMenu   class="form-control mb-2" id="rue"   value="#{taxeAnnuelleController.rue}" >
+                                                                    <f:selectItem itemValue="#{null}" itemLabel="Choisissez une rue"/>  
+                                                                    <f:selectItems value="#{taxeAnnuelleController.rues}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                                                </h:selectOneMenu>  
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="line"></div>
+                                                <div class="col-sm-9 offset-sm-3">
+                                                    <div >
+                                                        <p:commandButton value="Rechercher" actionListener="#{taxeAnnuelleController.findForAdmin()}" class="btn btn-primary" update=":dataListForm:dataList"/>
+                                                        <p:commandButton value="Annuler" actionListener="#{taxeAnnuelleController.annuler()}" class="btn btn-secondary" update="myForm,:dataListForm:dataList"/>
+                                                    </div>
+                                                </div>                                           
+                                            </h:form>
+                                        </div>
+                                        <div class="block" align="center">
+                                            <h:form id="dataListForm">
+                                                <div class="table-responsive"> 
+                                                    <p:dataTable id="dataList" value="#{taxeAnnuelleController.items}" class="table table-striped table-hover" var="item">
+                                                        <p:column>
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Annee" />
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.annee}"/>
+                                                        </p:column>
+                                                        <p:column width="11%">
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Payée le"/>
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.datePresentaion}">
                                                                 <f:convertDateTime pattern="dd/MM/yyyy" />
-                                                            </p:inputMask>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <p:inputMask  placeholder="Date Presentation Max..." value="#{taxeAnnuelleController.datePresentationMax}" mask="99/99/9999" class="form-control">
-                                                                <f:convertDateTime pattern="dd/MM/yyyy" />
-                                                            </p:inputMask>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <p:inputMask value="#{taxeAnnuelleController.annee}" placeholder="Annee..." class="form-control" mask="9999"></p:inputMask>
-                                                        </div>
-                                                    </div>
+                                                            </h:outputText>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Terrain"/>
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.terrain.numeroLot}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Base imposable"/>
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.montant}"/>
+                                                        </p:column>
+                                                        <p:column width="10%">
+                                                            <f:facet name="header">
+                                                                <h:outputText value="nbr mois" title="nombre de mois en retard"/>
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.nbrMoisRetard}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Penalité 1er mois"/>
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.premierMoisRetard}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Majoration"/>
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.autreMoisRetard}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <f:facet name="header">
+                                                                <h:outputText value="Montant Total"/>
+                                                            </f:facet>
+                                                            <h:outputText value="#{item.montantTotal}"/>
+                                                        </p:column>
+                                                    </p:dataTable>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-sm-3 form-control-label">Utilisateur: </label>
-                                                <div class="col-sm-9">
-                                                    <div class="row">
-                                                        <div class="col-md-3" >
-                                                            <p:inputText  value="#{taxeAnnuelleController.utilisateur.matricule}" placeholder="Matricule..." class="form-control"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="line"></div>
-                                            <div class="col-sm-9 offset-sm-3">
-                                                <div >
-                                                    <p:commandButton value="Rechercher" actionListener="#{taxeAnnuelleController.findForAdmin()}" class="btn btn-primary" update=":dataListForm:dataList"/>
-                                                    <p:commandButton value="Annuler" actionListener="#{taxeAnnuelleController.annuler()}" class="btn btn-secondary" update="myForm,:dataListForm:dataList"/>
-                                                </div>
-                                            </div>                                           
-                                        </h:form>
-                                    </div>
-                                    <div class="block" align="center">
-                                        <h:form id="dataListForm">
-                                            <div class="table-responsive"> 
-                                                <p:dataTable id="dataList" value="#{taxeAnnuelleController.items}" class="table table-striped table-hover" var="item">
-                                                    <p:column>
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Annee" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.annee}"/>
-                                                    </p:column>
-                                                    <p:column width="11%">
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Payée le"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.datePresentaion}">
-                                                            <f:convertDateTime pattern="dd/MM/yyyy" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                    <p:column>
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Terrain"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.terrain.numeroLot}"/>
-                                                    </p:column>
-                                                    <p:column>
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Base imposable"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.montant}"/>
-                                                    </p:column>
-                                                    <p:column width="10%">
-                                                        <f:facet name="header">
-                                                            <h:outputText value="nbr mois" title="nombre de mois en retard"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.nbrMoisRetard}"/>
-                                                    </p:column>
-                                                    <p:column>
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Penalité 1er mois"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.premierMoisRetard}"/>
-                                                    </p:column>
-                                                    <p:column>
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Majoration"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.autreMoisRetard}"/>
-                                                    </p:column>
-                                                    <p:column>
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Montant Total"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{item.montantTotal}"/>
-                                                    </p:column>
-                                                </p:dataTable>
-                                            </div>
-                                        </h:form>
+                                            </h:form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
             </div>
-        </div>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-        <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
-        <script src="../template/vendor/chart.js/Chart.min.js"></script>
-        <script src="../template/js/front.js"></script>
-    </h:body>
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+            <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
+            <script src="../template/vendor/chart.js/Chart.min.js"></script>
+            <script src="../template/js/front.js"></script>
+        </h:body>
     </ui:composition>
 </html>
 

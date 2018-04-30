@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition 
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+        <ui:include src="../template/bars/head.xhtml"/>
+        <h:body>
+            <header class="header">   
+                <ui:include src="../template/bars/navBar.xhtml"/>
+            </header>
+            <div class="d-flex align-items-stretch">   
+                <ui:include src="../template/bars/userSideBar.xhtml" />
+                <div class="page-content">
+
+                    <div class="page-header">
+
+                        <div class="container-fluid">
+
+                            <h2 class="h5 no-margin-bottom">Bienvenue : Création d'un Terrain </h2>
+
+
+
+                            <h:form id="form" class="form-horizontal">                         
+
+
+                                <div class="form-group row">
+                                    <p:outputLabel class="col-sm-3 form-control-label" value="#{bundle.CreateTerrainLabel_surface}" for="surface" />
+                                    <div class="col-sm-9">
+                                        <p:inputText  class="form-control" id="surface" value="#{terrainController.selected.surface}" title="#{bundle.CreateTerrainTitle_surface}" />
+
+                                    </div> </div>
+                                <div class="line"></div>
+                                <h:panelGroup   id="prenomDiv" rendered="#{redevableController.typeRedevable == 1}"   class="form-group row">
+                                    <p:outputLabel  class="col-sm-3 form-control-label"  value="#{bundle.CreateRedevableLabel_prenom}" for="prenom" />
+
+                                    <div 
+                                        class="col-sm-9">
+                                        <p:inputText  id="prenom"    class="form-control"   value="#{redevableController.selected.prenom}" title="#{bundle.CreateRedevableTitle_prenom}" />
+
+                                    </div> </h:panelGroup>
+                                <div class="line"></div>
+
+                                <div 
+                                    class="form-group row">
+                                    <p:outputLabel class="col-sm-3 form-control-label"  value="#{bundle.CreateTerrainLabel_cpAdresse}" for="adresse" />
+                                    <div 
+                                        class="col-sm-9">
+                                        <p:inputText class="form-control" id="adresse" value="#{terrainController.selected.cpAdresse}" title="#{bundle.CreateTerrainTitle_cpAdresse}" />  
+                                    </div></div>
+                                <div class="line"></div>
+                                <div class="form-group row" >
+                                    <p:outputLabel  class="col-sm-3 form-control-label" value="#{bundle.CreateTerrainLabel_dateAchat}" for="dateAchat" />
+
+                                    <div  class="col-sm-9">
+                                        <p:inputMask id="dateAchat"  value="#{terrainController.selected.dateAchat}" mask="99/99/9999" class="form-control">                                                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </p:inputMask>
+                                    </div>
+                                </div>
+                                <div class="form-group row" >
+                                    <p:outputLabel  class="col-sm-3 form-control-label" value="categorie:"  />
+                                    <div  class="col-sm-9">
+
+                                        <h:selectOneMenu  class="form-control mb-2" id="categorieTerrain" value="#{terrainController.selected.categorieTerrain}" >
+                                            <f:selectItem itemValue="#{null}" itemLabel="Choisissez une categorie"/> 
+                                            <f:selectItems value="#{categorieTerrainController.itemsAvailableSelectOne}"
+                                                           itemLabel="#{categorieTerrainItem.nom}"    var="categorieTerrainItem"
+                                                           itemValue="#{categorieTerrainItem}" />
+                                        </h:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="form-group row" >
+                                    <p:outputLabel  class="col-sm-3 form-control-label" value="secteur:"  />
+                                    <div  class="col-sm-9">
+                                        <h:selectOneMenu class="form-control mb-2"  id="secteur"  value="#{terrainController.secteur}" >
+                                            <f:selectItem itemValue="#{null}" itemLabel="Choisissez un secteur"/>  
+                                            <p:ajax  update=":form:quartier,:form:rue" listener="#{terrainController.findQuartiersBySecteur}"> </p:ajax>
+                                            <f:selectItems value="#{terrainController.secteurItems}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                        </h:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="form-group row" >
+                                    <p:outputLabel  class="col-sm-3 form-control-label" value="quartier:"  />
+                                    <div  class="col-sm-9">
+                                        <h:selectOneMenu  class="form-control mb-2" id="quartier"   value="#{terrainController.quartier}" >
+                                            <f:selectItem itemValue="#{null}" itemLabel="Choisissez un quartier"/>  
+                                            <p:ajax event="valueChange" update=":form:rue"   listener="#{terrainController.findRuesBySecteur(valueChange)}" > </p:ajax>
+                                            <f:selectItems value="#{terrainController.quartierItems}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                        </h:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="form-group row" >
+                                    <p:outputLabel  class="col-sm-3 form-control-label" value="rue:"  />
+                                    <div  class="col-sm-9">
+                                        <h:selectOneMenu   class="form-control mb-2" id="rue"   value="#{terrainController.selected.rue}" >
+                                            <f:selectItem itemValue="#{null}" itemLabel="Choisissez une rue"/>  
+                                            <f:selectItems value="#{terrainController.ruesItems}" var="item" itemValue="#{item}" itemLabel="#{item.nom}"/> 
+                                        </h:selectOneMenu>  
+                                    </div>
+                                </div>
+                                <div class="line"></div>
+                                <div class="form-group row">
+
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-md-4" >
+                                                <p:outputLabel class="col-sm-3 form-control-label"  value="#{bundle.CreateTerrainLabel_redevable}" for="redevable" />
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p:inputText class="form-control" id="redevable" value="#{terrainController.selected.redevable.id}" title="#{bundle.CreateTerrainTitle_redevable}" />  
+
+                                            </div>
+                                            <div class="col-md-1">
+                                                <p:commandButton  class="btn-primary"  update="redevables"  actionListener="#{terrainController.findYourRedevable()}"  value="trouver"/>  
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="block" align="center">
+                                    <div class="table-responsive">
+
+                                        <p:dataTable id="redevables" value="#{terrainController.redevables}" var="item"  class="table table-striped table-hover" >
+
+                                            <p:column >
+                                                <f:facet name="header">
+                                                    <h:outputText value="cin"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.cin}"/>
+                                            </p:column  >
+                                            <p:column >
+                                                <f:facet name="header">
+                                                    <h:outputText value="nif"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.nif}"/>
+                                            </p:column>
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="nom"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.nom}"/>
+                                            </p:column>
+                                            <p:column  >
+                                                <f:facet name="header">
+                                                    <h:outputText value="prenom"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.prenom}"/>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <p:outputLabel class="col-sm-5 form-control-label"   ></p:outputLabel>
+
+                                    <div class="col-sm-4">
+                                        <p:commandButton class="btn-primary" actionListener="#{terrainController.create}"  update="terrains" value="#{bundle.Save}"  />
+                                    </div>               
+                                </div>
+
+
+
+                                <p:dataTable id="terrains" value="#{terrainController.terrains}" var="item" class="table table-striped table-hover">
+
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="numeroLot"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.numeroLot}"/>
+                                    </p:column  >
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="surface"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.surface}"/>
+                                    </p:column>
+                                    <p:column  >
+                                        <f:facet name="header">
+                                            <h:outputText value="redevable"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.redevable.nom}"/>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </h:form>
+                        </div>      
+                    </div> 
+                </div>
+
+
+            </div> 
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+            <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
+            <script src="../template/vendor/chart.js/Chart.min.js"></script>
+            <script src="../template/js/front.js"></script>
+        </h:body>
+    </ui:composition>
+</html>
+
+

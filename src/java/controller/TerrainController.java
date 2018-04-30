@@ -235,11 +235,12 @@ public class TerrainController implements Serializable {
 
     }
 
-    public void calculNbTerrainParCategorie() {
+    public String calculNbTerrainParCategorie() {
         valeurDaffichage = 1;
        
         NbTerrainParCategorie = ejbFacade.CalculNbTerrainParCategorie(quartier.getId());
         controller.util.SessionUtil.setAttribute("NbTerrainParCategorie", NbTerrainParCategorie);
+        return "nombreDeCategorieChart";
     }
 
     public void findQuartiersBySecteur() {
@@ -250,9 +251,7 @@ public class TerrainController implements Serializable {
     }
 
     public void findRuesBySecteur(final AjaxBehaviorEvent event) {
-
         ruesItems = secteurFacade.findRuesByQuartier(quartier.getId());
-
     }
 
     public void setRuesItemsToNull(final AjaxBehaviorEvent event) {

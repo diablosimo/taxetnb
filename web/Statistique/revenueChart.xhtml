@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:chart type="line" id ="chart1"  rendered="#{taxeAnnuelleController.valeurDaffichage==1}" model="#{chartController.lineModel1}" style="height:550px;"/>
+       <p:chart type="line" id ="chart2" rendered="#{taxeAnnuelleController.valeurDaffichage==2}"  model="#{chartController.lineModel2}" style="height:550px;"/>
+       <p:chart type="pie" rendered="#{taxeAnnuelleController.valeurDaffichage==2}" model="#{pieController.pieModel2}" style="width:1250px;height:300px" />
+
+    </h:body>
+</html>
+

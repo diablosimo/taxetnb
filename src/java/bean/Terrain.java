@@ -100,6 +100,8 @@ public class Terrain implements Serializable {
     }
 
     public TaxeAnnuelle getDernierPaiement() {
+        if(dernierPaiement==null)
+            dernierPaiement=new TaxeAnnuelle();
         return dernierPaiement;
     }
 

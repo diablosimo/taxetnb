@@ -27,7 +27,8 @@ public class UtilisateurFacade extends AbstractFacade<Utilisateur> {
 
     @PersistenceContext(unitName = "taxeTNBPU")
     private EntityManager em;
-
+@EJB
+private ConnexionLogFacade connexionLogFacade;
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -173,6 +174,7 @@ public class UtilisateurFacade extends AbstractFacade<Utilisateur> {
         } else {
             loadedUser = clone(loadedUser);
             loadedUser.setMotDepasse(null);
+            connexionLogFacade.createHistoryLog(loadedUser, 1);
             return new Object[]{1, loadedUser};
         }
     }
