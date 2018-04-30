@@ -100,6 +100,8 @@ public class Terrain implements Serializable {
     }
 
     public TaxeAnnuelle getDernierPaiement() {
+        if(dernierPaiement==null)
+            dernierPaiement=new TaxeAnnuelle();
         return dernierPaiement;
     }
 
@@ -175,6 +177,11 @@ public class Terrain implements Serializable {
         return true;
     }
 
+    public String toString2(){
+                return numeroLot+", "+cpAdresse+", "+rue.getNom()+", "+rue.getQuartier().getNom()+", "+rue.getQuartier().getSecteur().getNom();
+
+    }
+    
     @Override
     public String toString() {
         // return "Terrain{" + "numeroLot=" + numeroLot + '}';

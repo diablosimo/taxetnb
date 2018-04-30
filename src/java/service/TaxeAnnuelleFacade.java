@@ -23,7 +23,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import controller.util.SearchUtil;
-import controller.util.SessionUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,6 +61,10 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
     private TerrainFacade terrainFacade;
     @EJB
     private UtilisateurFacade utilisateurFacade;
+    @EJB
+    private SecteurFacade secteurFacade;
+    @EJB
+    private CategorieTerrainFacade categorieTerrainFacade;
 
     public List<TaxeAnnuelle> findByCriteria(int annee, BigDecimal montantMin, BigDecimal montantMax, Long numLot, Date datePresentation) {
         String req = "SELECT ta FROM TaxeAnnuelle ta WHERE 1=1";
@@ -190,9 +193,11 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
                 return new Object[]{-4, null};
             }
             List<TaxeAnnuelle> taxes = findByTerrain(loadedTerain);
-            if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
-                if (taxes.get(0).getAnnee() < annee - 1) {
-                    return new Object[]{-3, null};
+            if (taxes != null && taxes.size()>0) {
+                if (taxes.get(0) != null) {// derniere annee payée+1=annee volue payée 
+                    if (taxes.get(0).getAnnee() < annee - 1) {
+                        return new Object[]{-3, null};
+                    }
                 }
             }
             int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
@@ -212,7 +217,8 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         if (taxeAnnuelle == null) {
             return null;
         } else {
-            //taxeAnnuelle = calcul(taxeAnnuelle);
+            //taxeAnnuelle = calcul(taxeAnnuelle
+//            taxeAnnuelle.setUtilisateur(SessionUtil.getConnectedUser());
             if (simuler == false) {
                 create(taxeAnnuelle);
                 Terrain terrain = taxeAnnuelle.getTerrain();
@@ -240,8 +246,9 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         List myList = new ArrayList();
         myList.add(taxeAnnuelle);
         //Utilisateur utilisateur = utilisateurFacade.find(SessionUtil.getConnectedUser().getMatricule());
-        Utilisateur utilisateur = utilisateurFacade.find("13089122");
-        System.out.println(utilisateur);
+        //Utilisateur utilisateur = utilisateurFacade.find("13089122");
+        Utilisateur utilisateur = taxeAnnuelle.getUtilisateur();
+        System.out.println("pdf"+utilisateur);
         Redevable redevable = taxeAnnuelle.getTerrain().getRedevable();
         String cinNif;
         String prenom = taxeAnnuelle.getTerrain().getRedevable().getPrenom();
@@ -264,7 +271,6 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         params.put("montantTotal", taxeAnnuelle.getMontantTotal());
         params.put("montantTotalWord", FrenchNumberToWords.convert(taxeAnnuelle.getMontantTotal()));
         params.put("utilisateur", utilisateur.getNom().toUpperCase() + " " + utilisateur.getPrenom().toUpperCase());
-        //params.put("utilisateur", "BENMANSOUR MOHAMMED");
         System.out.println(params);
         System.out.println(taxeAnnuelle);
         PdfUtil.generatePdf(myList, params, fileName, "/jasper/Quitance.jasper");
@@ -276,16 +282,102 @@ public class TaxeAnnuelleFacade extends AbstractFacade<TaxeAnnuelle> {
         EmailUtil.sendMail("taxe.tnb@gmail.com", "taxe@TNB2018", message, to, subject, fileAttachment);
     }
 
-    public TaxeAnnuelle createForNotification(Terrain terrain,int annee){
-        System.out.println("ha terrain="+terrain);
-        System.out.println("ha annee="+annee);
-        int nbMoisRetard=DateUtil.getNombreMoisRetard(annee);
-        System.out.println("hq nb retard="+nbMoisRetard);
-        TaxeAnnuelle taxeAnnuelle=new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
-        System.out.println("ha taxan="+taxeAnnuelle);
+    public TaxeAnnuelle createForNotification(Terrain terrain, int annee) {
+        System.out.println("ha terrain=" + terrain);
+        System.out.println("ha annee=" + annee);
+        int nbMoisRetard = DateUtil.getNombreMoisRetard(annee);
+        System.out.println("hq nb retard=" + nbMoisRetard);
+        TaxeAnnuelle taxeAnnuelle = new TaxeAnnuelle(annee, nbMoisRetard, new Date(), DateUtil.getDebutAnnee(annee));
+        System.out.println("ha taxan=" + taxeAnnuelle);
         taxeAnnuelle.setTerrain(terrain);
-        taxeAnnuelle=calcul(taxeAnnuelle);
-        System.out.println("hq taxeqnn appres calcul="+taxeAnnuelle);
+        taxeAnnuelle = calcul(taxeAnnuelle);
+        System.out.println("hq taxeqnn appres calcul=" + taxeAnnuelle);
         return taxeAnnuelle;
+    }
+
+    public String contructQuery(Quartier quartier, Secteur secteur, Integer annee, Integer mois, CategorieTerrain categorie) {
+        String req = "SELECT SUM(ta.montantTotal) FROM TaxeAnnuelle ta WHERE 1=1";
+        if (quartier != null) {
+            req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.id", "=", quartier.getId());
+        }
+        if (secteur != null) {
+            req += SearchUtil.addConstraint("ta", "terrain.rue.quartier.secteur.codePostal", "=", secteur.getCodePostal());
+        }
+        if (categorie != null) {
+            req += SearchUtil.addConstraint("ta", "terrain.categorieTerrain.id", "=", categorie.getId());
+        }
+        req += SearchUtil.addConstraint("ta", "annee", "=", annee);
+        if (mois != null) {
+            req += "and EXTRACT(MONTH FROM ta.datePresentaion)='" + mois + "'";
+        }
+
+        return req;
+    }
+
+    public BigDecimal calculRevenuesAnnuelle(Quartier quartier, Secteur secteur, int annee) {
+
+        String req = contructQuery(quartier, secteur, annee, null, null);
+
+        BigDecimal revenue = getUniqueBigDecimal(req);
+        return revenue;
+
+    }
+
+    public List<BigDecimal> calculRevenuesParMois(Quartier quar, Secteur sec, int annee) {
+        List<BigDecimal> list = new ArrayList();
+        int i;
+
+        for (i = 1; i <= 12; i++) {
+
+            String req = contructQuery(quar, sec, annee, i, null);
+            BigDecimal revenue = getUniqueBigDecimal(req);
+            list.add(revenue);
+
+        }
+        return list;
+    }
+
+    public List<Object[]> calculRevenuesQuartiersDansSecteur(Secteur secteur, int annee) {
+        List<Quartier> quars = secteurFacade.findQuartiersBySecteur(secteur.getCodePostal());
+        List<Object[]> listOfObjects = new ArrayList();
+        if (quars != null) {
+
+            for (int i = 0; i < quars.size(); i++) {
+                Quartier get = quars.get(i);
+                BigDecimal revenue = calculRevenuesAnnuelle(get, secteur, annee);
+                listOfObjects.add(new Object[]{get.getNom(), revenue});
+            }
+        }
+
+        return listOfObjects;
+
+    }
+    /////////////////////// REvenue Par Categorie/////////////
+
+    public BigDecimal revenuesAnnuelleParCategorie(Quartier quartier, Secteur secteur, int annee, CategorieTerrain categorie) {
+
+        String req = contructQuery(quartier, secteur, annee, null, categorie);
+
+        BigDecimal revenue = getUniqueBigDecimal(req);
+        return revenue;
+
+    }
+
+    public Object[] revenueQuartierParCategorie(Secteur secteur, Quartier quartier, int annee, CategorieTerrain categorie) {
+
+        BigDecimal revenue = revenuesAnnuelleParCategorie(quartier, secteur, annee, categorie);
+
+        return new Object[]{categorie.getNom(), revenue};
+    }
+
+    public List<Object[]> revenuesQuartierParCategorie(Secteur secteur, Quartier quartier, int annee) {
+        List<Object[]> listOfObjects = new ArrayList();
+        List<CategorieTerrain> categories = categorieTerrainFacade.findAll();
+        for (int i = 0; i < categories.size(); i++) {
+            CategorieTerrain categorie = categories.get(i);
+            Object[] result = revenueQuartierParCategorie(secteur, quartier, annee, categorie);
+            listOfObjects.add(result);
+        }
+        return listOfObjects;
     }
 }

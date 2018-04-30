@@ -5,6 +5,7 @@
  */
 package service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -89,4 +90,11 @@ public abstract class AbstractFacade<T> {
         return ((Long) q.getSingleResult()).intValue();
     }
     
+     public BigDecimal getUniqueBigDecimal(String query) {
+      BigDecimal nombre =  (BigDecimal)  getEntityManager().createQuery(query).getSingleResult();
+        if (nombre  != null ) {
+            return nombre;
+        }
+         return new BigDecimal("0.00"); 
+    }
 }

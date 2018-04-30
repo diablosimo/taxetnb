@@ -6,6 +6,8 @@ import controller.util.JsfUtil.PersistAction;
 import service.TauxRetardItemFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -14,25 +16,103 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import service.TauxRetardFacade;
 
 @Named("tauxRetardItemController")
 @SessionScoped
 public class TauxRetardItemController implements Serializable {
 
     @EJB
-    private service.TauxRetardItemFacade ejbFacade;
+    private TauxRetardItemFacade ejbFacade;
     private List<TauxRetardItem> items = null;
     private TauxRetardItem selected;
-
+    private Double premierMin;
+    private Double premierMax;
+    private Double autreMin;
+    private Double autreMax;
+   private Date dateApplication;
+   @EJB
+   private TauxRetardFacade tauxRetardFacade;
+   
     public TauxRetardItemController() {
+    }
+    
+  public String cree(){
+        tauxRetardFacade.ajouter(items,dateApplication);
+        return "ResultatDeCreaate";
+    }
+   public void fillInList(){
+       System.out.println(" cc yarbi salama ");
+       items=ejbFacade.Add(selected,items);
+       System.out.println(items);
+                       FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "warning", "duplication de la categorie de terain ,vaillez faire un autre choix"));
+
+   }
+    
+public void findByMaxMin(){
+   items=ejbFacade.findByCrit(premierMin, premierMax,autreMin, autreMax);
+}
+
+    public TauxRetardItemFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(TauxRetardItemFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public Date getDateApplication() {
+        if(dateApplication==null){
+            dateApplication=new Date();
+        }
+        return dateApplication;
+    }
+
+    public void setDateApplication(Date dateApplication) {
+        this.dateApplication = dateApplication;
     }
 
     public TauxRetardItem getSelected() {
+        if(selected==null)
+            selected=new TauxRetardItem();
         return selected;
+    }
+
+    public Double getPremierMin() {
+        return premierMin;
+    }
+
+    public void setPremierMin(Double premierMin) {
+        this.premierMin = premierMin;
+    }
+
+    public Double getPremierMax() {
+        return premierMax;
+    }
+
+    public void setPremierMax(Double premierMax) {
+        this.premierMax = premierMax;
+    }
+
+    public Double getAutreMin() {
+        return autreMin;
+    }
+
+    public void setAutreMin(Double autreMin) {
+        this.autreMin = autreMin;
+    }
+
+    public Double getAutreMax() {
+        return autreMax;
+    }
+
+    public void setAutreMax(Double autreMax) {
+        this.autreMax = autreMax;
     }
 
     public void setSelected(TauxRetardItem selected) {
@@ -76,7 +156,7 @@ public class TauxRetardItemController implements Serializable {
 
     public List<TauxRetardItem> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items =new ArrayList();
         }
         return items;
     }

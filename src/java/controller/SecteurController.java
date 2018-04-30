@@ -1,5 +1,7 @@
 package controller;
 
+import bean.Quartier;
+import bean.Rue;
 import bean.Secteur;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
@@ -18,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.AjaxBehaviorEvent;
 
 @Named("secteurController")
 @SessionScoped
@@ -27,11 +30,77 @@ public class SecteurController implements Serializable {
     private service.SecteurFacade ejbFacade;
     private List<Secteur> items = null;
     private Secteur selected;
+    private Quartier quartier;
+    private List<Quartier> quartierItems = null;
+    private List<Rue> ruesItems = null;
+     private Rue rue;
+
+    public Rue getRue() {
+        return rue;
+    }
+
+    public void setRue(Rue rue) {
+        this.rue = rue;
+    }
+
+    public void findQuartiersBySecteur(final AjaxBehaviorEvent event ) {
+
+        quartierItems = ejbFacade.findQuartiersBySecteur(selected.getCodePostal());
+       
+    }
+ public void findRuesBySecteur(final AjaxBehaviorEvent event ) {
+
+       ruesItems = ejbFacade.findRuesByQuartier(quartier.getId());
+       
+    }
+ public void setRuesItemsToNull(final AjaxBehaviorEvent event ) {
+
+       ruesItems = null;
+       
+    }
+ 
+    public Quartier getQuartier() {
+        return quartier;
+    }
+
+    public void setQuartier(Quartier quartier) {
+        this.quartier = quartier;
+    }
+
+    public SecteurFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(SecteurFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public List<Quartier> getQuartierItems() {
+        
+        return quartierItems;
+    }
+
+    public void setQuartierItems(List<Quartier> quartierItems) {
+        this.quartierItems = quartierItems;
+    }
+
+    public List<Rue> getRuesItems() {
+        return ruesItems;
+    }
+
+    public void setRuesItems(List<Rue> ruesItems) {
+        this.ruesItems = ruesItems;
+    }
+
+   
 
     public SecteurController() {
     }
 
     public Secteur getSelected() {
+        if(selected==null){
+            selected=new Secteur();
+        }
         return selected;
     }
 

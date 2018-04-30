@@ -40,6 +40,11 @@ public class TauxRetard implements Serializable {
         this.dateApplication = dateApplication;
     }
 
+    public TauxRetard(Long id, Date dateApplication) {
+        this.id = id;
+        this.dateApplication = dateApplication;
+    }
+    
     public Long getId() {
         return id;
     }

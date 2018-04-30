@@ -1,11 +1,14 @@
 package controller;
 
 import bean.ConnexionLog;
+import bean.Utilisateur;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
 import service.ConnexionLogFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -27,6 +30,59 @@ public class ConnexionLogController implements Serializable {
     private service.ConnexionLogFacade ejbFacade;
     private List<ConnexionLog> items = null;
     private ConnexionLog selected;
+    private Date dateMin;
+    private Date dateMax;
+    private Utilisateur user;
+    private int type;
+
+    public String chi7aja(int type) {
+        if (type == 1) {
+            return "connecte";
+        } else if (type == 2) {
+            return "deconnecte";
+        } else {
+            return null;
+        }
+    }
+
+    public void stalkConnect() {
+        items = ejbFacade.rechercher(dateMin, dateMax, type, user);
+    }
+
+    public Date getDateMin() {
+        return dateMin;
+    }
+
+    public void setDateMin(Date dateMin) {
+        this.dateMin = dateMin;
+    }
+
+    public Date getDateMax() {
+        return dateMax;
+    }
+
+    public void setDateMax(Date dateMax) {
+        this.dateMax = dateMax;
+    }
+
+    public Utilisateur getUser() {
+        if (user == null) {
+            user = new Utilisateur();
+        }
+        return user;
+    }
+
+    public void setUser(Utilisateur user) {
+        this.user = user;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public ConnexionLogController() {
     }
@@ -76,7 +132,7 @@ public class ConnexionLogController implements Serializable {
 
     public List<ConnexionLog> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items = new ArrayList<>();
         }
         return items;
     }

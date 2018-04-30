@@ -11,30 +11,31 @@
             <div class="sidebar-header d-flex align-items-center">
                 <div class="avatar"><img src="../template/img/img-01.png" alt="..." class="img-fluid rounded-circle"/></div>
                 <div class="title">
-                    <h1 class="h5"><h:outputText value="#{taxeAnnuelleController.connectedUser.nom} #{taxeAnnuelleController.connectedUser.prenom}" /></h1>
+                    <h1 class="h5"><h:outputText value="#{utilisateurController.connectedUser.nom} #{utilisateurController.connectedUser.prenom}"/></h1>
                     <p>Utilisateur</p>
                     <p>TNB GIR</p>
                 </div>
             </div>
             <span class="heading">Menu principal</span>
             <ul class="list-unstyled">
-                <li ><a href="AccueilU.html"> <i class="icon-home"></i>ACCUEIL </a></li>
+                <li ><a href="../utilisateur/AccueilUser.xhtml"> <i class="icon-home"></i>ACCUEIL </a></li>
                 <li><a href="#examplePaiement" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>PAIEMENT</a>
                     <ul id="examplePaiement" class="collapse list-unstyled ">
-                        <li><a href="EffectuerPaiement.xhtml">Effectuer</a></li>
-                        <li><a href="RecherchePaiement.xhtml">Rechercher</a></li>
+                        <li><a href="../taxeAnnuelle/EffectuerPaiement.xhtml">Effectuer</a></li>
+                        <li><a href="../taxeAnnuelle/RecherchePaiement.xhtml">Rechercher</a></li>
                     </ul>
                 </li>
                 <li><a href="#exampleTERRAIN" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>TERRAIN</a>
                     <ul id="exampleTERRAIN" class="collapse list-unstyled ">
-                        <li><a href="TERRAIN.html">CREER</a></li>
-                        <li><a href="ModifieTer.html">MODIFIER</a></li>
+                        <li><a href="../terrain/TerrainCreate.xhtml">CREER</a></li>
+                        <li><a href="../terrain/search.xhtml">RECHERCHER</a></li>
+                        
                     </ul>
                 </li>
                 <li><a href="#exampleREDEVABLE" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>REDEVABLE</a>
                     <ul id="exampleREDEVABLE" class="collapse list-unstyled ">
-                        <li><a href="REDEVABLE.html">CREER</a></li>
-                        <li><a href="ModifieRed.html">MODIFIER</a></li>
+                        <li><a href="../redevable/CreateRedevable.xhtml">CREER</a></li>
+                        <li><a href="../redevable/findRedevavble.xhtml">RECHERCHER</a></li>
                     </ul>
                 </li>
             </ul>

@@ -1,14 +1,16 @@
 package controller;
 
 import bean.Redevable;
+import bean.TaxeAnnuelle;
+import bean.Terrain;
 import controller.util.HashageUtil;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
 import controller.util.SessionUtil;
-import java.io.IOException;
 import service.RedevableFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -21,6 +23,11 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
+import service.TaxeAnnuelleFacade;
+import service.TerrainFacade;
 
 @Named("redevableController")
 @SessionScoped
@@ -31,18 +38,78 @@ public class RedevableController implements Serializable {
     private List<Redevable> items = null;
     private Redevable selected;
 
-    public String connexion() throws IOException {
-        int res = ejbFacade.seConnecter(selected);
-        if (res < 0) {
-            JsfUtil.addErrorMessage("mot de pqsse incorrect");
-            return null;
-        } else {
-            SessionUtil.registerRedevable(selected);
-            JsfUtil.addErrorMessage("Mot de passe correct");
-            return "List";
-        }
+    private List<Terrain> terrains;
+    @EJB
+    private TerrainFacade ejbTerr;
+    private String login;
+    private String oldPassword;
+    private String newPassword;
+    private String confirmation;
+    private Object[] cnx = new Object[]{0, null};
+    @EJB
+    private TaxeAnnuelleFacade ejbTaxe;
+    private List<TaxeAnnuelle> taxes;
+
+    private List<Terrain> itemsSearch1 = null;
+    private List<Redevable> redevables = null;
+    private int typeRedevable;
+    private String message;
+
+    public String getMessage() {
+        return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getTypeRedevable() {
+        return typeRedevable;
+    }
+
+    public void setTypeRedevable(int typeRedevable) {
+        this.typeRedevable = typeRedevable;
+    }
+
+    public List<Redevable> getRedevables() {
+        return redevables;
+    }
+
+    public void setRedevables(List<Redevable> redevables) {
+        this.redevables = redevables;
+    }
+
+    public RedevableFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(RedevableFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public List<Terrain> getItemsSearch1() {
+        return itemsSearch1;
+    }
+
+    public void setItemsSearch1(List<Terrain> itemsSearch1) {
+        this.itemsSearch1 = itemsSearch1;
+    }
+
+    public void setAttributesToNull(final AjaxBehaviorEvent event ) {
+      selected=null ;
+    
+    }
+//    public String connexion() throws IOException {
+//        int res = ejbFacade.seConnecter(selected);
+//        if (res < 0) {
+//            JsfUtil.addErrorMessage("mot de pqsse incorrect");
+//            return null;
+//        } else {
+//            SessionUtil.registerRedevable(selected);
+//            JsfUtil.addErrorMessage("Mot de passe correct");
+//            return "List";
+//        }
+//    }
     public RedevableController() {
     }
 
@@ -67,17 +134,50 @@ public class RedevableController implements Serializable {
         return ejbFacade;
     }
 
+    public void findTersByIdSecondaire1() {
+        itemsSearch1 = ejbFacade.findTersByIdSecondaire1(selected.getCin());
+        selected.setNif(null);
+    }
+
+    public void findTersByIdSecondaire2() {
+        
+        itemsSearch1 = ejbFacade.findTersByIdSecondaire2(selected.getNif());
+        selected.setCin(null);
+    }
+
+    public void findByNomOrPrenom() {
+        redevables = ejbFacade.findByNomOrPrenom(selected.getNom(), selected.getPrenom());
+        itemsSearch1 = null;
+    }
+
+    public List<Terrain> giveTerrains() {
+        terrains = ejbFacade.findTersByIdSecondaire1(selected.getCin());
+        return terrains;
+    }
+
     public Redevable prepareCreate() {
         selected = new Redevable();
         initializeEmbeddableKey();
         return selected;
     }
 
-    public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("RedevableCreated"));
-        if (!JsfUtil.isValidationFailed()) {
-            items = null;    // Invalidate list of items to trigger re-query.
+    public void create() throws MessagingException {
+        if (ejbFacade.constraintOnAttributs(selected) == false) {
+            message = " l'identifiant de ce redevable deja existe";
+        } else if (ejbFacade.constraintOnAttributs(selected) == true) {
+            ejbFacade.creerRedevevable(selected);
+
+            persist(PersistAction.CREATE, ResourceBundle.getBundle("/Bundle").getString("RedevableCreated"));
+            message = "le redevable a ete cree";
+            
+            if (!JsfUtil.isValidationFailed()) {
+                items = null;    // Invalidate list of items to trigger re-query.
+            }
+
+        } else {
+            message = " creation echoué";
         }
+        selected=null ;
     }
 
     public void update() {
@@ -104,7 +204,7 @@ public class RedevableController implements Serializable {
             setEmbeddableKeys();
             try {
                 if (persistAction != PersistAction.DELETE) {
-                    selected.setMotDePasse(HashageUtil.sha256(selected.getMotDePasse()));
+
                     getFacade().edit(selected);
                 } else {
                     getFacade().remove(selected);
@@ -178,6 +278,133 @@ public class RedevableController implements Serializable {
                 return null;
             }
         }
+
+    }
+    
+    public TaxeAnnuelleFacade getEjbTaxe() {
+        return ejbTaxe;
+    }
+
+    public void detail(Terrain terrain) {
+        taxes = ejbTaxe.findByTerrain(terrain);
+    }
+
+    public void setEjbTaxe(TaxeAnnuelleFacade ejbTaxe) {
+        this.ejbTaxe = ejbTaxe;
+    }
+
+    public List<TaxeAnnuelle> getTaxes() {
+        if (taxes == null) {
+            taxes = new ArrayList();
+        }
+        return taxes;
+    }
+
+    public void setTaxes(List<TaxeAnnuelle> taxes) {
+        this.taxes = taxes;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getConfirmation() {
+        return confirmation;
+    }
+
+    public void setConfirmation(String confirmation) {
+        this.confirmation = confirmation;
+    }
+public void sedeconnecte(){
+        HttpSession session= SessionUtil.getSession();
+        session.invalidate();
+    }
+    
+//    public void findTerrain(){
+//        
+//       
+//        terrains=ejbTerr.findByRedevable(SessionUtil.getConnectedRedevable() );
+//    }
+
+   
+
+    public List<Terrain> getTerrains() {
+       if (terrains == null) {
+            terrains = ejbTerr.findByRedevable(SessionUtil.getConnectedRedevable());
+
+        }
+        return terrains;
+    }
+
+    public void setTerrains(List<Terrain> terrains) {
+        this.terrains = terrains;
+    }
+
+    public TerrainFacade getEjbTerr() {
+        return ejbTerr;
+    }
+
+    public void setEjbTerr(TerrainFacade ejbTerr) {
+        this.ejbTerr = ejbTerr;
+    }
+
+    public Object[] getCnx() {
+        return cnx;
+    }
+
+    public void setCnx(Object[] cnx) {
+        this.cnx = cnx;
+    }
+
+    
+
+    public String connexion() {
+        cnx = ejbFacade.seConnecter(selected);
+        System.out.println("ha res=" + cnx[1]);
+        if ((int) cnx[0] < 0) {
+            JsfUtil.addErrorMessage("mot de pqsse incorrect");
+
+            return null;
+        } else {
+            SessionUtil.registerRedevable((Redevable) cnx[1]);
+            System.out.println("ha seesion" + SessionUtil.getConnectedRedevable());
+            JsfUtil.addErrorMessage("Mot de passe correct");
+            return "ListTerrain";
+        }
+
+    }
+
+    public String deconnecte() {
+        HttpSession session = SessionUtil.getSession();
+        session.invalidate();
+        selected = null;
+        return "Connexion";
+    }
+
+    public String renitialiser() {
+
+        ejbFacade.modifierMd(login, oldPassword, newPassword, confirmation);
+        return "List";
 
     }
 

@@ -1,11 +1,14 @@
 package controller;
 
+import bean.TauxTaxe;
 import bean.TauxTaxeItem;
 import controller.util.JsfUtil;
 import controller.util.JsfUtil.PersistAction;
 import service.TauxTaxeItemFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +21,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import service.TauxTaxeFacade;
 
 @Named("tauxTaxeItemController")
 @SessionScoped
@@ -27,13 +31,81 @@ public class TauxTaxeItemController implements Serializable {
     private service.TauxTaxeItemFacade ejbFacade;
     private List<TauxTaxeItem> items = null;
     private TauxTaxeItem selected;
-
+    private Double tauxMin;
+    private Double tauxMax;
+    private TauxTaxe tauxTaxe;
+   
+    @EJB
+    private TauxTaxeFacade tauxTaxeFacade;
+    
+     private Date dateApplication;
+    
     public TauxTaxeItemController() {
+      
     }
 
+    public Date getDateApplication() {
+        return dateApplication;
+    }
+
+    public void setDateApplication(Date dateApplication) {
+        if(dateApplication==null){
+            dateApplication=new Date();
+        }
+        this.dateApplication = dateApplication;
+    }
+
+    public String cree(){
+       int res= tauxTaxeFacade.ajouter(items,dateApplication);
+       if(res==1){
+           return "ResultatDeCreaate";
+       }else return null;
+    }
+   public void fillInList(){ 
+       System.out.println("hanidateApplication");
+       //if(dateApplication!=null){
+       items=ejbFacade.Add(selected,items);
+       //}
+   }
+ public void findByTauMxMn(){
+     items=ejbFacade.findByTauMxMn(tauxMin, tauxMax);
+ }
     public TauxTaxeItem getSelected() {
+        if(selected==null){
+            selected=new TauxTaxeItem();
+        }
         return selected;
     }
+
+    public TauxTaxeItemFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(TauxTaxeItemFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public TauxTaxe getTauxTaxe() {
+        if(tauxTaxe==null){
+            tauxTaxe=new TauxTaxe();
+      tauxTaxe.setDateApplication(new Date());
+      tauxTaxe.setId(tauxTaxeFacade.generate("TauxTaxe","id"));
+        }
+        return tauxTaxe;
+    }
+
+    public void setTauxTaxe(TauxTaxe tauxTaxe) {
+        this.tauxTaxe = tauxTaxe;
+    }
+
+    public TauxTaxeFacade getTauxTaxeFacade() {
+        return tauxTaxeFacade;
+    }
+
+    public void setTauxTaxeFacade(TauxTaxeFacade tauxTaxeFacade) {
+        this.tauxTaxeFacade = tauxTaxeFacade;
+    }
+    
 
     public void setSelected(TauxTaxeItem selected) {
         this.selected = selected;
@@ -43,6 +115,22 @@ public class TauxTaxeItemController implements Serializable {
     }
 
     protected void initializeEmbeddableKey() {
+    }
+
+    public Double getTauxMin() {
+        return tauxMin;
+    }
+
+    public void setTauxMin(Double tauxMin) {
+        this.tauxMin = tauxMin;
+    }
+
+    public Double getTauxMax() {
+        return tauxMax;
+    }
+
+    public void setTauxMax(Double tauxMax) {
+        this.tauxMax = tauxMax;
     }
 
     private TauxTaxeItemFacade getFacade() {
@@ -76,7 +164,7 @@ public class TauxTaxeItemController implements Serializable {
 
     public List<TauxTaxeItem> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items = new ArrayList();
         }
         return items;
     }

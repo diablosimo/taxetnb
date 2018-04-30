@@ -6,6 +6,8 @@ import controller.util.JsfUtil.PersistAction;
 import service.TauxTaxeFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,21 +20,50 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import service.TauxTaxeItemFacade;
 
 @Named("tauxTaxeController")
 @SessionScoped
 public class TauxTaxeController implements Serializable {
-
     @EJB
     private service.TauxTaxeFacade ejbFacade;
     private List<TauxTaxe> items = null;
     private TauxTaxe selected;
-
+    private Date dateMax;
+    private Date dateMin;
+    @EJB
+    TauxTaxeItemFacade tauxTaxeItemFacade;
     public TauxTaxeController() {
     }
-
+     public void detail(TauxTaxe tauxtaxe){
+        getSelected().setTauxTaxeItems(tauxTaxeItemFacade.findByTauxTaxe(tauxtaxe));
+    }
+    public void findbyDateMaxMin(){
+        items=ejbFacade.findByDate(dateMin, dateMax);
+        System.out.println(items);
+        
+    }
     public TauxTaxe getSelected() {
+        if(selected==null){
+            selected=new TauxTaxe();
+        }
         return selected;
+    }
+
+    public Date getDateMax() {
+        return dateMax;
+    }
+
+    public void setDateMax(Date dateMax) {
+        this.dateMax = dateMax;
+    }
+
+    public Date getDateMin() {
+        return dateMin;
+    }
+
+    public void setDateMin(Date dateMin) {
+        this.dateMin = dateMin;
     }
 
     public void setSelected(TauxTaxe selected) {
@@ -75,9 +106,9 @@ public class TauxTaxeController implements Serializable {
     }
 
     public List<TauxTaxe> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+       if(items==null)
+            items =new ArrayList();
+        
         return items;
     }
 

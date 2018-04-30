@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition 
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+        <ui:include src="../template/bars/head.xhtml"/>
+        <h:body>
+            <header class="header">   
+                <ui:include src="../template/bars/navBar.xhtml"/>
+            </header>
+            <div class="d-flex align-items-stretch">   
+                <ui:include src="../template/bars/userSideBar.xhtml" />
+                <div class="page-content">
+                    <div class="page-header">
+                        <div class="container-fluid">
+                            <h2 class="h5 no-margin-bottom">Bienvenue : Création d'un redevable </h2>
+                            <h:form id="form" class="form-horizontal">                         
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <h:selectOneMenu   value="#{redevableController.typeRedevable}" class="form-control mb-2">
+                                                    <p:ajax event="valueChange" listener="#{redevableController.setAttributesToNull(valueChange)}"  update=":form,:form:cinInput,:form:prenomDiv" />
+                                                    <f:selectItem itemLabel="cin" itemValue="1"/>
+                                                    <f:selectItem itemLabel="nif" itemValue="2" />
+
+                                                </h:selectOneMenu>
+                                            </div>
+                                            <div class="col-md-9">                                    
+                                                <p:inputText id="cinInput" value="#{(redevableController.typeRedevable==1)?redevableController.selected.cin:redevableController.selected.nif}"  class="form-control"/>                                       
+                                            </div>
+                                        </div>
+                                    </div></div>
+
+                                <div class="form-group row">
+                                    <p:outputLabel class="col-sm-3 form-control-label" value="#{bundle.CreateRedevableLabel_nom}" for="nom" />
+                                    <div class="col-sm-9">
+                                        <p:inputText  class="form-control" id="nom" value="#{redevableController.selected.nom}" title="#{bundle.CreateRedevableTitle_nom}" />
+
+                                    </div> </div>
+                                <div class="line"></div>
+                                <h:panelGroup   id="prenomDiv" rendered="#{redevableController.typeRedevable == 1}"   class="form-group row">
+                                    <p:outputLabel  class="col-sm-3 form-control-label"  value="#{bundle.CreateRedevableLabel_prenom}" for="prenom" />
+
+                                    <div 
+                                        class="col-sm-9">
+                                        <p:inputText  id="prenom"    class="form-control"   value="#{redevableController.selected.prenom}" title="#{bundle.CreateRedevableTitle_prenom}" />
+
+                                    </div> </h:panelGroup>
+                                <div class="line"></div>
+                                <div 
+                                    class="form-group row">
+                                    <p:outputLabel class="col-sm-3 form-control-label"  value="#{bundle.CreateRedevableLabel_adresse}" for="adresse" />
+                                    <div 
+                                        class="col-sm-9">
+                                        <p:inputText class="form-control" id="adresse" value="#{redevableController.selected.adresse}" title="#{bundle.CreateRedevableTitle_adresse}" />  
+                                    </div></div>
+                                <div class="line"></div>
+                                <div 
+                                    class="form-group row" >
+                                    <p:outputLabel class="col-sm-3 form-control-label" value="#{bundle.CreateRedevableLabel_numTel}" for="numTel" />
+
+                                    <div 
+                                        class="col-sm-9">
+                                        <p:inputText  class="form-control" id="numTel" value="#{redevableController.selected.numTel}" title="#{bundle.CreateRedevableTitle_numTel}" />
+
+                                    </div></div>
+                                <div class="line"></div>
+                                <div 
+                                    class="form-group row">
+                                    <p:outputLabel  class="col-sm-3 form-control-label" value="#{bundle.CreateRedevableLabel_email}" for="email" />
+                                    <div 
+                                        class="col-sm-9">
+                                        <p:inputText  class="form-control" id="email" value="#{redevableController.selected.email}" title="#{bundle.CreateRedevableTitle_email}" />
+                                    </div></div>
+                                <div class="form-group row">
+
+
+                                    <p:commandButton class="btn-primary" actionListener="#{redevableController.create}" update=":form:message,:form" value="creer"  />
+                                    <p:outputLabel  class="col-sm-3 form-control-label"  id="message" value="#{redevableController.message}" /> 
+
+                                </div>
+                            </h:form>
+
+
+                        </div>      </div> </div>
+
+
+            </div> 
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+            <script src="../template/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <script src="../template/vendor/jquery.cookie/jquery.cookie.js"></script>
+            <script src="../template/vendor/chart.js/Chart.min.js"></script>
+            <script src="../template/js/front.js"></script>
+        </h:body>
+    </ui:composition>
+</html>
+

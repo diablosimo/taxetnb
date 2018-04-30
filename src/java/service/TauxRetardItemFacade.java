@@ -6,6 +6,7 @@
 package service;
 
 import bean.CategorieTerrain;
+import bean.TauxRetard;
 import bean.TauxRetardItem;
 import bean.TaxeAnnuelle;
 import controller.util.SearchUtil;
@@ -38,6 +39,57 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
     @EJB
     private TauxRetardFacade tauxRetardFacade;
 
+    public List<TauxRetardItem> Add(TauxRetardItem tauxRetardItem, List<TauxRetardItem> tauxRetardItems) {
+        int x = 0;
+
+        for (int i = 0; i < tauxRetardItems.size(); i++) {
+            TauxRetardItem item = tauxRetardItems.get(i);
+            if (tauxRetardItem.getCategorieTerrain().getId() == item.getCategorieTerrain().getId()) {
+                System.out.println("in condition of ct");
+                x = 1;
+            }
+        }
+        if (x == 0) {
+            // tauxTaxeItem.getTauxTaxe().setDateApplication(new Date());
+            tauxRetardItems.add(clone(tauxRetardItem));
+        }
+
+        return tauxRetardItems;
+
+    }
+
+    public List<TauxRetardItem> findByCrit(Double premierMin, Double premierMax, Double autreMin, Double autreMax) {
+
+        String reqette = "SELECT t FROM TauxTaxeRetardItem t WHERE 1=1 ";
+
+        reqette += SearchUtil.addConstraintMinMax("t", "tauxPremierMois", premierMin, premierMax);
+        reqette += SearchUtil.addConstraintMinMax("t", "tauxAutreMois", autreMin, autreMax);
+        return em.createQuery(reqette).getResultList();
+
+    }
+
+    public List<TauxRetardItem> findByTauxRetard(TauxRetard tauxRetard) {
+
+        String reqette = "SELECT t FROM TauxRetardItem t WHERE t.tauxRetard.id=" + tauxRetard.getId() + "";
+        return em.createQuery(reqette).getResultList();
+
+    }
+
+    public void clone(TauxRetardItem tauxRetardItemOriginal, TauxRetardItem tauxTaxeItemCloned) {
+
+        tauxTaxeItemCloned.setTauxRetard(tauxRetardItemOriginal.getTauxRetard());
+        tauxTaxeItemCloned.setCategorieTerrain(tauxRetardItemOriginal.getCategorieTerrain());
+        tauxTaxeItemCloned.setTauxAutreMois(tauxRetardItemOriginal.getTauxAutreMois());
+        tauxTaxeItemCloned.setTauxPremierMois(tauxRetardItemOriginal.getTauxPremierMois());
+
+    }
+
+    public TauxRetardItem clone(TauxRetardItem tauxRetardItem) {
+        TauxRetardItem cloned = new TauxRetardItem();
+        clone(tauxRetardItem, cloned);
+        return cloned;
+    }
+
     //false
     public TauxRetardItem findByCategorie(CategorieTerrain categorieTerrain) {
         List<TauxRetardItem> items = new ArrayList();
@@ -51,7 +103,6 @@ public class TauxRetardItemFacade extends AbstractFacade<TauxRetardItem> {
         } else {
             return items.get(0);
         }
-
     }
 
     public TaxeAnnuelle attachToTaxeAnnuelle(TaxeAnnuelle taxeAnnuelle) {
