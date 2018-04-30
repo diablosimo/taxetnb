@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 15 Mars 2018 à 11:10
+-- Généré le :  Lun 30 Avril 2018 à 19:56
 -- Version du serveur :  5.6.17
--- Version de PHP :  5.5.12
+-- Version de PHP :  7.2.4
 
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -177,8 +177,8 @@ CREATE TABLE IF NOT EXISTS `tauxretard` (
 
 CREATE TABLE IF NOT EXISTS `tauxretarditem` (
   `ID` bigint(20) NOT NULL,
-  `TAUXAUTREMOIS` decimal(38,0) DEFAULT NULL,
-  `TAUXPREMIERMOIS` decimal(38,0) DEFAULT NULL,
+  `TAUXAUTREMOIS` decimal(38,3) DEFAULT NULL,
+  `TAUXPREMIERMOIS` decimal(38,3) DEFAULT NULL,
   `TAUXRETARD_ID` bigint(20) DEFAULT NULL,
   `CATEGORIETERRAIN_ID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`ID`),
